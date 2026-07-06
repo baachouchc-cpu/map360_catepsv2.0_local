@@ -15,7 +15,7 @@ const sidebar = document.getElementById('sidebar');
 const viewerDiv = document.getElementById('viewer');
 const toggleBtn = document.getElementById('toggle-sidebar');
 //const API_BASE = "https://webservice-map360.onrender.com";
-const API_BASE = "http://192.168.137.14:5000";// IP local para pruebas
+const API_BASE = "http://192.168.137.16:5000";// IP local para pruebas
 //const API_WEATHER_BASE = "https://api.openweathermap.org/data/2.5/weather";
 
 // Elementos para interacción con contraseña
