@@ -1,21 +1,8 @@
 const Images = require("../models/images.model");
-
-// Cloudinary
-const cloudinary = require("cloudinary").v2;
-
-cloudinary.config({
-
-    cloud_name: process.env.CLOUDINARY_NAME,
-
-    api_key: process.env.CLOUDINARY_KEY,
-
-    api_secret: process.env.CLOUDINARY_SECRET
-
-});
-
+const cloudinary = require("../services/cloudinary");
 
 /*=============================================
-=           LISTAR IMÁGENES
+=             LISTAR IMÁGENES
 =============================================*/
 
 exports.getImages = async (req, res) => {
@@ -23,8 +10,9 @@ exports.getImages = async (req, res) => {
     try {
 
         const search = req.query.search || "";
+        const type = req.query.type || "imagenes_360";
 
-        const images = await Images.get360Images(search);
+        const images = await Images.getImages(type, search);
 
         res.json(images);
 
@@ -42,7 +30,7 @@ exports.getImages = async (req, res) => {
 
 
 /*=============================================
-=           SUBIR IMAGEN
+=             SUBIR IMAGEN
 =============================================*/
 
 exports.uploadImage = async (req, res) => {
@@ -52,47 +40,108 @@ exports.uploadImage = async (req, res) => {
         if (!req.file) {
 
             return res.status(400).json({
-
-                message: "No se recibió ninguna imagen"
-
+                message: "No se recibió ninguna imagen."
             });
 
         }
 
+        const type = req.body.type || "imagenes_360";
+
+        const folders = {
+
+            imagenes_360: "Proyecto_local/imagenes_360",
+            iconos: "Proyecto_local/Iconos",
+            logos: "Proyecto_local/logos",
+            documentos: "Proyecto_local/documentos"
+
+        };
+
+        const folder = folders[type] || "Proyecto_local/uploads";
+
         const result = await cloudinary.uploader.upload(
-
             req.file.path,
-
             {
-
-                folder: "Proyecto_local/imagenes_360"
-
+                folder,
+                resource_type: "image"
             }
-
         );
 
         const image = await Images.create({
 
             nombre_img: req.file.originalname,
-
             url_minio: result.secure_url,
-
-            tipo: req.file.mimetype
+            tipo: type
 
         });
 
         res.status(201).json(image);
 
-    }
-
-    catch (err) {
+    } catch (err) {
 
         console.error(err);
 
         res.status(500).json({
-
             error: err.message
+        });
 
+    }
+
+};
+
+
+/*=============================================
+=             OBTENER IMAGEN
+=============================================*/
+
+exports.getImageById = async (req, res) => {
+
+    try {
+
+        const image = await Images.getById(req.params.id);
+
+        if (!image) {
+
+            return res.status(404).json({
+                message: "Imagen no encontrada."
+            });
+
+        }
+
+        res.json(image);
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json({
+            error: err.message
+        });
+
+    }
+
+};
+
+
+/*=============================================
+=             ELIMINAR IMAGEN
+=============================================*/
+
+exports.deleteImage = async (req, res) => {
+
+    try {
+
+        await Images.remove(req.params.id);
+
+        res.json({
+            message: "Imagen eliminada correctamente."
+        });
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json({
+            error: err.message
         });
 
     }

@@ -72,14 +72,22 @@
 
                             <img
                                 id="scenePreview"
-                                src="/img/no-image.png">
+                                src=""
+                                style="
+                                    width:100%;
+                                    max-height:220px;
+                                    object-fit:cover;
+                                    border-radius:8px;
+                                    border:1px solid #ddd;
+                                "
+                            >
 
                             <div>
 
                                 <button
                                     type="button"
                                     class="btn"
-                                    onclick="openImagePicker()">
+                                    onclick="chooseSceneImage()">
 
                                     Seleccionar imagen
 
@@ -87,8 +95,9 @@
 
                                 <button
                                     type="button"
-                                    class="btn btn-secondary"
+                                    class="btn btn-secondary hidden"
                                     onclick="uploadSceneImage()">
+
 
                                     Subir nueva
 

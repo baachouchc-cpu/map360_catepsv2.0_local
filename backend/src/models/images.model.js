@@ -6,7 +6,7 @@ const Images = {
     =           LISTAR IMÁGENES
     =============================================*/
 
-    async get360Images(search = "") {
+    async getImages(type = "imagenes_360", search = "") {
 
         let query = `
             SELECT
@@ -15,19 +15,20 @@ const Images = {
                 url_minio,
                 tipo
             FROM imagenes
-            WHERE tipo = 'imagenes_360'
+            WHERE tipo = $1
         `;
 
-        const values = [];
+        const values = [type];
 
         if (search) {
 
             query += `
-                WHERE LOWER(nombre_img)
-                LIKE LOWER($1)
+                AND LOWER(nombre_img)
+                LIKE LOWER($2)
             `;
 
             values.push(`%${search}%`);
+
         }
 
         query += `
@@ -40,7 +41,11 @@ const Images = {
 
     },
 
-    async getIcons() {
+    /*=============================================
+    =           OBTENER POR ID
+    =============================================*/
+
+    async getById(id) {
 
         const query = `
             SELECT
@@ -49,13 +54,13 @@ const Images = {
                 url_minio,
                 tipo
             FROM imagenes
-            WHERE tipo = 'Iconos'
-            ORDER BY nombre_img;
+            WHERE id_imagen = $1
         `;
 
-        const { rows } = await db.query(query);
+        const { rows } = await db.query(query, [id]);
 
-        return rows;
+        return rows[0];
+
     },
 
     /*=============================================
@@ -89,6 +94,21 @@ const Images = {
         const { rows } = await db.query(query, values);
 
         return rows[0];
+
+    },
+
+    /*=============================================
+    =           ELIMINAR IMAGEN
+    =============================================*/
+
+    async remove(id) {
+
+        const query = `
+            DELETE FROM imagenes
+            WHERE id_imagen = $1
+        `;
+
+        await db.query(query, [id]);
 
     }
 
