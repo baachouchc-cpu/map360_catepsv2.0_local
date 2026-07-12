@@ -7,11 +7,15 @@ const {
   updateInteractionDescription,
   validateInteractionPassword,
   getNameTypes,
-  getNameIcon
+  getNameIcon,
+  getAllInteractions
 } = require("../controllers/interactions.controller");
 
 // POST → crear
 router.post("/", upsertInteraction);
+
+// GET → obtener todas las interacciones
+router.get("/", getAllInteractions);
 
 // GET → obtener solo id y name de los tipos de interacción
 router.get("/types", getNameTypes);

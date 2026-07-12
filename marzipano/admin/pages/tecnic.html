@@ -1,33 +1,56 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Gestión de Interacciones</title>
-  <link rel="stylesheet" href="/admin/styles/admin.css">
+
+<meta charset="UTF-8">
+
+<title>Técnico</title>
+
+<link rel="stylesheet" href="/admin/styles/admin.css">
+<link rel="stylesheet" href="/admin/styles/buttons.css">
+<link rel="stylesheet" href="/admin/styles/cards.css">
+<link rel="stylesheet" href="/admin/styles/dashboard.css">
+<link rel="stylesheet" href="/admin/styles/form.css">
+<link rel="stylesheet" href="/admin/styles/layout.css">
+<link rel="stylesheet" href="/admin/styles/modal.css">
+<link rel="stylesheet" href="/admin/styles/sidebar.css">
+<link rel="stylesheet" href="/admin/styles/table.css">
+
 </head>
+
 <body>
 
-<form id="interactionForm">
+<div class="app">
 
-  <h2>Actualizar descripción de interacción</h2>
+    <aside id="sidebar"></aside>
 
-  <input type="hidden" id="id_interactions">
+    <main class="main">
 
-  <label>Nombre de Escena</label>
-  <input type="text" id="scene_name" required>
+        <header class="topbar">
 
-  <label>Título</label>
-  <input type="text" id="title" required>
+            <h2 id="pageTitle">Técnico</h2>
 
-  <label>Descripción</label>
-  <textarea id="description"></textarea>
+        </header>
 
-  <button type="submit">Actualizar</button>
+        <section id="content">
 
-  <button type="button" onclick="logout()">Cerrar sesión</button>
+        </section>
 
-</form>
+    </main>
 
-<script src="/admin/controllers/tecnic.js"></script>
+</div>
+
+<script src="/admin/controllers/table.js"></script>
+<script src="/admin/controllers/toolbar.js"></script>
+<script src="/admin/controllers/confirmModal.js"></script>
+<script src="/admin/controllers/scenes.js"></script>
+<script src="/admin/controllers/scenesForm.js"></script>
+<script src="/admin/controllers/tours.js"></script>
+<script src="/admin/controllers/toursForm.js"></script>
+<script src="/admin/controllers/interactions.js"></script>
+<script src="/admin/controllers/interactionForm.js"></script>
+<script src="/admin/controllers/sidebar.js"></script>
+<script src="/admin/controllers/dashboard.js"></script>
+
 </body>
 </html>

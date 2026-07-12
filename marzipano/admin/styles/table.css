@@ -1,0 +1,469 @@
+/* =========================================================
+   TABLAS
+========================================================= */
+
+.table-container{
+
+    width:100%;
+
+    background:rgba(255,255,255,.30);
+
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+
+    border:1px solid rgba(255,255,255,.25);
+
+    border-radius:16px;
+
+    overflow:hidden;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.12);
+
+}
+
+/* =========================================================
+   CABECERA
+========================================================= */
+
+.table-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:20px 25px;
+
+    border-bottom:1px solid rgba(255,255,255,.15);
+
+    background:rgba(255,255,255,.18);
+
+}
+
+.table-header h3{
+
+    margin:0;
+
+    color:#1d2671;
+
+}
+
+.table-tools{
+
+    display:flex;
+
+    gap:10px;
+
+    align-items:center;
+
+}
+
+.table-tools input{
+
+    width:260px;
+
+}
+
+/* =========================================================
+   TABLA
+========================================================= */
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    background:transparent;
+
+}
+
+thead{
+
+    background:#1d2671;
+
+    color:white;
+
+}
+
+thead th{
+
+    padding:16px;
+
+    text-align:left;
+
+    font-size:14px;
+
+    font-weight:600;
+
+}
+
+tbody tr{
+
+    transition:.25s;
+
+}
+
+tbody tr:nth-child(even){
+
+    background:rgba(255,255,255,.08);
+
+}
+
+tbody tr:hover{
+
+    background:rgba(255,255,255,.22);
+
+}
+
+tbody td{
+
+    padding:15px 16px;
+
+    border-bottom:1px solid rgba(255,255,255,.10);
+
+    font-size:14px;
+
+    color:#2f2f2f;
+
+}
+
+/* =========================================================
+   BUSCADOR
+========================================================= */
+
+.search-box{
+    position:relative;
+    display:flex;
+    align-items:center;
+}
+
+.search-box input{
+    width:260px;
+    padding-right:38px;
+}
+
+.search-clear{
+
+    position:absolute;
+    right:8px;
+
+    width:24px;
+    height:24px;
+
+    display:none;
+    justify-content:center;
+    align-items:center;
+
+    border:none;
+    border-radius:50%;
+
+    background:transparent;
+    color:#777;
+
+    font-size:18px;
+    line-height:1;
+
+    cursor:pointer;
+    transition:.2s;
+}
+
+.search-clear:hover{
+
+    background:#e8e8e8;
+    color:#333;
+
+}
+
+/* =========================================================
+   ACCIONES
+========================================================= */
+
+.actions{
+
+    display:flex;
+
+    gap:8px;
+
+}
+
+.actions button{
+
+    border:none;
+
+    cursor:pointer;
+
+    border-radius:8px;
+
+    padding:8px 12px;
+
+    color:white;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    transition:.25s;
+
+}
+
+.actions .edit{
+
+    background:#2196f3;
+
+}
+
+.actions .edit:hover{
+
+    background:#1976d2;
+
+}
+
+.actions .delete{
+
+    background:#d9534f;
+
+}
+
+.actions .delete:hover{
+
+    background:#c9302c;
+
+}
+
+.actions .view{
+
+    background:#28a745;
+
+}
+
+.actions .view:hover{
+
+    background:#218838;
+
+}
+
+/* =========================================================
+   ESTADOS
+========================================================= */
+
+.status{
+
+    display:inline-block;
+
+    padding:5px 12px;
+
+    border-radius:20px;
+
+    color:white;
+
+    font-size:12px;
+
+    font-weight:bold;
+
+}
+
+.status.active{
+
+    background:#4caf50;
+
+}
+
+.status.inactive{
+
+    background:#d9534f;
+
+}
+
+.status.warning{
+
+    background:#ff9800;
+
+}
+
+/* =========================================================
+   PAGINACIÓN
+========================================================= */
+
+.table-footer{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:18px 25px;
+
+    border-top:1px solid #ececec;
+
+    background:#fafafa;
+
+}
+
+.pagination{
+
+    display:flex;
+
+    gap:8px;
+
+}
+
+.pagination button{
+
+    width:36px;
+
+    height:36px;
+
+    border:none;
+
+    border-radius:8px;
+
+    background:#f0f0f0;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.pagination button:hover{
+
+    background:#d9d9d9;
+
+}
+
+.pagination button.active{
+
+    background:#1d2671;
+
+    color:white;
+
+}
+
+/* =========================================================
+   SCROLL TABLA
+========================================================= */
+
+.table-scroll{
+    overflow-y:auto;
+    overflow-x:auto;
+    max-height:70vh;
+}
+
+.table-scroll table{
+    border-collapse:separate;
+    border-spacing:0;
+}
+
+.table-scroll thead th{
+    position:sticky;
+    top:0;
+    z-index:10;
+    background:#1d2671;
+    color:#fff;
+    box-shadow:0 2px 4px rgba(0,0,0,.15);
+}
+
+.table-scroll table{
+    border-collapse:separate;
+    border-spacing:0;
+}
+
+.table-scroll thead th{
+    position:sticky;
+    top:0;
+    z-index:10;
+    background:#1d2671;
+    color:#fff;
+    box-shadow:0 2px 4px rgba(0,0,0,.15);
+}
+
+.table-scroll::-webkit-scrollbar{
+
+    height:8px;
+
+}
+
+.table-scroll::-webkit-scrollbar-thumb{
+
+    background:#bcbcbc;
+
+    border-radius:20px;
+
+}
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.table-loading{
+
+    padding:50px;
+
+    text-align:center;
+
+    color:#777;
+
+    font-size:15px;
+
+}
+
+/* =========================================================
+   SIN DATOS
+========================================================= */
+
+.table-empty{
+
+    padding:60px;
+
+    text-align:center;
+
+    color:#999;
+
+    font-size:15px;
+
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:900px){
+
+    .table-header{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:15px;
+
+    }
+
+    .table-tools{
+
+        width:100%;
+
+    }
+
+    .table-tools input{
+
+    width:260px;
+
+    background:rgba(255,255,255,.55);
+
+    border:1px solid rgba(255,255,255,.30);
+
+    backdrop-filter:blur(10px);
+
+    }
+
+    table{
+
+        min-width:850px;
+
+    }
+
+}

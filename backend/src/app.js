@@ -16,6 +16,7 @@ const searchRoutes = require("./routes/search.routes");
 const interactionsRoutes = require("./routes/interactions.routes");
 const authRoutes = require("./routes/auth.routes");
 const adminRoutes = require("./routes/admin.routes");
+const imageRoutes = require("./routes/images.routes");
 
 // Middleware auth
 const auth = require("./middlewares/auth.middleware");
@@ -35,6 +36,7 @@ app.use("/api/search", searchRoutes);
 app.use("/api/interactions", interactionsRoutes);
 app.use("/api/users", auth, role, require("./routes/auth.routes"));
 app.use("/api/admin", adminRoutes);
+app.use("/api/images", imageRoutes);
 
 // FRONTEND STATIC
 const frontendPath = path.join(__dirname, "../../marzipano");

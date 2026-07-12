@@ -1,0 +1,307 @@
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+#sidebar{
+
+    width:270px;
+    min-width:270px;
+    max-width:270px;
+
+    background:linear-gradient(180deg,#1d2671,#2f3e9e);
+
+    color:white;
+
+    display:flex;
+    flex-direction:column;
+
+    overflow-y:auto;
+
+    box-shadow:4px 0 18px rgba(0,0,0,.20);
+
+    transition:.30s;
+
+}
+
+/* =========================================================
+   LOGO
+========================================================= */
+
+.logo{
+
+    height:70px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    font-size:22px;
+    font-weight:bold;
+    letter-spacing:1px;
+
+    border-bottom:1px solid rgba(255,255,255,.08);
+
+    background:rgba(255,255,255,.05);
+
+}
+
+.logo h2{
+    margin:0;
+    color:#fff;
+    font-size:22px;
+    font-weight:700;
+    letter-spacing:1px;
+}
+
+/* =========================================================
+   MENÚ
+========================================================= */
+
+.menu{
+
+    flex:1;
+
+    padding:15px 0;
+
+}
+
+.menu-title{
+    padding:18px 22px;
+    color:rgba(255,255,255,.75);
+    text-transform:uppercase;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:1px;
+}
+
+/* =========================================================
+   BOTONES
+========================================================= */
+
+.menu button{
+
+    width:100%;
+
+    border:none;
+
+    outline:none;
+
+    background:none;
+
+    color:white;
+
+    cursor:pointer;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:16px 22px;
+
+    font-size:15px;
+
+    transition:.25s;
+
+}
+
+.menu button:hover{
+
+    background:rgba(255,255,255,.10);
+
+}
+
+.menu button.active{
+
+    background:rgba(255,255,255,.18);
+
+}
+
+/* =========================================================
+   FLECHA
+========================================================= */
+
+.arrow{
+
+    transition:.30s;
+
+}
+
+.arrow.rotate{
+
+    transform:rotate(90deg);
+
+}
+
+/* =========================================================
+   SUBMENÚ
+========================================================= */
+
+.menu ul{
+
+    list-style:none;
+
+    margin:0;
+
+    padding:0;
+
+    display:none;
+
+    background:rgba(0,0,0,.12);
+
+}
+
+.menu ul.open{
+
+    display:block;
+
+}
+
+.menu ul li{
+
+    padding:14px 40px;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    font-size:14px;
+
+}
+
+.menu ul li:hover{
+
+    background:rgba(255,255,255,.10);
+
+}
+
+.menu ul li.active{
+
+    background:linear-gradient(
+        90deg,
+        rgba(255,255,255,.15),
+        rgba(255,255,255,.05)
+    );
+
+    border-left:4px solid #ffffff;
+
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.sidebar-footer{
+
+    padding:20px;
+
+    border-top:1px solid rgba(255,255,255,.08);
+
+}
+
+/* =========================================================
+   BOTÓN LOGOUT
+========================================================= */
+
+.logout-btn{
+
+    width:100%;
+
+    padding:12px;
+
+    border:none;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    color:white;
+
+    font-weight:bold;
+
+    background:linear-gradient(135deg,#d9534f,#c9302c);
+
+    transition:.25s;
+
+}
+
+.logout-btn:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:0 8px 20px rgba(0,0,0,.25);
+
+}
+
+/* =========================================================
+   SCROLL
+========================================================= */
+
+#sidebar::-webkit-scrollbar{
+
+    width:8px;
+
+}
+
+#sidebar::-webkit-scrollbar-thumb{
+
+    background:rgba(255,255,255,.25);
+
+    border-radius:20px;
+
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:900px){
+
+    #sidebar{
+
+        width:75px;
+        min-width:75px;
+        max-width:75px;
+
+    }
+
+    .logo{
+
+        font-size:16px;
+
+    }
+
+    .menu-title{
+
+        display:none;
+
+    }
+
+    .menu button{
+
+        justify-content:center;
+
+        padding:18px 10px;
+
+    }
+
+    .menu button span{
+
+        display:none;
+
+    }
+
+    .menu ul{
+
+        display:none !important;
+
+    }
+
+    .sidebar-footer{
+
+        padding:10px;
+
+    }
+
+}
