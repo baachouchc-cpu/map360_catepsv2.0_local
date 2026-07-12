@@ -1,100 +1,67 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Administracion</title>
-  <link rel="stylesheet" href="/admin/styles/admin.css">
+
+
+<meta charset="UTF-8">
+
+
+<title>Panel Administración</title>
+
+<link rel="stylesheet" href="/admin/styles/admin.css">
+<link rel="stylesheet" href="/admin/styles/buttons.css">
+<link rel="stylesheet" href="/admin/styles/cards.css">
+<link rel="stylesheet" href="/admin/styles/dashboard.css">
+<link rel="stylesheet" href="/admin/styles/form.css">
+<link rel="stylesheet" href="/admin/styles/imagePicker.css">
+<link rel="stylesheet" href="/admin/styles/layout.css">
+<link rel="stylesheet" href="/admin/styles/modal.css">
+<link rel="stylesheet" href="/admin/styles/sidebar.css">
+<link rel="stylesheet" href="/admin/styles/table.css">
+
+
 </head>
+
 <body>
 
-<form id="interactionForm">
+<div class="app">
 
-  <h2>Crear / Actualizar interacción</h2>
+    <aside id="sidebar"></aside>
 
-  <input type="hidden" id="id_interactions">
+    <main class="main">
 
-  <label>Tipo<span class="required">*</span></label>
-  <select id="type_id" required>
-    <option value="">Cargando tipos...</option>
-  </select>
+        <header class="topbar">
 
-  <label>Nombre de Escena<span class="required">*</span></label>
-  <select id="scene_id" required>
-    <option value="">Cargando escenas...</option>
-  </select>
+            <h2 id="pageTitle">Dashboard</h2>
 
-  <label>Título<span class="required">*</span></label>
-  <input type="text" id="title" required>
+            <button id="btnCreate" class="btn btn-primary">
+                + Crear
+            </button>
 
-  <label>Yaw<span class="required">*</span></label>
-  <input type="number" step="any" id="yaw" required>
+        </header>
 
-  <label>Pitch<span class="required">*</span></label>
-  <input type="number" step="any" id="pitch" required>
+        <section id="content">
 
-  <div class="form-group" id="group_description">
-    <label id="lbl_description">Descripción</label>
-    <textarea id="description"></textarea>
-    <small id="descriptionHint" class="hint"></small>
-  </div>
+        </section>
 
-  <div class="form-group" id="group_link">
-    <label id="lbl_link">Link</label>
-    <input type="text" id="link">
-    <small id="linkHint" class="hint"></small>
-  </div>
+    </main>
+    
+</div>
 
-  <label>Icono<span class="required">*</span></label>
-  <select id="icon_id" required>
-    <option value="">Cargando tipos...</option>
-  </select>
+<script src="/admin/controllers/table.js"></script>
+<script src="/admin/controllers/toolbar.js"></script>
+<script src="/admin/controllers/confirmModal.js"></script>
+<script src="/admin/controllers/scenes.js"></script>
+<script src="/admin/controllers/sceneForm.js"></script>
+<script src="/admin/controllers/imagePicker.js"></script>
+<script src="/admin/controllers/tours.js"></script>
+<script src="/admin/controllers/toursForm.js"></script>
+<script src="/admin/controllers/interactions.js"></script>
+<script src="/admin/controllers/interactionForm.js"></script>
+<script src="/admin/controllers/sidebar.js"></script>
+<script src="/admin/controllers/dashboard.js"></script>
 
-  <label>Rotación Icono<span class="required">*</span></label>
-  <input type="number" step="any" id="rotation" required>
 
-  <div class="form-group" id="group_screen">
-    <label id="lbl_radius">Radio</label>
-    <input type="number" id="radius">
-
-    <label id="lbl_width">Ancho (px)</label>
-    <input type="number" id="width_px">
-
-    <label id="lbl_height">Alto (px)</label>
-    <input type="number" id="height_px">
-  </div>
-
-  <div class="form-group" id="group_password">
-    <label id="lbl_password">Contraseña</label>
-    <input type="password" id="password">
-    <small id="passwordHint" class="hint"></small>
-  </div>
-
-  <div class="form-group" id="group_api">
-    <label id="lbl_api_key">API KEY</label>
-     <div class="input-eye">
-      <input type="password" id="api_key">
-      <span class="toggle-eye" onclick="toggleApiKey()">
-        👁
-      </span>
-    </div>
-    <small id="apiKeyHint" class="hint">Solo para APIs que reciben la clave en la URL (ej: api_key=123456).</small>
-
-    <label id="lbl_update_api">Mostrar fecha de actualización API</label>
-    <label class="switch">
-    <input type="checkbox" id="update_api">
-    <span class="slider"></span>
-    </label>
-</label>
-
-  </div>
-  
-
-  <button type="submit">Crear/Actualizar</button>
-
-  <button type="button" onclick="logout()">Cerrar sesión</button>
-
-</form>
-
-<script src="/admin/controllers/admin.js"></script>
 </body>
+
 </html>

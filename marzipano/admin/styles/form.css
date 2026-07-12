@@ -1,0 +1,254 @@
+/* ==========================================================
+   FORMULARIO
+========================================================== */
+
+.form{
+    width:100%;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:20px;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+    margin-bottom:18px;
+}
+
+.form-group.full{
+    grid-column:1/-1;
+}
+
+/* ==========================================================
+   LABELS
+========================================================== */
+
+.form-group label{
+    display:block;
+    margin-bottom:6px;
+    font-size:14px;
+    font-weight:600;
+    color:#555;
+}
+
+.required{
+    color:#d93025;
+    font-weight:bold;
+    margin-left:3px;
+}
+
+/* ==========================================================
+   INPUTS
+========================================================== */
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+
+    width:100%;
+    padding:10px 12px;
+    margin-top:4px;
+
+    border:1px solid #ccc;
+    border-radius:6px;
+
+    font-size:14px;
+
+    background:#fff;
+
+    transition:border-color .25s,
+               box-shadow .25s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus{
+
+    outline:none;
+
+    border-color:#1d2671;
+
+    box-shadow:0 0 0 2px rgba(29,38,113,.15);
+}
+
+.form-group textarea{
+    resize:vertical;
+    min-height:110px;
+}
+
+/* ==========================================================
+   SELECT
+========================================================== */
+
+.form-group select{
+
+    appearance:none;
+    -webkit-appearance:none;
+    -moz-appearance:none;
+
+    cursor:pointer;
+
+    background-image:url("data:image/svg+xml;utf8,<svg fill='%23666' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><path d='M5 7l5 5 5-5z'/></svg>");
+
+    background-repeat:no-repeat;
+    background-position:right 12px center;
+    background-size:18px;
+}
+
+/* ==========================================================
+   PASSWORD
+========================================================== */
+
+.input-eye{
+    position:relative;
+}
+
+.input-eye input{
+    padding-right:42px;
+}
+
+.toggle-eye{
+
+    position:absolute;
+    right:14px;
+    top:50%;
+
+    transform:translateY(-50%);
+
+    cursor:pointer;
+
+    user-select:none;
+
+    font-size:18px;
+
+    color:#666;
+
+    transition:.25s;
+}
+
+.toggle-eye:hover{
+    color:#1d2671;
+}
+
+/* ==========================================================
+   HINTS
+========================================================== */
+
+.form-group small{
+
+    margin-top:6px;
+
+    color:#777;
+
+    font-size:12px;
+
+    line-height:1.4;
+}
+
+/* ==========================================================
+   SWITCH
+========================================================== */
+
+.switch{
+    position:relative;
+    display:inline-block;
+    width:52px;
+    height:28px;
+}
+
+.switch input{
+    display:none;
+}
+
+.slider{
+
+    position:absolute;
+    inset:0;
+
+    background:#c8c8c8;
+
+    border-radius:30px;
+
+    cursor:pointer;
+
+    transition:.3s;
+}
+
+.slider::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:22px;
+    height:22px;
+
+    left:3px;
+    bottom:3px;
+
+    border-radius:50%;
+
+    background:#fff;
+
+    transition:.3s;
+
+    box-shadow:0 2px 6px rgba(0,0,0,.25);
+}
+
+.switch input:checked + .slider{
+    background:#4caf50;
+}
+
+.switch input:checked + .slider::before{
+    transform:translateX(24px);
+}
+
+/* ==========================================================
+   SWITCH CON TEXTO
+========================================================== */
+
+.switch-group{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-top:10px;
+}
+
+/* ==========================================================
+   VALIDACIÓN
+========================================================== */
+
+.is-invalid{
+    border-color:#dc3545 !important;
+}
+
+.is-valid{
+    border-color:#28a745 !important;
+}
+
+.error-message{
+    color:#dc3545;
+    font-size:12px;
+    margin-top:5px;
+}
+
+.success-message{
+    color:#28a745;
+    font-size:12px;
+    margin-top:5px;
+}
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media(max-width:768px){
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+}

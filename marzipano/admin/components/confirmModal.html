@@ -1,0 +1,47 @@
+<div id="confirmModal" class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2 id="confirmTitle">
+                Confirmar acción
+            </h2>
+
+            <button
+                class="modal-close"
+                onclick="closeConfirmModal()">
+                ×
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <p id="confirmMessage">
+                ¿Deseas continuar?
+            </p>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="closeConfirmModal()">
+                Cancelar
+            </button>
+
+            <button
+                type="button"
+                id="confirmAccept"
+                class="btn btn-danger">
+                Aceptar
+            </button>
+
+        </div>
+
+    </div>
+
+</div>

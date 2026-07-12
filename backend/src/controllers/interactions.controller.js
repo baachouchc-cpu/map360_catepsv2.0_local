@@ -143,11 +143,29 @@ const validateInteractionPassword = async (req, res) => {
   }
 };
 
+// GET ALL
+const getAllInteractions = async (req, res) => {
+  try {
+
+    const result = await db.query(
+      "SELECT   i.*,  s.description AS scene_name FROM interactions i JOIN scenes s  ON s.id_scene = i.scene_id order by i.id_interactions",
+//      "SELECT * FROM interactions WHERE id_interactions = $1",
+    );
+
+    res.json(result.rows);
+
+  } catch (error) {
+    console.error("GET interaction error:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+};
+
 module.exports = {
   upsertInteraction,
   getInteractionById,
   updateInteractionDescription,
   validateInteractionPassword,
   getNameTypes,
-  getNameIcon
+  getNameIcon,
+  getAllInteractions
 };

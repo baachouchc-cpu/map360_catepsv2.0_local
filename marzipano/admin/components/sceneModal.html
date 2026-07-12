@@ -1,0 +1,164 @@
+<div id="sceneModal" class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2 id="sceneModalTitle">
+                Crear / Editar escena
+            </h2>
+
+            <button
+                type="button"
+                class="modal-close"
+                onclick="closeSceneModal()">
+                ×
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <form id="sceneForm" class="form">
+
+                <input
+                    type="hidden"
+                    id="id_scene"
+                >
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label>Tipo <span class="required">*</span></label>
+
+                        <select id="kind_id"></select>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Torre <span class="required">*</span></label>
+
+                        <select id="tower_id"></select>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Piso <span class="required">*</span></label>
+
+                        <select id="floor_id"></select>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Orientación <span class="required">*</span></label>
+
+                        <select id="orientation_id"></select>
+
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <div class="form-group">
+
+                        <label>Imagen panorámica <span class="required">*</span></label>
+
+                        <div class="image-selector">
+
+                            <img
+                                id="scenePreview"
+                                src="/img/no-image.png">
+
+                            <div>
+
+                                <button
+                                    type="button"
+                                    class="btn"
+                                    onclick="openImagePicker()">
+
+                                    Seleccionar imagen
+
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="btn btn-secondary"
+                                    onclick="uploadSceneImage()">
+
+                                    Subir nueva
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                        <input
+                            type="hidden"
+                            id="imagen_id">
+
+                        <input
+                            type="hidden"
+                            id="imagen_url">
+
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Imagen</label>
+
+                    <select id="imagen_id">
+
+                        <option value="">
+                            Sin imagen asociada
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Descripción <span class="required">*</span></label>
+
+                    <textarea
+                        id="description"
+                        rows="5">
+                    </textarea>
+
+                </div>
+            </form>
+        </div>
+
+        <div class="modal-footer">
+
+            <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="closeSceneModal()">
+
+                Cancelar
+
+            </button>
+
+            <button
+                type="submit"
+                form="sceneForm"
+                class="btn-save">
+
+                Guardar
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>

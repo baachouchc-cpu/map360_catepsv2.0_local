@@ -1,0 +1,59 @@
+<div id="imagePickerModal" class="modal">
+
+    <div class="modal-content modal-large">
+
+        <div class="modal-header">
+
+            <h2>Seleccionar imagen panorámica</h2>
+
+            <button
+                type="button"
+                class="modal-close"
+                onclick="closeImagePicker()">
+                ×
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <div class="image-picker-toolbar">
+
+                <button
+                    type="button"
+                    class="btn-save"
+                    onclick="document.getElementById('imageUpload').click()">
+                    Subir nueva imagen
+                </button>
+
+                <input
+                    type="file"
+                    id="imageUpload"
+                    accept="image/*"
+                    hidden
+                >
+
+            </div>
+
+            <div
+                id="imagePickerGrid"
+                class="image-picker-grid">
+
+            </div>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="closeImagePicker()">
+                Cancelar
+            </button>
+
+        </div>
+
+    </div>
+
+</div>

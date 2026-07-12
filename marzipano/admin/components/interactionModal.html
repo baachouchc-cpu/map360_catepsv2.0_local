@@ -1,0 +1,213 @@
+<div id="interactionModal" class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2 id="interactionModalTitle">
+                Crear / Editar interacción
+            </h2>
+
+            <button
+                type="button"
+                class="modal-close"
+                onclick="closeInteractionModal()">
+                ×
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <form id="interactionForm" class="form">
+
+                <input type="hidden" id="id_interactions">
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label>Tipo <span class="required">*</span></label>
+                        <select id="type_id"></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Escena <span class="required">*</span></label>
+                        <select id="scene_id"></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Título <span class="required">*</span></label>
+                        <input id="title" type="text">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Yaw <span class="required">*</span></label>
+                        <input id="yaw" type="number" step="any">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Pitch <span class="required">*</span></label>
+                        <input id="pitch" type="number" step="any">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Icono <span class="required">*</span></label>
+                        <select id="icon_id"></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Rotación <span class="required">*</span></label>
+                        <input id="rotation" type="number" step="any">
+                    </div>
+
+                </div>
+
+                <div class="form-group full" id="group_description">
+
+                    <label id="lbl_description">
+                        Descripción
+                    </label>
+
+                    <textarea id="description"></textarea>
+
+                    <small id="descriptionHint"></small>
+
+                </div>
+
+                <div class="form-group full" id="group_link">
+
+                    <label id="lbl_link">
+                        Link
+                    </label>
+
+                    <input id="link" type="text">
+
+                    <small id="linkHint"></small>
+
+                </div>
+
+                <div id="group_screen" class="form-grid">
+
+                    <div class="form-group">
+
+                        <label id="lbl_radius">
+                            Radio
+                        </label>
+
+                        <input id="radius" type="number">
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label id="lbl_width">
+                            Ancho
+                        </label>
+
+                        <input id="width_px" type="number">
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label id="lbl_height">
+                            Alto
+                        </label>
+
+                        <input id="height_px" type="number">
+
+                    </div>
+
+                </div>
+
+                <div class="form-group full" id="group_password">
+
+                    <label id="lbl_password">
+                        Contraseña
+                    </label>
+
+                    <div class="input-eye">
+
+                        <input id="password" type="password">
+
+                        <span
+                            class="toggle-eye"
+                            onclick="togglePassword()">
+                            👁
+                        </span>
+
+                    </div>
+
+                    <small id="passwordHint"></small>
+
+                </div>
+
+                <div class="form-group full" id="group_api">
+
+                    <label id="lbl_api_key">
+                        API KEY
+                    </label>
+
+                    <div class="input-eye">
+
+                        <input id="api_key" type="password">
+
+                        <span
+                            class="toggle-eye"
+                            onclick="toggleApiKey()">
+                            👁
+                        </span>
+
+                    </div>
+
+                    <small id="apiKeyHint"></small>
+
+                    <div class="switch-group">
+
+                        <label class="switch">
+
+                            <input
+                                type="checkbox"
+                                id="update_api">
+
+                            <span class="slider"></span>
+
+                        </label>
+
+                        <span>
+                            Mostrar fecha actualización API
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button
+                type="button"
+                class="btn-cancel"
+                onclick="closeInteractionModal()">
+
+                Cancelar
+
+            </button>
+
+            <button
+                type="submit"
+                form="interactionForm"
+                class="btn-save">
+
+                Guardar
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
