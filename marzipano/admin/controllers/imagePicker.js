@@ -1,16 +1,19 @@
 /*=============================================
-=              IMAGE PICKER                  =
+=              IMAGE PICKER
 =============================================*/
 
 let imagePickerCallback = null;
+let imagePickerType = "imagenes_360";
+
 
 /*=============================================
-=              ABRIR MODAL                   =
+=              ABRIR MODAL
 =============================================*/
 
-async function openImagePicker(onSelect) {
+async function openImagePicker(onSelect, type = "imagenes_360") {
 
     imagePickerCallback = onSelect;
+    imagePickerType = type;
 
     if (!document.getElementById("imagePickerModal")) {
 
@@ -25,30 +28,31 @@ async function openImagePicker(onSelect) {
         .classList.add("show");
 
     await loadImages();
+
 }
 
 
 /*=============================================
-=             CERRAR MODAL                   =
+=              CERRAR MODAL
 =============================================*/
 
 function closeImagePicker() {
 
     const modal = document.getElementById("imagePickerModal");
 
-    if (!modal)
-        return;
+    if (!modal) return;
 
     modal.classList.remove("show");
     modal.remove();
+
 }
 
 
 /*=============================================
-=             CARGAR IMÁGENES                =
+=              CARGAR IMÁGENES
 =============================================*/
 
-async function loadImages() {
+async function loadImages(search = "") {
 
     const container = document.getElementById("imagePickerGrid");
 
@@ -56,13 +60,23 @@ async function loadImages() {
 
     try {
 
-        const res = await fetch("/api/images");
+        let url = `/api/images?type=${encodeURIComponent(imagePickerType)}`;
+
+        if (search) {
+            url += `&search=${encodeURIComponent(search)}`;
+        }
+
+        const res = await fetch(url);
+
+        if (!res.ok)
+            throw new Error(`HTTP ${res.status}`);
 
         const images = await res.json();
 
         renderImages(images);
 
-    } catch (err) {
+    }
+    catch (err) {
 
         console.error(err);
 
@@ -74,7 +88,7 @@ async function loadImages() {
 
 
 /*=============================================
-=              RENDER GRID                   =
+=              RENDER GRID
 =============================================*/
 
 function renderImages(images) {
@@ -84,17 +98,14 @@ function renderImages(images) {
     if (!images.length) {
 
         container.innerHTML = "<p>No hay imágenes.</p>";
-
         return;
 
     }
 
     container.innerHTML = images.map(img => `
 
-        <div
-            class="image-card"
-            onclick='selectImage(${JSON.stringify(img)})'
-        >
+        <div class="image-card"
+             onclick='selectImage(${JSON.stringify(img)})'>
 
             <img
                 src="${img.url_minio}"
@@ -111,7 +122,7 @@ function renderImages(images) {
 
 
 /*=============================================
-=              SELECCIONAR                   =
+=              SELECCIONAR
 =============================================*/
 
 function selectImage(image) {
@@ -125,61 +136,11 @@ function selectImage(image) {
 
 
 /*=============================================
-=               SUBIR IMAGEN                 =
+=              BUSCADOR
 =============================================*/
 
-async function uploadImage(input) {
+function searchImages(text) {
 
-    if (!input.files.length)
-        return;
-
-    const formData = new FormData();
-
-    formData.append("image", input.files[0]);
-
-    try {
-
-        const res = await fetch("/api/images/upload", {
-
-            method: "POST",
-
-            body: formData
-
-        });
-
-        if (!res.ok)
-            throw new Error("Error subiendo imagen");
-
-        const image = await res.json();
-
-        if (imagePickerCallback)
-            imagePickerCallback(image);
-
-        closeImagePicker();
-
-    } catch (err) {
-
-        console.error(err);
-
-        alert("No se pudo subir la imagen.");
-
-    }
-
-}
-
-
-/*=============================================
-=               BUSCADOR                     =
-=============================================*/
-
-async function searchImages(text) {
-
-    const res = await fetch(
-        `/api/images?search=${encodeURIComponent(text)}`
-    );
-
-    const images = await res.json();
-
-    renderImages(images);
+    loadImages(text);
 
 }

@@ -21,7 +21,7 @@
 
                 <button
                     type="button"
-                    class="btn-save"
+                    class="btn btn-primary"
                     onclick="document.getElementById('imageUpload').click()">
                     Subir nueva imagen
                 </button>
@@ -31,6 +31,7 @@
                     id="imageUpload"
                     accept="image/*"
                     hidden
+                    onchange="uploadSelectedImage(event)"
                 >
 
             </div>

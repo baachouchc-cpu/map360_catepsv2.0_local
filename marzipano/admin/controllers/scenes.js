@@ -172,6 +172,6 @@ function chooseSceneImage() {
 
         document.getElementById("scenePreview").src = image.url_minio;
 
-    });
+    },"imagenes_360");
 
 }
