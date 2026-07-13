@@ -33,7 +33,7 @@ async function loadScenesTable() {
                                 <input
                                     type="checkbox"
                                     ${value ? "checked" : ""}
-                                    onchange="toggleInteraction(${row.id_interactions}, this.checked)"
+                                    onchange="toggleScene(${row.id_scene}, this.checked)"
                                 >
                                 <span class="slider"></span>
                             </label>
@@ -173,5 +173,55 @@ function chooseSceneImage() {
         document.getElementById("scenePreview").src = image.url_minio;
 
     },"imagenes_360");
+
+}
+
+async function toggleScene(id, active) {
+
+    if (!active) {
+
+        openConfirmModal({
+
+            title: "Desactivar escena",
+
+            message: "La escena dejará de estar disponible.",
+            
+            confirmText: "Desactivar",
+
+            confirmClass: "btn-delete",
+
+            onConfirm: async () => {
+
+                await fetch(`/api/scenes/${id}/status`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        is_active: false
+                    })
+                });
+
+                loadScenesTable();
+
+            }
+
+        });
+
+    } else {
+
+        await fetch(`/api/scenes/${id}/status`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                is_active: true
+            })
+        });
+
+        loadScenesTable();
+
+    }
 
 }

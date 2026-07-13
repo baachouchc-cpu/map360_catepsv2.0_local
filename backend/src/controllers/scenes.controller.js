@@ -127,7 +127,7 @@ const getSceneById = async (req, res) => {
         t.name_tower AS tower_name, 
         o.name_orientation AS orientation_name,
         i.nombre_img AS image_name,
-        i.url_minio AS image_url,
+        i.url_minio AS image_url_minio,
         i.tipo AS image_type
       FROM scenes s 
       JOIN kind k ON s.kind_id = k.id_kind 
@@ -150,4 +150,68 @@ const getSceneById = async (req, res) => {
   }
 };
 
-module.exports = { upsertScene, getScenes, getNameScenes, getNameKinds, getNameFloors, getNameTowers, getNameOrientations, getSceneById};
+async function getActiveScenes(req, res) {
+    try {
+
+        const scenes = await Scenes.getAllScenesWithHotspots(true);
+
+        res.json(scenes);
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json({
+            message: "Error retrieving active scenes"
+        });
+
+    }
+}
+
+async function updateSceneStatus(req, res) {
+
+    try {
+
+        const { id } = req.params;
+        const { is_active } = req.body;
+
+        if (typeof is_active !== "boolean") {
+            return res.status(400).json({
+                message: "El campo is_active es obligatorio."
+            });
+        }
+
+        const { rows } = await db.query(
+            `
+            UPDATE scenes
+            SET
+                is_active = $1,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id_scene = $2
+            RETURNING *;
+            `,
+            [is_active, id]
+        );
+
+        if (!rows.length) {
+            return res.status(404).json({
+                message: "Escena no encontrada."
+            });
+        }
+
+        res.json(rows[0]);
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json({
+            message: "Error actualizando el estado de la escena."
+        });
+
+    }
+
+}
+
+module.exports = { upsertScene, getScenes, getNameScenes, getNameKinds, getNameFloors, 
+  getNameTowers, getNameOrientations, getSceneById, getActiveScenes, updateSceneStatus};

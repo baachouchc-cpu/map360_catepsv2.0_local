@@ -5,8 +5,8 @@ const pool = require("../services/db");
 
 const Scenes = {
 
- getAllScenesWithHotspots: async () => {
-    const query = `
+ getAllScenesWithHotspots: async (isActive = null) => {
+    let query = `
     SELECT 
     s.id_scene,
     s.imagen_url,
@@ -97,11 +97,20 @@ const Scenes = {
       LEFT JOIN icons rc ON r.icon_id = rc.id_icon
       GROUP BY r.scene_id
   ) r ON s.id_scene = r.scene_id
-  
-  ORDER BY s.id_scene ASC;
     `;
 
-    const { rows } = await pool.query(query);
+    const values = [];
+
+    if (isActive !== null) {
+        query += ` WHERE s.is_active = $1 `;
+        values.push(isActive);
+    }
+
+    query += `
+        ORDER BY s.id_scene ASC;
+    `;
+
+    const { rows } = await pool.query(query, values);
 
     return rows;
 

@@ -7,7 +7,9 @@ const { upsertScene,
     getNameFloors,
     getNameTowers,
     getNameOrientations,
-    getSceneById } = require('../controllers/scenes.controller');
+    getSceneById, 
+    getActiveScenes,
+    updateSceneStatus } = require('../controllers/scenes.controller');
 
 // POST → crear o actualizar una escena
 router.post('/', upsertScene);
@@ -38,5 +40,10 @@ router.get('/orientations', getNameOrientations);
 
 // GET → obtener 1 escena por id
 router.get('/:id(\\d+)', getSceneById);
+
+// GET → obtener solo escenas activas
+router.get("/active", getActiveScenes);
+
+router.put("/:id/status",updateSceneStatus);
 
 module.exports = router;
