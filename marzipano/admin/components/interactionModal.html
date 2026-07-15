@@ -51,8 +51,61 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Icono <span class="required">*</span></label>
-                        <select id="icon_id"></select>
+
+                        <div class="form-group">
+
+                            <label>Icono <span class="required">*</span></label>
+
+                            <div class="image-selector">
+
+                                <img
+                                    id="scenePreview"
+                                    src=""
+                                    style="
+                                        width:100%;
+                                        max-height:220px;
+                                        object-fit:contain;
+                                        background:#00000040;
+                                        border-radius:8px;
+                                        border:1px solid #ddd;
+                                    "
+                                >
+
+                                <div>
+
+                                    <button
+                                        type="button"
+                                        class="btn"
+                                        onclick="chooseInteractionIcon()">
+
+                                        Seleccionar icono
+
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-secondary hidden"
+                                        onclick="uploadSceneImage()">
+
+
+                                        Subir nueva
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                            <input
+                                type="hidden"
+                                id="imagen_id">
+
+                            <input
+                                type="hidden"
+                                id="imagen_url">
+
+                        </div>
+
                     </div>
 
                     <div class="form-group">
@@ -74,7 +127,7 @@
 
                 </div>
 
-                <div class="form-group full" id="group_link">
+                <div class="form-group full" id="group_links">
 
                     <label id="lbl_link">
                         Link
@@ -83,6 +136,80 @@
                     <input id="link" type="text">
 
                     <small id="linkHint"></small>
+
+                </div>
+
+                <div class="form-group" id="group_link_image">
+
+                    <div class="switch-group">
+
+                        <label class="switch">
+
+                            <input
+                                type="checkbox"
+                                id="link_imagen">
+
+                            <span class="slider" onclick="toggleImageLink()"></span>
+
+                        </label>
+
+                        <span>
+                            Usar imagen
+                        </span>
+
+                    </div>
+
+                    <div class="image-selector" id="image_interaction" style="display:none;">
+
+                        <img
+                            id="scenePreviewImagen"
+                            src=""
+                            style="
+                                width:100%;
+                                max-height:220px;
+                                object-fit:contain;
+                                background:#00000040;
+                                border-radius:8px;
+                                border:1px solid #ddd;
+                            "
+                        >
+
+                        <div>
+
+                            <button
+                                type="button"
+                                class="btn"
+                                onclick="chooseInteractionImagen()">
+
+                                Seleccionar imagen
+
+                            </button>
+
+                            <button
+                                type="button"
+                                class="btn btn-secondary hidden"
+                                onclick="uploadSceneImage()">
+
+
+                                Subir nueva
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="form-group-full" id="group_link">
+
+                        <label id="lbl_link">
+                            Link
+                        </label>
+
+                        <input id="link" type="text">
+
+                        <small id="linkHint"></small>
 
                 </div>
 

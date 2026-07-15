@@ -9,7 +9,7 @@ async function initInteractionForm(id = null) {
     await Promise.all([
         loadScenesSelect(),
         loadTypesSelect(),
-        loadIconsSelect()
+        //loadIconsSelect()
     ]);
 
     document
@@ -19,6 +19,7 @@ async function initInteractionForm(id = null) {
     document
         .getElementById("type_id")
         .addEventListener("change", toggleFieldsByType);
+
 
     if (id) {
         isEditModeInteraction = true;
@@ -94,34 +95,34 @@ async function loadTypesSelect(){
 
 }
 
-async function loadIconsSelect(){
+// async function loadIconsSelect(){
 
-    const res = await fetch("/api/interactions/icons");
-    const icons = await res.json();
+//     const res = await fetch("/api/interactions/icons");
+//     const icons = await res.json();
 
-    const select = document.getElementById("icon_id");
+//     const select = document.getElementById("icon_id");
 
-    select.innerHTML = "";
+//     select.innerHTML = "";
 
-    icons.forEach(icon=>{
+//     icons.forEach(icon=>{
 
-        const option = document.createElement("option");
+//         const option = document.createElement("option");
 
-        option.value = icon.id_icon;
-        option.textContent = icon.name_icon;
+//         option.value = icon.id_icon;
+//         option.textContent = icon.name_icon;
 
-        select.appendChild(option);
+//         select.appendChild(option);
 
-    });
+//     });
 
-}
+// }
 
 /*=============================================
 =            RELLENAR FORM                    =
 =============================================*/
 
 function fillInteractionForm(data){
-
+    
     document.getElementById("id_interactions").value = data.id_interactions;
     document.getElementById("scene_id").value = data.scene_id;
     document.getElementById("title").value = data.title;
@@ -129,7 +130,7 @@ function fillInteractionForm(data){
     document.getElementById("pitch").value = data.pitch;
     document.getElementById("description").value = data.description || "";
     document.getElementById("link").value = data.link || "";
-    document.getElementById("icon_id").value = data.icon_id || "";
+    document.getElementById("scenePreview").src = data.icon_url_minio || "";
     document.getElementById("rotation").value = data.rotation;
     document.getElementById("radius").value = data.radius || "";
     document.getElementById("type_id").value = data.type_id;
@@ -235,7 +236,10 @@ function toggleFieldsByType(){
         type=="2" ? "block":"none";
 
     document.getElementById("group_api").style.display =
-        type=="3" ? "block":"none";
+        type=="3" ? "block":"none";  
+    
+    document.getElementById("group_link_image").style.display =
+    type=="1" ? "block":"none";   
 
 }
 
@@ -247,5 +251,14 @@ function toggleApiKey(){
         input.type==="password"
         ? "text"
         : "password";
+
+}
+
+function toggleImageLink(){
+
+    const usarImagen = document.getElementById("link_imagen").checked;
+
+    document.getElementById("image_interaction").style.display = usarImagen ? "none" : "block";
+    document.getElementById("group_link").style.display = usarImagen ? "block" : "none";
 
 }

@@ -68,12 +68,12 @@ async function loadScenesTable() {
                     text: "Editar",
                     class: "edit",
                     onclick: "editScene"
-                },
-                {
-                    text: "Desactivar",
-                    class: "delete",
-                    onclick: "disableScene"
                 }
+                // ,{
+                //     text: "Eliminar",
+                //     class: "delete",
+                //     onclick: "disableScene",
+                // }
             ]
 
         });

@@ -68,12 +68,12 @@ async function loadNavegationTable() {
                     text: "Editar",
                     class: "edit",
                     onclick: "editRoute"
-                },
-                {
-                    text: "Desactivar",
-                    class: "delete",
-                    onclick: "disableRoute"
                 }
+                // ,{
+                //     text: "Eliminar",
+                //     class: "delete",
+                //     onclick: "disableRoute"
+                // }
             ]
 
         });

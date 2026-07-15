@@ -69,12 +69,12 @@ async function loadInteractionsTable() {
                     text: "Editar",
                     class: "edit",
                     onclick: "editInteraction"
-                },
-                {
-                    text: "Eliminar",
-                    class: "delete",
-                    onclick: "deleteInteraction"
                 }
+                // ,{
+                //     text: "Eliminar",
+                //     class: "delete",
+                //     onclick: "deleteInteraction"
+                // }
             ]
         });
 
@@ -199,4 +199,32 @@ function closeInteractionModal() {
     modal.classList.remove("show");
 
     modal.remove();
+}
+
+function chooseInteractionIcon() {
+
+    openImagePicker(image => {
+
+        document.getElementById("imagen_id").value = image.id_imagen;
+
+        document.getElementById("imagen_url").value = image.url_minio;
+
+        document.getElementById("scenePreview").src = image.url_minio;
+
+    },"Iconos");
+
+}
+
+function chooseInteractionImagen() {
+
+    openImagePicker(image => {
+
+        document.getElementById("imagen_id").value = image.id_imagen;
+
+        document.getElementById("imagen_url").value = image.url_minio;
+
+        document.getElementById("scenePreviewImagen").src = image.url_minio;
+
+    },"interaccion");
+
 }

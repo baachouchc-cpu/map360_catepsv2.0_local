@@ -24,7 +24,7 @@
     overflow:hidden;
     cursor:pointer;
     transition:.25s;
-    background:#fff;
+    background:#00000040;
     box-shadow:0 3px 10px rgba(0,0,0,.1);
 }
 
