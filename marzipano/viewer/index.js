@@ -221,6 +221,8 @@ async function loadScenes() {
   try {
     const response = await fetch(`${API_BASE}/api/scenes`);
     allScenes = await response.json();
+    allScenes = allScenes.filter(s => s.is_active);
+    
 
     if (!allScenes.length) {
       sceneInfo.innerHTML = '<p>No hay escenas disponibles.</p>';

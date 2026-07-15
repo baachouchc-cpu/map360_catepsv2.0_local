@@ -8,7 +8,9 @@ const {
   validateInteractionPassword,
   getNameTypes,
   getNameIcon,
-  getAllInteractions
+  getAllInteractions,
+  getActiveInteractions,
+  updateInteractionStatus
 } = require("../controllers/interactions.controller");
 
 // POST → crear
@@ -41,5 +43,10 @@ router.put("/:id(\\d+)", (req, res) => {
   req.body.id_interactions = req.params.id;
   upsertInteraction(req, res);
 });
+
+// GET → obtener solo escenas activas
+router.get("/active", getActiveInteractions);
+
+router.put("/:id/status",updateInteractionStatus);
 
 module.exports = router;

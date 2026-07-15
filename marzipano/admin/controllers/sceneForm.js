@@ -17,17 +17,12 @@ async function initSceneForm(id = null) {
         .getElementById("sceneForm")
         .addEventListener("submit", saveScene);
 
-    // document
-    //     .getElementById("type_id")
-    //     .addEventListener("change", toggleFieldsByType);
-
     if (id) {
         isEditModeScene = true;
         await loadScene(id);
     } else {
         isEditModeScene = false;
         resetSceneForm();
-        //toggleFieldsByType();
     }
 
 }
@@ -151,7 +146,7 @@ function fillSceneForm(data){
     document.getElementById("kind_id").value = data.kind_id;
     document.getElementById("floor_id").value = data.floor_id;
     document.getElementById("orientation_id").value = data.orientation_id;
-    document.getElementById("imagen_url").value = data.imagen_url || "";
+    document.getElementById("scenePreview").src = data.image_url_minio
 }
 
 /*=============================================
@@ -223,32 +218,3 @@ function resetSceneForm(){
 =            CAMPOS DINÁMICOS                 =
 =============================================*/
 
-function toggleFieldsByType(){
-
-    const type = document.getElementById("type_id").value;
-    const isEdit = document.getElementById("id_interactions").value;
-
-    document.getElementById("group_password").style.display =
-        type=="6" ? "block":"none";
-
-    document.getElementById("password").required =
-        type=="6" && !isEdit;
-
-    document.getElementById("group_screen").style.display =
-        type=="2" ? "block":"none";
-
-    document.getElementById("group_api").style.display =
-        type=="3" ? "block":"none";
-
-}
-
-function toggleApiKey(){
-
-    const input = document.getElementById("api_key");
-
-    input.type =
-        input.type==="password"
-        ? "text"
-        : "password";
-
-}

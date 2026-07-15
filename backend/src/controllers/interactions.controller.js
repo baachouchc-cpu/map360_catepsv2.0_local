@@ -75,7 +75,24 @@ const getInteractionById = async (req, res) => {
     const { id } = req.params;
 
     const { rows } = await db.query(
-      "SELECT   i.*,  s.description AS scene_name FROM interactions i JOIN scenes s  ON s.id_scene = i.scene_id WHERE i.id_interactions = $1",
+      `SELECT   
+      i.*,  
+      s.description AS scene_name,
+
+      img.nombre_img AS nombre_interaccion,
+      img.url_minio AS url_minio_interaccion,
+      img.tipo AS img_tipo_interaccion,
+
+      icon.nombre_img AS icon_name,
+      icon.url_minio AS icon_url_minio,
+      icon.tipo AS icon_tipo
+
+      FROM interactions i 
+      LEFT JOIN scenes s  ON s.id_scene = i.scene_id
+      LEFT JOIN imagenes img ON img.id_imagen = i.imagen_id
+      LEFT JOIN imagenes icon ON icon.id_imagen = i.icon_id
+         
+      WHERE i.id_interactions = $1`,
 //      "SELECT * FROM interactions WHERE id_interactions = $1",
       [id]
     );
@@ -144,21 +161,102 @@ const validateInteractionPassword = async (req, res) => {
 };
 
 // GET ALL
-const getAllInteractions = async (req, res) => {
-  try {
+// const getAllInteractions = async (req, res) => {
+//   try {
 
-    const result = await db.query(
-      "SELECT   i.*,  s.description AS scene_name FROM interactions i JOIN scenes s  ON s.id_scene = i.scene_id order by i.id_interactions",
-//      "SELECT * FROM interactions WHERE id_interactions = $1",
-    );
+//     const result = await db.query(
+//       "SELECT   i.*,  s.description AS scene_name FROM interactions i JOIN scenes s  ON s.id_scene = i.scene_id order by i.id_interactions",
+// //      "SELECT * FROM interactions WHERE id_interactions = $1",
+//     );
 
-    res.json(result.rows);
+//     res.json(result.rows);
 
-  } catch (error) {
-    console.error("GET interaction error:", error);
-    res.status(500).json({ error: "Error interno del servidor" });
-  }
-};
+//   } catch (error) {
+//     console.error("GET interaction error:", error);
+//     res.status(500).json({ error: "Error interno del servidor" });
+//   }
+// };
+
+async function getAllInteractions(req, res) {
+    try {
+
+        const interaction = await Interactions.getAllInteractions();
+
+        res.json(interaction);
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json({
+            message: "Error retrieving active interactions"
+        });
+
+    }
+}
+
+async function getActiveInteractions(req, res) {
+    try {
+
+        const interactions = await Interactions.getAllInteractions(true);
+
+        res.json(interactions);
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json({
+            message: "Error retrieving active interactions"
+        });
+
+    }
+}
+
+async function updateInteractionStatus(req, res) {
+
+    try {
+
+        const { id } = req.params;
+        const { is_active } = req.body;
+
+        if (typeof is_active !== "boolean") {
+            return res.status(400).json({
+                message: "El campo is_active es obligatorio."
+            });
+        }
+
+        const { rows } = await db.query(
+            `
+            UPDATE interactions
+            SET
+                is_active = $1,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id_interactions = $2
+            RETURNING *;
+            `,
+            [is_active, id]
+        );
+
+        if (!rows.length) {
+            return res.status(404).json({
+                message: "Escena no encontrada."
+            });
+        }
+
+        res.json(rows[0]);
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json({
+            message: "Error actualizando el estado de la escena."
+        });
+
+    }
+
+}
 
 module.exports = {
   upsertInteraction,
@@ -167,5 +265,7 @@ module.exports = {
   validateInteractionPassword,
   getNameTypes,
   getNameIcon,
-  getAllInteractions
+  getAllInteractions,
+  getActiveInteractions,
+  updateInteractionStatus
 };
