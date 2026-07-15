@@ -90,10 +90,11 @@ const getInteractionById = async (req, res) => {
       FROM interactions i 
       LEFT JOIN scenes s  ON s.id_scene = i.scene_id
       LEFT JOIN imagenes img ON img.id_imagen = i.imagen_id
-      LEFT JOIN imagenes icon ON icon.id_imagen = i.icon_id
+      LEFT JOIN imagenes icon ON icon.id_imagen = i.imagen_icon_id
          
       WHERE i.id_interactions = $1`,
 //      "SELECT * FROM interactions WHERE id_interactions = $1",
+////Cambiar por LEFT JOIN imagenes icon ON icon.id_imagen = i.imagen_icon_id, el que esta es antiguo
       [id]
     );
 

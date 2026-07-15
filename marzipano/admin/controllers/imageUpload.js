@@ -11,7 +11,7 @@ async function uploadSelectedImage(e) {
 
     try {
 
-        const image = await uploadImage(file, "imagenes_360");
+        const image = await uploadImage(file, imagePickerType);
 
         // Recargar la galería
         await loadImages();

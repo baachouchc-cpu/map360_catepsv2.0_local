@@ -20,7 +20,9 @@ const Interactions = {
       height_px,
       pass_word,
       api_key,
-      update_api
+      update_api,
+      imagen_id,
+      imagen_icon_id
     } = data;
     // If an id is provided we perform an upsert using ON CONFLICT on that id.
     // If no id is provided we insert without the id column so the DB can
@@ -43,12 +45,14 @@ const Interactions = {
           height_px,
           pass_word,
           api_key,
-          update_api
+          update_api,
+          imagen_id,
+          imagen_icon_id
         )
         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,CASE 
         WHEN $14::text IS NULL OR $14::text = '' THEN NULL
           ELSE crypt($14::text, gen_salt('bf', 10))
-        END, $15, $16)
+        END, $15, $16, $17, $18)
         ON CONFLICT (id_interactions)
         DO UPDATE SET
           scene_id   = EXCLUDED.scene_id,
@@ -65,7 +69,9 @@ const Interactions = {
           height_px  = EXCLUDED.height_px,
           pass_word  = COALESCE(EXCLUDED.pass_word, interactions.pass_word),
           api_key    = EXCLUDED.api_key,
-          update_api    = EXCLUDED.update_api
+          update_api    = EXCLUDED.update_api,
+          imagen_id    = EXCLUDED.imagen_id,
+          imagen_icon_id    = EXCLUDED.imagen_icon_id
         RETURNING *;
       `;
 
@@ -85,7 +91,9 @@ const Interactions = {
         height_px || null,
         pass_word || null,
         api_key || null,
-        update_api || null
+        update_api || null,
+        imagen_id || null,
+        imagen_icon_id
       ];
 
       const { rows } = await pool.query(query, values);
@@ -109,12 +117,14 @@ const Interactions = {
         height_px,
         pass_word,
         api_key,
-        update_api
+        update_api,
+        imagen_id,
+        imagen_icon_id
       )
       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,CASE 
       WHEN $13::text IS NULL OR $13::text = '' THEN NULL
         ELSE crypt($13::text, gen_salt('bf', 10))
-      END, $14, $15)
+      END, $14, $15, $16, $17)
       RETURNING *;
     `;
 
@@ -133,7 +143,9 @@ const Interactions = {
       height_px || null,
       pass_word || null,
       api_key || null,
-      update_api || null
+      update_api || null,
+      imagen_id || null,
+      imagen_icon_id
     ];
 
     const { rows } = await pool.query(insertQuery, insertValues);
@@ -157,7 +169,7 @@ const Interactions = {
       FROM interactions i 
       LEFT JOIN scenes s  ON s.id_scene = i.scene_id
       LEFT JOIN imagenes img ON img.id_imagen = i.imagen_id
-      LEFT JOIN imagenes icon ON icon.id_imagen = i.icon_id
+      LEFT JOIN imagenes icon ON icon.id_imagen = i.imagen_icon_id
     
     `;
     //Cambiar por LEFT JOIN imagenes icon ON icon.id_imagen = i.imagen_icon_id, el que esta es antiguo
