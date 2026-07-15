@@ -205,9 +205,9 @@ function chooseInteractionIcon() {
 
     openImagePicker(image => {
 
-        document.getElementById("imagen_id").value = image.id_imagen;
+        document.getElementById("imagen_icon_id").value = image.id_imagen;
 
-        document.getElementById("imagen_url").value = image.url_minio;
+        document.getElementById("imagen_icon_url").value = image.url_minio;
 
         document.getElementById("scenePreview").src = image.url_minio;
 
@@ -224,6 +224,20 @@ function chooseInteractionImagen() {
         document.getElementById("imagen_url").value = image.url_minio;
 
         document.getElementById("scenePreviewImagen").src = image.url_minio;
+
+    },"interaccion");
+
+}
+
+function chooseInteractionFoto() {
+
+    openImagePicker(image => {
+
+        document.getElementById("imagen_id").value = image.id_imagen;
+
+        document.getElementById("imagen_foto_url").value = image.url_minio;
+
+        document.getElementById("scenePreviewFoto").src = image.url_minio;
 
     },"interaccion");
 
