@@ -143,7 +143,7 @@ function fillInteractionForm(data){
     document.getElementById("type_id").value = data.type_id;
     document.getElementById("width_px").value = data.width_px || "";
     document.getElementById("height_px").value = data.height_px || "";
-    document.getElementById("password").value = data.pass_word || "";
+    document.getElementById("password").value = "";
     document.getElementById("api_key").value = data.api_key || "";
     document.getElementById("update_api").checked = data.update_api || false;
     document.getElementById("imagen_icon_id").value = data.imagen_icon_id;
@@ -151,6 +151,11 @@ function fillInteractionForm(data){
     //document.getElementById("imagen_foto_id").value = data.imagen_id;
 
     toggleFieldsByType();
+
+    if (data.pass_word) {
+        document.getElementById("passwordHint").textContent =
+        "Dejar en blanco para mantener la contraseña actual";
+    }
 
 }
 
@@ -161,6 +166,50 @@ function fillInteractionForm(data){
 async function saveInteraction(e){
 
     e.preventDefault();
+
+    const imagenIconId =
+        document.getElementById("imagen_icon_id");
+
+    const iconError =
+        document.getElementById("iconError");
+    
+    const imagenId =
+        document.getElementById("imagen_id");
+
+    const imagenError =
+        document.getElementById("imagenError");
+
+
+    /*
+    =========================================
+    VALIDAR ICONO
+    =========================================
+    */
+
+    if (!imagenIconId.value) {
+
+        iconError.style.display =
+            "block";
+
+        return;
+
+    }
+
+    if (!imagenId.value) {
+
+        imagenError.style.display =
+            "block";
+
+        return;
+
+    }
+
+
+    iconError.style.display =
+        "none";
+
+    imagenError.style.display =
+        "none";
 
     const body = {
 
@@ -340,96 +389,316 @@ function resetInteractionForm(){
 =            CAMPOS DINÁMICOS                 =
 =============================================*/
 
-function toggleFieldsByType(){
+function toggleFieldsByType() {
 
-    const type = document.getElementById("type_id").value;
-    const isEdit = document.getElementById("id_interactions").value;
+    const type =
+        document.getElementById("type_id").value;
+
+    const isEdit =
+        Boolean(
+            document.getElementById("id_interactions").value
+        );
+
+
+    /*
+    =========================================
+    ELEMENTOS DEL FORMULARIO
+    =========================================
+    */
+
+    const password =
+        document.getElementById("password");
+
+    const link =
+        document.getElementById("link");
+
+    const hint =
+        document.getElementById("linkHint");
+
+    const chkImage =
+        document.getElementById("link_imagen");
+
+    const imageContainer =
+        document.getElementById("image_interaction");
+
+    const description =
+        document.getElementById("description");
+
+    const hintDescription =
+        document.getElementById("descriptionHint");
+
+    const imagenId =
+        document.getElementById("imagen_id");
+    
+    const labelImagen = 
+        document.getElementById("lbl_imagen");
+    
+    const labellink = 
+        document.getElementById("lbl_link");
+    
+    const apiKey =
+        document.getElementById("api_key");
+    
+    const radius = 
+        document.getElementById("radius");
+
+    const width_px = 
+        document.getElementById("width_px");
+    
+    const height_px = 
+        document.getElementById("height_px");
+
+    /*
+    =========================================
+    VISIBILIDAD DE GRUPOS
+    =========================================
+    */
 
     document.getElementById("group_password").style.display =
-        type=="6" ? "block":"none";
-
-    document.getElementById("password").required =
-        type=="6" && !isEdit;
+        type === "6" ? "block" : "none";
 
     document.getElementById("group_link_image").style.display =
-        type=="6" ? "block":"none";
+        type === "6" ? "block" : "none";
 
     document.getElementById("group_screen").style.display =
-        type=="2" ? "block":"none";
+        type === "2" ? "block" : "none";
+    
+    radius.required =
+        type === "2";
+    
+    width_px.required =
+        type === "2";
+    
+    height_px.required =
+        type === "2";
 
     document.getElementById("group_api").style.display =
-        type=="3" ? "block":"none";  
+        type === "3" ? "block" : "none";
+    
+    apiKey.required =
+        type === "3";
 
     document.getElementById("group_foto").style.display =
-        type=="4" ? "block":"none";
+        type === "4" ? "block" : "none";
 
-    document.getElementById("group_link").style.display =
-        type=="4" ? "none":"block";
 
-    const link = document.getElementById("link");
-    const hint = document.getElementById("linkHint");
-    const usarImagen = document.getElementById("link_imagen").checked;
+    /*
+    =========================================
+    CONTRASEÑA
+    =========================================
+    */
 
-    link.required = (
-        type == "2" ||
-        type == "3" ||
-        (type == "6" && !usarImagen)
-    );
+    password.required =
+        type === "6" && !isEdit;
 
-    if (type == "1") {
-        hint.textContent =
-            "Si quieres redirigir a una URL externa, introdúcela aquí.";
-    }
-    else if (type == "2") {
-        hint.textContent =
-            "La URL debe ser un enlace embebido (iframe).";
-    }
-    else if (type == "3") {
-        hint.textContent =
-            "La URL no debe incluir la API KEY.";
-    }
-    else if (type == "6") {
-        hint.textContent =
-            "Introduce la URL protegida por contraseña.";
-    }
-    else {
-        hint.textContent = "";
-    }
 
-    const description = document.getElementById("description");
-    const hintdescription = document.getElementById("descriptionHint");
+    /*
+    =========================================
+    TIPO 6
+    PASSWORD: IMAGEN O ENLACE
+    =========================================
+    */
 
-    description.required = type == "3";
+    if (type === "6") {
 
-    if (type == "3") {
-        hintdescription.textContent =
-            "Puedes usar etiquetas para mostrar datos de la API. Ejemplo: Clima: {weather[0].description}, Temperatura: {main.temp}°C";
-    }
-    else {
-        hintdescription.textContent = "";
-    }
+        /*
+        Al editar una interacción existente,
+        determinamos el modo según los datos
+        guardados en la base de datos.
+        */
 
-    const chkImage = document.getElementById("link_imagen");
-    const imageContainer = document.getElementById("image_interaction");
-    const linkInput = document.getElementById("link");
+        if (isEdit) {
 
-    // Solo aplica para tipo Password
-    if (type == "6") {
+            const hasImage =
+                imagenId.value !== "";
 
-        const usarImagen = linkInput.value.trim() === "";
+            const hasLink =
+                link.value.trim() !== "";
 
-        chkImage.checked = usarImagen;
 
-        imageContainer.style.display = usarImagen ? "block" : "none";
+            /*
+            Si tiene imagen y no tiene link:
+            modo imagen
+            */
+
+            if (hasImage && !hasLink) {
+
+                chkImage.checked = true;
+
+            }
+
+
+            /*
+            Si tiene link y no tiene imagen:
+            modo enlace
+            */
+
+            else if (hasLink && !hasImage) {
+
+                chkImage.checked = false;
+
+            }
+
+        }
+
+
+        /*
+        Estado actual del toggle
+        */
+
+        const usarImagen =
+            chkImage.checked;
+
+
+        /*
+        Mostrar/ocultar imagen
+        */
+
+        imageContainer.style.display =
+            usarImagen ? "block" : "none";
+
+
+        /*
+        Mostrar/ocultar enlace
+        */
 
         document.getElementById("group_link").style.display =
             usarImagen ? "none" : "block";
 
+        // Cambiar etiqueta de link
+        labelImagen.innerHTML =
+        usarImagen
+            ? 'Usar imagen <span class="required">*</span>'
+            : 'Usar Imagen';
+
+        labellink.innerHTML =
+        usarImagen
+            ? 'Link'
+            : 'Link <span class="required">*</span>';
+
+
+
+        /*
+        El enlace solamente es obligatorio
+        cuando NO se utiliza imagen
+        */
+
+        link.required =
+            !usarImagen;
+
     }
+
+
+    /*
+    =========================================
+    RESTO DE TIPOS
+    =========================================
+    */
+
     else {
 
-        chkImage.checked = false;
-        imageContainer.style.display = "none";
+        /*
+        El selector de imagen solo aplica
+        al tipo 6
+        */
+
+        imageContainer.style.display =
+            "none";
+
+        chkImage.checked =
+            false;
+
+
+        /*
+        Tipo 4 no utiliza link
+        */
+
+        document.getElementById("group_link").style.display =
+            type === "4"
+                ? "none"
+                : "block";
+
+
+        /*
+        Solo estos tipos necesitan link
+        */
+
+        link.required =
+            type === "2" ||
+            type === "3";
+
+    }
+
+
+    /*
+    =========================================
+    TEXTO DE AYUDA DEL LINK
+    =========================================
+    */
+
+    if (type === "1") {
+
+        hint.textContent =
+            "Si quieres redirigir a una URL externa, introdúcela aquí.";
+
+    }
+
+    else if (type === "2") {
+
+        hint.textContent =
+            "La URL debe ser un enlace embebido (iframe).";
+        
+        labellink.innerHTML =
+            'Link <span class="required">*</span>';
+
+    }
+
+    else if (type === "3") {
+
+        hint.textContent =
+            "La URL no debe incluir la API KEY.";
+
+        labellink.innerHTML =
+            'Link <span class="required">*</span>';
+
+    }
+
+    else if (type === "6") {
+
+        hint.textContent =
+            "Introduce la URL protegida por contraseña.";
+
+    }
+
+    else {
+
+        hint.textContent =
+            "";
+
+    }
+
+
+    /*
+    =========================================
+    DESCRIPCIÓN
+    =========================================
+    */
+
+    description.required =
+        type === "3";
+
+
+    if (type === "3") {
+
+        hintDescription.textContent =
+            "Puedes usar etiquetas para mostrar datos de la API. Ejemplo: Clima: {weather[0].description}, Temperatura: {main.temp}°C";
+
+    }
+
+    else {
+
+        hintDescription.textContent =
+            "";
 
     }
 
@@ -450,9 +719,22 @@ function toggleApiKey(inputId, eye){
 function toggleImageLink(){
 
     const usarImagen = document.getElementById("link_imagen").checked;
+    const labelImagen = document.getElementById("lbl_imagen");
+    const labellink = document.getElementById("lbl_link");
 
-    document.getElementById("image_interaction").style.display = usarImagen ? "none" : "block";
-    document.getElementById("group_link").style.display = usarImagen ? "block" : "none";
+
+    document.getElementById("image_interaction").style.display = usarImagen ? "block" : "none";
+    document.getElementById("group_link").style.display = usarImagen ? "none" : "block";
     document.getElementById("link").required = !usarImagen;
+
+    labelImagen.innerHTML =
+    usarImagen
+        ? 'Usar imagen <span class="required">*</span>'
+        : 'Usar Imagen';
+
+    labellink.innerHTML =
+    usarImagen
+        ? 'Link'
+        : 'Link <span class="required">*</span>';
 
 }
