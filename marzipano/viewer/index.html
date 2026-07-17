@@ -116,16 +116,20 @@
         <img class="icon off" src="img/expand.png" alt="Abrir lista">
         <img class="icon on" src="img/collapse.png" alt="Cerrar lista">
       </a>
+
+      <div class="tooltip admin-access-wrapper">
+        <button id="control_access" class="toolbar-btn" title="Acceso Administración" type="button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path>
+          </svg>
+        </button>
+        <span class="tooltiptext">Acceso Administración</span>
+      </div>
+
       <!-- Lista de escenas (se muestra/oculta con el botón expand/collapse) -->
       <ul id="sceneList" class="scene-list"></ul>
     </div>
   </div>
-
-  <!-- Scripts -->
-  <script src="//www.marzipano.net/demos/common/screenfull.js"></script>
-  <script src="//www.marzipano.net/demos/common/bowser.js"></script>
-  <script src="lib/marzipano.js"></script>
-  <script src="index.js"></script>
 
   <div id="passwordModal" class="modal hidden">
     <div class="modal-content">
@@ -142,180 +146,12 @@
       </div>
     </div>
   </div>
-  //Chaimae
- <script>
-  document.addEventListener("DOMContentLoaded", function() {
-    var barraSuperior = document.getElementById('titleBar') || 
-                        document.querySelector('.titleBar') || 
-                        document.querySelector('[class*="title"]');
 
-    if (barraSuperior) {
-      barraSuperior.style.setProperty('position', 'relative', 'important');
-
-      // 1. CREAMOS LA LLAVE (Exactamente la que te gustó)
-      var llave = document.createElement('button');
-      llave.title = 'Acceso Administración';
-      llave.setAttribute('type', 'button');
-      
-      llave.style.cssText = `
-        position: absolute !important;
-        left: 55px !important;
-        top: 50% !important;
-        transform: translateY(-50%) !important;
-        width: 38px !important;
-        height: 38px !important;
-        display: inline-flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        color: #ffffff !important;
-        background: transparent !important;
-        border: none !important;
-        cursor: pointer !important;
-        z-index: 99999 !important;
-        pointer-events: auto !important;
-        transition: color 0.2s ease, transform 0.2s ease !important;
-      `;
-
-      llave.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none !important;">
-          <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path>
-        </svg>
-      `;
-
-      llave.onmouseover = function() {
-        llave.style.color = '#f1c40f';
-        llave.style.transform = 'translateY(-50%) scale(1.1)';
-      };
-      llave.onmouseout = function() {
-        llave.style.color = '#ffffff';
-        llave.style.transform = 'translateY(-50%) scale(1)';
-      };
-
-      barraSuperior.appendChild(llave);
-
-      // 2. CREAMOS LA VENTANITA EMERGENTE (Modal)
-      var modal = document.createElement('div');
-      modal.id = 'modalLoginAdmin';
-      modal.style.cssText = `
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.6);
-        z-index: 100000;
-        justify-content: center;
-        align-items: center;
-        font-family: Arial, sans-serif;
-      `;
-
-      modal.innerHTML = `
-        <div style="
-          background: #222222;
-          color: white;
-          padding: 30px;
-          border-radius: 12px;
-          width: 320px;
-          box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-          position: relative;
-          border: 1px solid #444;
-        ">
-          <button id="btnCerrarModal" type="button" style="
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            background: transparent;
-            border: none;
-            color: #888;
-            font-size: 20px;
-            cursor: pointer;
-          ">&times;</button>
-
-          <h3 style="margin-top: 0; margin-bottom: 20px; text-align: center; color: #f1c40f;">🔑 Acceso Privado</h3>
-          
-          <form id="formLoginExpress" style="display: flex; flex-direction: column; gap: 15px;">
-            <div>
-              <label style="display:block; font-size: 12px; margin-bottom: 5px; color: #bbb;">Usuario</label>
-              <input type="text" name="username" placeholder="Introduce usuario" required style="
-                width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #444; background: #333; color: white; box-sizing: border-box;
-              ">
-            </div>
-            <div>
-              <label style="display:block; font-size: 12px; margin-bottom: 5px; color: #bbb;">Contraseña</label>
-              <input type="password" name="password" placeholder="••••••••" required style="
-                width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #444; background: #333; color: white; box-sizing: border-box;
-              ">
-            </div>
-            
-            <button type="submit" style="
-              background: #f1c40f; color: #111; border: none; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: background 0.2s;
-            " onmouseover="this.style.background='#d4ac0d'" onmouseout="this.style.background='#f1c40f'">
-              Iniciar Sesión
-            </button>
-            <div id="loginErrorMsg" style="color: #ff4d4d; font-size: 12px; text-align: center; display: none; margin-top: 5px;"></div>
-          </form>
-        </div>
-      `;
-
-      document.body.appendChild(modal);
-
-      // 3. FUNCIONES DE ABRIR Y CERRAR
-      llave.addEventListener('click', function() {
-        modal.style.display = 'flex';
-      });
-
-      function cerrarModal() {
-        modal.style.display = 'none';
-        document.getElementById('loginErrorMsg').style.display = 'none';
-        document.getElementById('formLoginExpress').reset();
-      }
-
-      document.getElementById('btnCerrarModal').addEventListener('click', cerrarModal);
-
-      modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-          cerrarModal();
-        }
-      });
-
-      // 4. ENVÍO DEL FORMULARIO (Se cierra al tener éxito)
-      document.getElementById('formLoginExpress').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        var formData = new FormData(this);
-        var data = {};
-        formData.forEach((value, key) => data[key] = value);
-
-        var errorDiv = document.getElementById('loginErrorMsg');
-        errorDiv.style.display = 'none';
-
-        fetch('/api/perfil/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(data)
-        })
-        .then(response => response.json())
-        .then(res => {
-          if (res.ok) {
-            // ¡LOGIN CORRECTO! 
-            // Cerramos la ventana directamente sin hacer nada más y limpiamos los campos
-            cerrarModal();
-          } else {
-            errorDiv.innerText = res.message || "Usuario o contraseña incorrectos";
-            errorDiv.style.display = 'block';
-          }
-        })
-        .catch(err => {
-          errorDiv.innerText = "Error de conexión con el servidor";
-          errorDiv.style.display = 'block';
-        });
-      });
-    }
-  });
-</script>
-
+  <!-- Scripts -->
+  <script src="//www.marzipano.net/demos/common/screenfull.js"></script>
+  <script src="//www.marzipano.net/demos/common/bowser.js"></script>
+  <script src="lib/marzipano.js"></script>
+ <script type="module" src="index.js"></script>
+  
 </body>
 </html>
