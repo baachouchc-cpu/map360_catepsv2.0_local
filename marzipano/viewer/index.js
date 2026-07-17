@@ -1,3 +1,6 @@
+// index.js (Al principio del archivo)
+import { renderAdminModal } from './components/adminModal.component.js';
+import { initAdminModalController } from './controllers/adminModal.controller.js';
 
 // Variables globales y elementos DOM
 const viewerElement = document.getElementById('viewer'); 
@@ -44,6 +47,16 @@ function closePasswordModal() {
   const modal = document.getElementById("passwordModal");
   if (modal) modal.classList.add("hidden");
 }
+
+// Esto se puede integrar con el flujo de carga que ya tengas establecido
+document.addEventListener('DOMContentLoaded', () => {
+  const botonLlave = document.getElementById('control_access');
+
+  if (botonLlave) {
+    renderAdminModal();
+    initAdminModalController(botonLlave);
+  }
+});
 
 // Configuración de eventos para el modal de contraseña
 document.addEventListener("DOMContentLoaded", () => {
