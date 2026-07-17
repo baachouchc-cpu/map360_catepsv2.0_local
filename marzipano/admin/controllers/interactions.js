@@ -233,7 +233,7 @@ function chooseInteractionFoto() {
 
     openImagePicker(image => {
 
-        document.getElementById("imagen_id").value = image.id_imagen;
+        document.getElementById("imagen_foto_id").value = image.id_imagen;
 
         document.getElementById("imagen_foto_url").value = image.url_minio;
 

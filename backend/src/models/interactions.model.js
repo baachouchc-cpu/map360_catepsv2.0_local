@@ -28,6 +28,9 @@ const Interactions = {
     // If no id is provided we insert without the id column so the DB can
     // assign it (avoids inserting NULL into a NOT NULL serial/identity column).
     if (id_interactions) {
+      // Si la contraseña existe en el objeto, se agrega a la consulta
+      const hasPassWord = Object.prototype.hasOwnProperty.call(data, "pass_word");
+
       const query = `
         INSERT INTO interactions (
           id_interactions,
@@ -67,7 +70,12 @@ const Interactions = {
           type_id    = EXCLUDED.type_id,
           width_px   = EXCLUDED.width_px,
           height_px  = EXCLUDED.height_px,
-          pass_word  = COALESCE(EXCLUDED.pass_word, interactions.pass_word),
+          pass_word = 
+            CASE
+              WHEN $19 = true
+                THEN EXCLUDED.pass_word
+              ELSE interactions.pass_word
+            END,
           api_key    = EXCLUDED.api_key,
           update_api    = EXCLUDED.update_api,
           imagen_id    = EXCLUDED.imagen_id,
@@ -93,7 +101,8 @@ const Interactions = {
         api_key || null,
         update_api || null,
         imagen_id || null,
-        imagen_icon_id
+        imagen_icon_id,
+        hasPassWord
       ];
 
       const { rows } = await pool.query(query, values);
