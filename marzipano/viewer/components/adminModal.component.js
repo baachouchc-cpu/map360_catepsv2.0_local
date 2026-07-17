@@ -20,7 +20,7 @@ const renderAdminModal = () => {
       <form id="formLoginExpress">
         <div>
           <label>Usuario</label>
-          <input type="text" name="username" placeholder="Introduce usuario" required>
+          <input type="text" name="login_name" placeholder="Introduce usuario" required>
         </div>
         <div>
           <label>Contraseña</label>
