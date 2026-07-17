@@ -34,9 +34,10 @@ app.use('/api/scenes', scenesRoutes);
 app.use('/api', routesRoutes);
 app.use("/api/search", searchRoutes);
 app.use("/api/interactions", interactionsRoutes);
-app.use("/api/users", auth, role, require("./routes/auth.routes"));
+app.use("/api/users", auth, role, authRoutes); // Corregido: cambiamos el "require" por la variable authRoutes
 app.use("/api/admin", adminRoutes);
 app.use("/api/images", imageRoutes);
+
 
 // FRONTEND STATIC
 const frontendPath = path.join(__dirname, "../../marzipano");
@@ -58,16 +59,16 @@ const adminPath = path.join(frontendPath, "admin");
 
 // LOGIN (SIN protección)
 app.get("/admin/login", (req, res) => {
-  res.sendFile(path.join(adminPath,"pages", "login.html"));
+  res.sendFile(path.join(adminPath, "pages", "login.html"));
 });
 
 // PANEL ADMIN (PROTEGIDO)
 app.get("/admin", authMiddleware, role(1), (req, res) => {
-  res.sendFile(path.join(adminPath,"pages", "index.html"));
+  res.sendFile(path.join(adminPath, "pages", "index.html"));
 });
 
 app.get("/tecnic", authMiddleware, role(2), (req, res) => {
-  res.sendFile(path.join(adminPath,"pages", "tecnic.html"));
+  res.sendFile(path.join(adminPath, "pages", "tecnic.html"));
 });
 
 // Archivos estáticos admin (css/js)
