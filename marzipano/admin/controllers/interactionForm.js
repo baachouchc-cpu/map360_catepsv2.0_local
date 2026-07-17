@@ -3,13 +3,13 @@
 =============================================*/
 
 let isEditModeInteraction = false;
+let hasExistingPassword = false;
 
 async function initInteractionForm(id = null) {
 
     await Promise.all([
         loadScenesSelect(),
         loadTypesSelect(),
-        //loadIconsSelect()
     ]);
 
     document
@@ -99,28 +99,6 @@ async function loadTypesSelect(){
 
 }
 
-// async function loadIconsSelect(){
-
-//     const res = await fetch("/api/interactions/icons");
-//     const icons = await res.json();
-
-//     const select = document.getElementById("icon_id");
-
-//     select.innerHTML = "";
-
-//     icons.forEach(icon=>{
-
-//         const option = document.createElement("option");
-
-//         option.value = icon.id_icon;
-//         option.textContent = icon.name_icon;
-
-//         select.appendChild(option);
-
-//     });
-
-// }
-
 /*=============================================
 =            RELLENAR FORM                    =
 =============================================*/
@@ -143,12 +121,15 @@ function fillInteractionForm(data){
     document.getElementById("type_id").value = data.type_id;
     document.getElementById("width_px").value = data.width_px || "";
     document.getElementById("height_px").value = data.height_px || "";
+    hasExistingPassword = Boolean(data.pass_word);
     document.getElementById("password").value = "";
     document.getElementById("api_key").value = data.api_key || "";
     document.getElementById("update_api").checked = data.update_api || false;
     document.getElementById("imagen_icon_id").value = data.imagen_icon_id;
-    document.getElementById("imagen_id").value  = data.imagen_id;
-    //document.getElementById("imagen_foto_id").value = data.imagen_id;
+    if(data.type_id === 6){
+        document.getElementById("imagen_id").value  = data.imagen_id || "";}
+    if(data.type_id === 4){
+        document.getElementById("imagen_foto_id").value  = data.imagen_id || "";}
 
     toggleFieldsByType();
 
@@ -167,24 +148,16 @@ async function saveInteraction(e){
 
     e.preventDefault();
 
-    const imagenIconId =
-        document.getElementById("imagen_icon_id");
-
-    const iconError =
-        document.getElementById("iconError");
+    const imagenIconId = document.getElementById("imagen_icon_id");
+    const iconError = document.getElementById("iconError");
+    const imagenId =  document.getElementById("imagen_id");
+    const imagenError = document.getElementById("imagenError");
+    const fotoId =  document.getElementById("imagen_foto_id");
+    const fotoError = document.getElementById("fotoError");
+    const type = document.getElementById("type_id").value;
+    const usarImagen = document.getElementById("link_imagen").checked;
     
-    const imagenId =
-        document.getElementById("imagen_id");
-
-    const imagenError =
-        document.getElementById("imagenError");
-
-
-    /*
-    =========================================
-    VALIDAR ICONO
-    =========================================
-    */
+    //Validar icono
 
     if (!imagenIconId.value) {
 
@@ -195,7 +168,16 @@ async function saveInteraction(e){
 
     }
 
-    if (!imagenId.value) {
+    iconError.style.display =
+        "none";
+
+    //Validar imagen
+
+    const imagenEsObligatoria = (type === "6" && usarImagen);
+    const imagenSeleccionada = imagenId.value || fotoId.value;
+
+
+    if (imagenEsObligatoria && !imagenSeleccionada) {
 
         imagenError.style.display =
             "block";
@@ -204,11 +186,24 @@ async function saveInteraction(e){
 
     }
 
-
-    iconError.style.display =
+    imagenError.style.display =
         "none";
 
-    imagenError.style.display =
+    //Validar foto
+
+    const fotoEsObligatoria = (type === "4");
+
+
+    if (fotoEsObligatoria && !imagenSeleccionada) {
+
+        fotoError.style.display =
+            "block";
+
+        return;
+
+    }
+
+    fotoError.style.display =
         "none";
 
     const body = {
@@ -252,7 +247,7 @@ async function saveInteraction(e){
 
         case "4": // Foto
 
-            body.imagen_id = document.getElementById("imagen_id").value || null;
+            body.imagen_id = document.getElementById("imagen_foto_id").value || document.getElementById("imagen_id").value;
 
             break;
         
@@ -264,16 +259,24 @@ async function saveInteraction(e){
 
         case "6": // Password
 
-            body.pass_word = document.getElementById("password").value || null;
+            const passwordValue = document.getElementById("password").value.trim();
+
+            if (passwordValue) {
+
+                body.pass_word = passwordValue;
+
+            }
+            
             const usarImagen = document.getElementById("link_imagen").checked;
 
             const link = document.getElementById("link").value;
             const imagenId = document.getElementById("imagen_id").value;
+            const fotoId = document.getElementById("imagen_foto_id").value;
 
             if (usarImagen) {
                 // Usa imagen
                 body.link = null;
-                body.imagen_id = imagenId;
+                body.imagen_id = imagenId || fotoId;
             } else {
                 // Usa enlace
                 body.link = link;
@@ -406,47 +409,20 @@ function toggleFieldsByType() {
     =========================================
     */
 
-    const password =
-        document.getElementById("password");
-
-    const link =
-        document.getElementById("link");
-
-    const hint =
-        document.getElementById("linkHint");
-
-    const chkImage =
-        document.getElementById("link_imagen");
-
-    const imageContainer =
-        document.getElementById("image_interaction");
-
-    const description =
-        document.getElementById("description");
-
-    const hintDescription =
-        document.getElementById("descriptionHint");
-
-    const imagenId =
-        document.getElementById("imagen_id");
-    
-    const labelImagen = 
-        document.getElementById("lbl_imagen");
-    
-    const labellink = 
-        document.getElementById("lbl_link");
-    
-    const apiKey =
-        document.getElementById("api_key");
-    
-    const radius = 
-        document.getElementById("radius");
-
-    const width_px = 
-        document.getElementById("width_px");
-    
-    const height_px = 
-        document.getElementById("height_px");
+    const password = document.getElementById("password");
+    const link = document.getElementById("link");
+    const hint = document.getElementById("linkHint");
+    const chkImage = document.getElementById("link_imagen");
+    const imageContainer = document.getElementById("image_interaction");
+    const description = document.getElementById("description");
+    const hintDescription = document.getElementById("descriptionHint");
+    const imagenId = document.getElementById("imagen_id");
+    const labelImagen = document.getElementById("lbl_imagen");
+    const labellink = document.getElementById("lbl_link");
+    const apiKey = document.getElementById("api_key");
+    const radius = document.getElementById("radius");
+    const width_px = document.getElementById("width_px");
+    const height_px = document.getElementById("height_px");
 
     /*
     =========================================
@@ -489,7 +465,7 @@ function toggleFieldsByType() {
     */
 
     password.required =
-        type === "6" && !isEdit;
+        type === "6" && !hasExistingPassword;
 
 
     /*
