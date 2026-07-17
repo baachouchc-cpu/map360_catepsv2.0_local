@@ -9,7 +9,7 @@ async function login(e) {
   const params = new URLSearchParams(window.location.search);
   const interactionId = params.get("id_interaction");
 
-  const body = { name: user, password: pass };
+  const body = { login_name: user, password: pass };
   if (interactionId) body.interactionId = interactionId;
 
   const res = await fetch("/api/auth/login", {
