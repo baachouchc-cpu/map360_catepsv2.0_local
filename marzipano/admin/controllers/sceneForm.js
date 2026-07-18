@@ -53,7 +53,9 @@ async function loadTowersSelect(){
 
     const select = document.getElementById("tower_id");
 
-    select.innerHTML = "";
+    select.innerHTML = `
+        <option value="" selected disabled>Cargando torres...</option>
+    `;
 
     towers.forEach(tower=>{
 
@@ -75,7 +77,9 @@ async function loadKindsSelect(){
 
     const select = document.getElementById("kind_id");
 
-    select.innerHTML = "";
+    select.innerHTML = `
+        <option value="" selected disabled>Cargando tipos...</option>
+    `;
 
     kinds.forEach(kind=>{
 
@@ -97,7 +101,9 @@ async function loadFloorsSelect(){
 
     const select = document.getElementById("floor_id");
 
-    select.innerHTML = "";
+    select.innerHTML = `
+        <option value="" selected disabled>Cargando pisos...</option>
+    `;
 
     floors.forEach(floor=>{
 
@@ -119,7 +125,9 @@ async function loadOrientationsSelect(){
 
     const select = document.getElementById("orientation_id");
 
-    select.innerHTML = "";
+    select.innerHTML = `
+        <option value="" selected disabled>Cargando orientaciones...</option>
+    `;
 
     orientations.forEach(orientation=>{
 
@@ -156,6 +164,23 @@ function fillSceneForm(data){
 async function saveScene(e){
     
     e.preventDefault();
+
+    const imagenId =  document.getElementById("imagen_id");
+    const imagenError = document.getElementById("sceneError");
+
+    //Validar icono
+
+    if (!imagenId.value) {
+
+        imagenError.style.display =
+            "block";
+
+        return;
+
+    }
+
+    imagenError.style.display =
+        "none";
 
     const body = {
 

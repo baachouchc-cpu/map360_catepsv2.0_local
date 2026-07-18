@@ -16,12 +16,17 @@ router.get(
     controller.getImages
 );
 
+// Obtener imágenes de escenas activas
+router.get(
+    "/scenes-active",
+    controller.getActiveSceneImages
+);
+
 // Obtener una imagen por ID
 router.get(
     "/:id",
     controller.getImageById
 );
-
 
 /*=============================================
 =               POST

@@ -32,7 +32,7 @@
 
                         <label>Tipo <span class="required">*</span></label>
 
-                        <select id="kind_id"></select>
+                        <select id="kind_id" required><option value="">Cargando tipos...</option></select>
 
                     </div>
 
@@ -40,7 +40,7 @@
 
                         <label>Torre <span class="required">*</span></label>
 
-                        <select id="tower_id"></select>
+                        <select id="tower_id" required><option value="">Cargando torres...</option></select>
 
                     </div>
 
@@ -48,7 +48,7 @@
 
                         <label>Piso <span class="required">*</span></label>
 
-                        <select id="floor_id"></select>
+                        <select id="floor_id" required><option value="">Cargando pisos...</option></select>
 
                     </div>
 
@@ -56,7 +56,7 @@
 
                         <label>Orientación <span class="required">*</span></label>
 
-                        <select id="orientation_id"></select>
+                        <select id="orientation_id" required><option value="">Cargando orientaciones...</option></select>
 
                     </div>
 
@@ -114,6 +114,16 @@
                         <input
                             type="hidden"
                             id="imagen_url">
+                        
+                        <!-- Mensaje de error -->
+                        <small
+                            id="sceneError"
+                            class="error-message"
+                            style="display:none;">
+
+                            Debes seleccionar una iamgen de panorámica. <span class="required">*</span>
+
+                        </small>
 
                     </div>
 
@@ -125,7 +135,7 @@
 
                     <textarea
                         id="description"
-                        rows="5">
+                        rows="5" required></textarea>
                     </textarea>
 
                 </div>

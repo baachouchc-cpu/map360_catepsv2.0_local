@@ -4,16 +4,17 @@
 
 let imagePickerCallback = null;
 let imagePickerType = "imagenes_360";
-
+let imagePickerOnlyActiveScenes = false;
 
 /*=============================================
 =              ABRIR MODAL
 =============================================*/
 
-async function openImagePicker(onSelect, type = "imagenes_360") {
+async function openImagePicker(onSelect, type = "imagenes_360", onlyActiveScenes=false) {
 
     imagePickerCallback = onSelect;
     imagePickerType = type;
+    imagePickerOnlyActiveScenes = onlyActiveScenes;
 
     if (!document.getElementById("imagePickerModal")) {
 
@@ -21,6 +22,19 @@ async function openImagePicker(onSelect, type = "imagenes_360") {
             .then(r => r.text());
 
         document.body.insertAdjacentHTML("beforeend", html);
+
+        const uploadBtn =
+            document.getElementById("btnUploadImage");
+
+
+        if(uploadBtn){
+
+            uploadBtn.style.display =
+                onlyActiveScenes
+                    ? "none"
+                    : "block";
+
+        }
     }
 
     document
@@ -60,7 +74,17 @@ async function loadImages(search = "") {
 
     try {
 
-        let url = `/api/images?type=${encodeURIComponent(imagePickerType)}`;
+        let url;
+
+        if(imagePickerOnlyActiveScenes){
+
+            url = "/api/images/scenes-active";
+
+        }else{
+
+            url = `/api/images?type=${encodeURIComponent(imagePickerType)}`;
+
+        }
 
         if (search) {
             url += `&search=${encodeURIComponent(search)}`;

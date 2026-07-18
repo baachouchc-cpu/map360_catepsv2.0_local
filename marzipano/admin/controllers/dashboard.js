@@ -51,7 +51,7 @@ async function loadDashboardPage() {
 
             <div class="card">
 
-                <h3>Rutas</h3>
+                <h3>Puntos de Navegación</h3>
 
                 <h1 id="routeCount">0</h1>
 
@@ -76,7 +76,7 @@ async function loadCounters() {
         const [sceneRes, interactionRes, routeRes] = await Promise.all([
             fetch("/api/scenes"),
             fetch("/api/interactions"),
-            fetch("/api/routes")
+            fetch("/api/navegation")
         ]);
 
         const scenes = await sceneRes.json();
@@ -117,7 +117,7 @@ function loadScenesPage() {
 }
 
 /*=============================================
-=            NAVEGACIÓN                    =
+=            Navegación                   =
 =============================================*/
 
 function loadNavegationPage() {
@@ -127,8 +127,8 @@ function loadNavegationPage() {
     document.getElementById("pageTitle").textContent = "Navegación";
 
     setCreateButton(
-        "+ Crear ruta",
-        () => openTourModal()
+        "+ Crear navegación",
+        () => openhotspotModal()
     );
 
     loadNavegationTable();

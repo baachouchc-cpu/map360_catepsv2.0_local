@@ -126,8 +126,14 @@ async function toggleInteraction(id, active) {
 
             onConfirm: async () => {
 
-                await fetch(`/api/interactions/${id}/disable`, {
-                    method: "PUT"
+                await fetch(`/api/interactions/${id}/status`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        is_active: false
+                    })
                 });
 
                 loadInteractionsTable();
@@ -138,8 +144,14 @@ async function toggleInteraction(id, active) {
 
     } else {
 
-        await fetch(`/api/interactions/${id}/enable`, {
-            method: "PUT"
+        await fetch(`/api/interactions/${id}/status`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                is_active: true
+            })
         });
 
         loadInteractionsTable();

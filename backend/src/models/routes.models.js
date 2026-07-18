@@ -18,6 +18,42 @@ const Routes = {
     await pool.query("TRUNCATE public.routes RESTART IDENTITY CASCADE");
   },
 
+  getAllInteractions: async (isActive = null) => {
+    let query = `
+      SELECT   
+      i.*,  
+      s.description AS scene_name,
+
+      img.nombre_img AS nombre_interaccion,
+      img.url_minio AS url_minio_interaccion,
+      img.tipo AS img_tipo_interaccion,
+
+      icon.nombre_img AS icon_name,
+      icon.url_minio AS icon_url_minio,
+      icon.tipo AS icon_tipo
+
+      FROM interactions i 
+      LEFT JOIN scenes s  ON s.id_scene = i.scene_id
+      LEFT JOIN imagenes img ON img.id_imagen = i.imagen_id
+      LEFT JOIN imagenes icon ON icon.id_imagen = i.imagen_icon_id
+    
+    `;
+    //Cambiar por LEFT JOIN imagenes icon ON icon.id_imagen = i.imagen_icon_id, el que esta es antiguo
+    const values = [];
+
+    if (isActive !== null) {
+      query += ` WHERE i.is_active = $1`;
+      values.push(isActive);
+    }
+
+    query += `
+        ORDER BY i.id_interactions;
+    `;
+
+    const { rows } = await pool.query(query, values);
+    return rows;
+  },
+
   getAll: async () => {
     const query = `
       SELECT r.id_routes, r.from_scene_id, r.to_scene_id, r.hotspot_id, 

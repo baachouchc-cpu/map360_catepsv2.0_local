@@ -42,6 +42,62 @@ const Images = {
     },
 
     /*=============================================
+    =      IMÁGENES DE ESCENAS ACTIVAS
+    =============================================*/
+
+    async getActiveSceneImages(search = "") {
+
+        let query = `
+
+            SELECT DISTINCT
+
+                i.id_imagen,
+                i.nombre_img,
+                i.url_minio,
+                i.tipo,
+                s.id_scene
+
+            FROM imagenes i
+
+            INNER JOIN scenes s
+                ON s.imagen_id = i.id_imagen
+
+            WHERE 
+                s.is_active = TRUE
+
+            AND 
+                i.tipo = 'imagenes_360'
+
+        `;
+
+
+        const values = [];
+
+
+        if(search){
+
+            query += `
+                AND LOWER(i.nombre_img)
+                LIKE LOWER($1)
+            `;
+
+            values.push(`%${search}%`);
+
+        }
+
+
+        query += `
+            ORDER BY i.nombre_img;
+        `;
+
+
+        const { rows } = await db.query(query, values);
+
+        return rows;
+
+    },
+
+    /*=============================================
     =           OBTENER POR ID
     =============================================*/
 

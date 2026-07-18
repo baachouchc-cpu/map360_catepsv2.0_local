@@ -59,7 +59,8 @@ const Scenes = {
                 'icon_id', h.icon_id,
                 'icon_url', i.icon_url,
                 'name_icon', i.name_icon,
-                'rotation', h.rotation
+                'rotation', h.rotation,
+                'h_is_active', h.is_active
               )
             ) AS hotspots
       FROM hotspots h
@@ -89,7 +90,8 @@ const Scenes = {
                 'width_px', r.width_px,
                 'height_px', r.height_px,
                 'api_key', r.api_key,
-                'update_api', r.update_api
+                'update_api', r.update_api,
+                'r_is_active', r.is_active
               )
             ) AS interactions
       FROM interactions r

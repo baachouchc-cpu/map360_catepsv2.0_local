@@ -121,6 +121,39 @@ exports.getImageById = async (req, res) => {
 
 };
 
+/*=============================================
+=             OBTENER IMAGEN ESCENAS ACTIVAS
+=============================================*/
+
+exports.getActiveSceneImages = async (req, res) => {
+
+    try{
+
+        const search = req.query.search || "";
+
+        const images =
+            await Images.getActiveSceneImages(search);
+
+
+        res.json(images);
+
+
+    }catch(error){
+
+        console.error(
+            "GET active scene images error:",
+            error
+        );
+
+
+        res.status(500).json({
+            error:"Error obteniendo imágenes de escenas activas"
+        });
+
+    }
+
+};
+
 
 /*=============================================
 =             ELIMINAR IMAGEN
