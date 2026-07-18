@@ -198,119 +198,36 @@ const getHotspotsByScene = async (req, res) => {
 // OBTENER HOTSPOT POR ID
 // =========================================
 
-const getHotspotById = async (req, res) => {
+const getHotspotById = async (req,res)=>{
 
     try {
 
-        const {
-            id
-        } = req.params;
+        const { id } = req.params;
 
-
-        const {
-            rows
-        } = await db.query(
-
-            `
-
-            SELECT
-
-                h.id_hotspots,
-                h.scene_id,
-                h.title,
-                h.yaw,
-                h.pitch,
-                h.description,
-                h.link_scene_id,
-                h.icon_id,
-                h.rotation,
-                h.is_active,
-                h.updated_at,
-
-                -- Escena origen
-                s.description AS scene_name,
-                s.imagen_id AS scene_image_id,
-
-                img_scene.nombre_img
-                    AS scene_image_name,
-
-                img_scene.url_minio
-                    AS scene_image_url,
-
-                -- Escena destino
-                ls.description
-                    AS link_scene_name,
-
-                ls.imagen_id
-                    AS link_scene_image_id,
-
-                img_link.nombre_img
-                    AS link_scene_image_name,
-
-                img_link.url_minio
-                    AS link_scene_image_url,
-
-                -- Icono
-                i.name_icon
-                    AS icon_name,
-
-                i.icon_url
-                    AS icon_url
-
-            FROM hotspots h
-
-            LEFT JOIN scenes s
-                ON s.id_scene = h.scene_id
-
-            LEFT JOIN imagenes img_scene
-                ON img_scene.id_imagen = s.imagen_id
-
-            LEFT JOIN scenes ls
-                ON ls.id_scene = h.link_scene_id
-
-            LEFT JOIN imagenes img_link
-                ON img_link.id_imagen = ls.imagen_id
-
-            LEFT JOIN icons i
-                ON i.id_icon = h.icon_id
-
-            WHERE h.id_hotspots = $1
-
-            `,
-
-            [id]
-
+        const hotspots = await Hotspots.getByScene(
+            id,
+            req.user
         );
 
 
-        if (!rows.length) {
+        if(!scene){
 
             return res.status(404).json({
-
-                error:
-                    "Hotspot no encontrado"
-
+                error:"Hotspot no encontrada"
             });
 
         }
 
 
-        res.json(rows[0]);
+        res.json(scene);
 
 
-    } catch (error) {
+    } catch(error){
 
-        console.error(
-            "GET hotspot error:",
-            error
-        );
-
+        console.error("GET scene error:",error);
 
         res.status(500).json({
-
-            error:
-                "Error interno del servidor"
-
+            error:"Error interno del servidor"
         });
 
     }
@@ -382,6 +299,67 @@ const updateHotspotStatus = async (req, res) => {
 
 };
 
+const updateHotspotPublic = async (req, res) => {
+
+    try {
+
+        const {id} = req.params;
+        const {is_public} = req.body;
+
+
+        if (typeof is_public !== "boolean") {
+            return res.status(400).json({
+                message:
+                    "El campo is_public es obligatorio."
+            });
+        }
+
+
+        const {rows} = await db.query(
+            `
+            UPDATE hotspots
+            SET
+                is_public = $1,
+                updated_at =
+                    CURRENT_TIMESTAMP
+            WHERE id_hotspots = $2
+            RETURNING *;
+            `,
+            [is_public, id]
+
+        );
+
+
+        if (!rows.length) {
+            return res.status(404).json({
+                message:
+                    "Hotspot no encontrado."
+            });
+        }
+
+        res.json(rows[0]);
+
+
+    } catch (error) {
+
+        console.error(
+            "UPDATE hotspot status error:",
+            error
+        );
+
+
+        res.status(500).json({
+
+            message:
+                "Error actualizando el estado del hotspot."
+
+        });
+
+    }
+
+};
+
+
 
 module.exports = {
 
@@ -390,6 +368,6 @@ module.exports = {
     getActiveHotspots,
     getHotspotsByScene,
     getHotspotById,
-    updateHotspotStatus
-
+    updateHotspotStatus,
+    updateHotspotPublic
 };

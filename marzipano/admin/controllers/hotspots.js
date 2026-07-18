@@ -213,23 +213,23 @@ async function toggleHotspotPublic(id, active, checkbox) {
 
         openConfirmModal({
 
-            title: "Desactivar navegación",
+            title: "Despublicar navegación",
 
-            message: "La naveagación dejará de estar disponible, pero podrá habilitarse nuevamente.",
+            message: "La naveagación dejará de estar pública, pero podrá ser publicada nuevamente.",
 
-            confirmText: "Desactivar",
+            confirmText: "Despublicar",
 
             confirmClass: "btn-delete",
 
             onConfirm: async () => {
 
-                await fetch(`/api/navegation/${id}/status`, {
+                await fetch(`/api/navegation/${id}/public`, {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json"
                         },
                         body: JSON.stringify({
-                            is_active: false
+                            is_public: false
                         })
                     });
 
@@ -247,13 +247,13 @@ async function toggleHotspotPublic(id, active, checkbox) {
 
     } else {
 
-        await fetch(`/api/navegation/${id}/status`, {
+        await fetch(`/api/navegation/${id}/public`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                is_active: true
+                is_public: true
             })
         });
 

@@ -147,7 +147,7 @@ async function loadOrientationsSelect(){
 =============================================*/
 
 function fillSceneForm(data){
-
+    
     document.getElementById("id_scene").value = data.id_scene;
     document.getElementById("description").value = data.description || "";
     document.getElementById("tower_id").value = data.tower_id;
@@ -155,6 +155,8 @@ function fillSceneForm(data){
     document.getElementById("floor_id").value = data.floor_id;
     document.getElementById("orientation_id").value = data.orientation_id;
     document.getElementById("scenePreview").src = data.image_url_minio
+    document.getElementById("imagen_id").value = data.imagen_id; //ojo nuevo campo
+    document.getElementById("imagen_url").value = data.imagen_url; //ojo campo antiguo
 }
 
 /*=============================================
