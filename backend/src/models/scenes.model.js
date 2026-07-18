@@ -6,6 +6,8 @@ const pool = require("../services/db");
 const Scenes = {
 
  getAllScenesWithHotspots: async ({isActive = null, isPublic = null, user}={}) => {
+    const values = [];
+    let index = 1;
     let hotspotCondition = "";
     let interactionCondition = "";
 
@@ -54,6 +56,8 @@ const Scenes = {
         hotspotCondition = `
             WHERE h.is_active = true
             AND h.is_public = true
+            AND destination_scene.is_active = true
+            AND destination_scene.is_public = true
         `;
 
 
@@ -65,25 +69,38 @@ const Scenes = {
         `;
 
 
-    // } else if (user.role === 2) {
+    } else if (user.role === 2) {
 
-    //     // tecnico
-    //     hotspotCondition = `
-    //         WHERE h.is_active = true
-    //     `;
+        // tecnico
+        hotspotCondition = `
+            WHERE h.is_active = true
+            AND destination_scene.is_active = true
+        `;
 
 
     } else {
 
         hotspotCondition = `
-            WHERE h.is_active = true
+            WHERE 
+                h.is_active = true
+
+                AND destination_scene.is_active = true
+
+                AND (
+                    destination_scene.is_public = true
+
+                    OR EXISTS (
+                        SELECT 1
+                        FROM permiso_x_escena px
+                        WHERE px.scene_id = destination_scene.id_scene
+                        AND px.permisox_id = $${index}
+                    )
+                )
         `;
 
-        // // usuario normal
-        // hotspotCondition = `
-        //     WHERE h.is_active = true
-        //     AND h.is_public = true
-        // `;
+        values.push(user.permisos_id);
+        index++;
+
     }
 
     let query = `
@@ -145,13 +162,16 @@ const Scenes = {
                 'name_icon', i.name_icon,
                 'rotation', h.rotation,
                 'h_is_active', h.is_active,
-                'h_is_public', h.is_public
+                'h_is_public', h.is_public,
+                'h_link_scene_active', destination_scene.is_active,
+                'h_link_scene_public', destination_scene.is_public
               )
             ) AS hotspots
 
       FROM hotspots h
 
       LEFT JOIN icons i ON h.icon_id = i.id_icon
+      INNER JOIN scenes destination_scene ON destination_scene.id_scene = h.link_scene_id
       ${hotspotCondition}
       GROUP BY h.scene_id
 
@@ -196,9 +216,7 @@ const Scenes = {
   WHERE 1=1
     `;
 
-    const values = [];
-    let index = 1;
-    // if (isActive !== null) {
+        // if (isActive !== null) {
     //     query += ` AND s.is_active = $${index} `;
     //     values.push(isActive);
     //     index++;
