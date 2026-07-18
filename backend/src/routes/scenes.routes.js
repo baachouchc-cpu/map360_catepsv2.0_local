@@ -9,7 +9,8 @@ const { upsertScene,
     getNameOrientations,
     getSceneById, 
     getActiveScenes,
-    updateSceneStatus } = require('../controllers/scenes.controller');
+    updateSceneStatus,
+    updateScenePublicStatus } = require('../controllers/scenes.controller');
 
 // POST → crear o actualizar una escena
 router.post('/', upsertScene);
@@ -45,5 +46,7 @@ router.get('/:id(\\d+)', getSceneById);
 router.get("/active", getActiveScenes);
 
 router.put("/:id/status",updateSceneStatus);
+
+router.put("/:id/public",updateScenePublicStatus);
 
 module.exports = router;

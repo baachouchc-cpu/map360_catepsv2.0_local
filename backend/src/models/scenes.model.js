@@ -5,7 +5,87 @@ const pool = require("../services/db");
 
 const Scenes = {
 
- getAllScenesWithHotspots: async (isActive = null) => {
+ getAllScenesWithHotspots: async ({isActive = null, isPublic = null, user}={}) => {
+    let hotspotCondition = "";
+    let interactionCondition = "";
+
+    // CONTROL DE INTERACCIONES
+    
+    if (!user) {
+
+        interactionCondition = `
+            WHERE r.is_active = true
+            AND r.is_public = true
+        `;
+
+
+    } else if (user.role === 1) {
+
+        interactionCondition = `
+            WHERE 1=1
+        `;
+
+
+    // } else if (user.role === 2) {
+
+    //     interactionCondition = `
+    //         WHERE r.is_active = true
+    //     `;
+
+
+    } else {
+
+        interactionCondition = `
+            WHERE r.is_active = true
+        `;
+
+        // interactionCondition = `
+        //     WHERE r.is_active = true
+        //     AND r.is_public = true
+        // `;
+
+    }
+
+    // CONTROL DE HOSTPOTS
+    
+    if (!user) {
+
+        // sin login
+        hotspotCondition = `
+            WHERE h.is_active = true
+            AND h.is_public = true
+        `;
+
+
+    } else if (user.role === 1) {
+
+        // admin
+        hotspotCondition = `
+            WHERE 1=1
+        `;
+
+
+    // } else if (user.role === 2) {
+
+    //     // tecnico
+    //     hotspotCondition = `
+    //         WHERE h.is_active = true
+    //     `;
+
+
+    } else {
+
+        hotspotCondition = `
+            WHERE h.is_active = true
+        `;
+
+        // // usuario normal
+        // hotspotCondition = `
+        //     WHERE h.is_active = true
+        //     AND h.is_public = true
+        // `;
+    }
+
     let query = `
     SELECT 
     s.id_scene,
@@ -17,6 +97,7 @@ const Scenes = {
     img.tipo,
 
     s.is_active,
+    s.is_public,
     s.updated_at,
 
     s.description AS scene_description,
@@ -36,9 +117,12 @@ const Scenes = {
     -- 🔹 Orientation
     s.orientation_id,
     o.name_orientation,
+
     h.hotspots,
     r.interactions
+
   FROM scenes s
+
   LEFT JOIN imagenes img ON img.id_imagen = s.imagen_id
   LEFT JOIN kind k ON s.kind_id = k.id_kind
   LEFT JOIN floor f ON s.floor_id = f.id_floor
@@ -60,15 +144,19 @@ const Scenes = {
                 'icon_url', i.icon_url,
                 'name_icon', i.name_icon,
                 'rotation', h.rotation,
-                'h_is_active', h.is_active
+                'h_is_active', h.is_active,
+                'h_is_public', h.is_public
               )
             ) AS hotspots
+
       FROM hotspots h
+
       LEFT JOIN icons i ON h.icon_id = i.id_icon
+      ${hotspotCondition}
       GROUP BY h.scene_id
+
   ) h ON s.id_scene = h.scene_id
 
-  -- Subquery para interactions
   -- Subquery para interactions
   LEFT JOIN (
       SELECT r.scene_id,
@@ -91,21 +179,84 @@ const Scenes = {
                 'height_px', r.height_px,
                 'api_key', r.api_key,
                 'update_api', r.update_api,
-                'r_is_active', r.is_active
+                'r_is_active', r.is_active,
+                'r_is_public', r.is_public
               )
             ) AS interactions
+
       FROM interactions r
+
       LEFT JOIN itypes c ON c.id_type = r.type_id
       LEFT JOIN icons rc ON r.icon_id = rc.id_icon
+      ${interactionCondition}
       GROUP BY r.scene_id
+
   ) r ON s.id_scene = r.scene_id
+
+  WHERE 1=1
     `;
 
     const values = [];
+    let index = 1;
+    // if (isActive !== null) {
+    //     query += ` AND s.is_active = $${index} `;
+    //     values.push(isActive);
+    //     index++;
+    // }
 
-    if (isActive !== null) {
-        query += ` WHERE s.is_active = $1 `;
-        values.push(isActive);
+   // CONTROL DE ACCESO
+
+    if (!user) {
+
+        // SIN LOGIN
+        // Solo escenas activas y públicas
+        query += `
+            AND s.is_active = true
+            AND s.is_public = true
+        `;
+
+
+    } else if (user.role === 1) {
+
+        // ADMIN
+        // Todo: activas, inactivas, públicas y privadas
+        // query += `
+        //     AND 1=1
+        // `;
+
+
+    } else if (user.role === 2) {
+
+        // TÉCNICO
+        // Todo excepto desactivadas
+        query += `
+            AND s.is_active = true
+        `;
+
+
+    } else {
+
+        // USUARIO NORMAL
+        // Solo activas
+        // Públicas + privadas asignadas a su permiso
+
+        query += `
+            AND s.is_active = true
+            AND (
+                s.is_public = true
+
+                OR EXISTS (
+                    SELECT 1
+                    FROM permiso_x_escena px
+                    WHERE px.scene_id = s.id_scene
+                    AND px.permisox_id = $${index}
+                )
+            )
+        `;
+
+        values.push(user.permisos_id);
+        index++;
+
     }
 
     query += `

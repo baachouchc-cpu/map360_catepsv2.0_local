@@ -47,7 +47,9 @@ const upsertScene = async (req, res) => {
 // Controlador para obtener todas las escenas con sus hotspots
 async function getScenes(req, res) {
   try {
-    const scenes = await Scenes.getAllScenesWithHotspots();
+    const user = req.user;
+    const scenes = await Scenes.getAllScenesWithHotspots({isActive:true,
+    user:req.user});
     res.json(scenes);
   } catch (err) {
     console.error(err);
@@ -129,6 +131,7 @@ const getSceneById = async (req, res) => {
         i.nombre_img AS image_name,
         i.url_minio AS image_url_minio,
         i.tipo AS image_type
+        s.is_public,
       FROM scenes s 
       JOIN kind k ON s.kind_id = k.id_kind 
       JOIN floor f ON s.floor_id = f.id_floor 
@@ -213,5 +216,50 @@ async function updateSceneStatus(req, res) {
 
 }
 
+async function updateScenePublicStatus(req, res) {
+
+    try {
+
+        const { id } = req.params;
+        const { is_public } = req.body;
+
+        if (typeof is_active !== "boolean") {
+            return res.status(400).json({
+                message: "El campo is_public es obligatorio."
+            });
+        }
+
+        const { rows } = await db.query(
+            `
+            UPDATE scenes
+            SET
+                is_public = $1,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id_scene = $2
+            RETURNING *;
+            `,
+            [is_public, id]
+        );
+
+        if (!rows.length) {
+            return res.status(404).json({
+                message: "Escena no encontrada."
+            });
+        }
+
+        res.json(rows[0]);
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json({
+            message: "Error actualizando el estado de la escena."
+        });
+
+    }
+
+}
+
 module.exports = { upsertScene, getScenes, getNameScenes, getNameKinds, getNameFloors, 
-  getNameTowers, getNameOrientations, getSceneById, getActiveScenes, updateSceneStatus};
+  getNameTowers, getNameOrientations, getSceneById, getActiveScenes, updateSceneStatus, updateScenePublicStatus};

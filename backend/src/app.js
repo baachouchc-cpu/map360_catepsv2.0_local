@@ -23,15 +23,23 @@ const hotspotsRoutes = require("./routes/hotspots.routes");
 const auth = require("./middlewares/auth.middleware");
 const role = require("./middlewares/role.middleware");
 const authMiddleware = require("./middlewares/authMiddleware");
+const optionalAuth = require("./middlewares/optionalAuth.middleware");
+const corsOptions = {
+    origin: [
+        "http://localhost:5000",
+        "http://127.0.0.1:5000"
+    ],
+    credentials: true
+};
 
 // Middlewares globales
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 
 // Auth API
 app.use("/api/auth", authRoutes);
-app.use('/api/scenes', scenesRoutes);
+app.use('/api/scenes', optionalAuth, scenesRoutes);
 app.use('/api', routesRoutes);
 app.use("/api/search", searchRoutes);
 app.use("/api/interactions", interactionsRoutes);

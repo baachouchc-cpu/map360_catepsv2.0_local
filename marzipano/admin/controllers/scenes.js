@@ -33,7 +33,7 @@ async function loadScenesTable() {
                                 <input
                                     type="checkbox"
                                     ${value ? "checked" : ""}
-                                    onchange="toggleScene(${row.id_scene}, this.checked)"
+                                    onchange="toggleScene(${row.id_scene}, this.checked, this)"
                                 >
                                 <span class="slider"></span>
                             </label>
@@ -176,7 +176,7 @@ function chooseSceneImage() {
 
 }
 
-async function toggleScene(id, active) {
+async function toggleScene(id, active, checkbox) {
 
     if (!active) {
 
@@ -203,6 +203,12 @@ async function toggleScene(id, active) {
                 });
 
                 loadScenesTable();
+
+            },
+
+            onCancel: () => {
+
+                checkbox.checked = true;
 
             }
 

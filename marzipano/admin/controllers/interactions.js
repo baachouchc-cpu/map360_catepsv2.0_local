@@ -34,7 +34,7 @@ async function loadInteractionsTable() {
                                 <input
                                     type="checkbox"
                                     ${value ? "checked" : ""}
-                                    onchange="toggleInteraction(${row.id_interactions}, this.checked)"
+                                    onchange="toggleInteraction(${row.id_interactions}, this.checked, this)"
                                 >
                                 <span class="slider"></span>
                             </label>
@@ -110,7 +110,7 @@ function editInteraction(id) {
 =         DESACTIVAR INTERACCIÓN             =
 =============================================*/
 
-async function toggleInteraction(id, active) {
+async function toggleInteraction(id, active, checkbox) {
 
     if (!active) {
 
@@ -137,6 +137,12 @@ async function toggleInteraction(id, active) {
                 });
 
                 loadInteractionsTable();
+
+            },
+
+            onCancel: () => {
+
+                checkbox.checked = true;
 
             }
 

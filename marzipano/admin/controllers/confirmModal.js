@@ -30,6 +30,8 @@ async function openConfirmModal(options) {
 
     };
 
+    window.confirmCancel = options.onCancel || null;
+
     modal.classList.add("show");
 }
 
@@ -42,5 +44,10 @@ function closeConfirmModal() {
 
     modal.classList.remove("show");
     modal.remove();
+
+    if (window.confirmCancel) {
+        window.confirmCancel();
+        window.confirmCancel = null;
+    }
 
 }

@@ -227,19 +227,53 @@ let nextHotspotId = null; // hotspot a seguir
 let sidebarOpen = true;
 let activeRoute = [];
 let randomModeActive = false; // estado del modo aleatorio
+let currentUser = null;
+let isAuthenticated = false;
+let canViewPrivate  = false;
+
+async function loadSession() {
+
+    try {
+
+        const res = await fetch(`${API_BASE}/api/auth/me`, {
+            credentials: "include"
+        });
+
+        const data = await res.json();
+        
+        if (data.authenticated) {
+
+            isAuthenticated = true;
+            currentUser = data.user;
+            canViewPrivate  = currentUser.idPermiso === 1 || currentUser.idPermiso === 2;
+
+        } else {
+
+            isAuthenticated = false;
+            currentUser = null;
+            canViewPrivate  = false;
+
+        }
+
+    } catch (error) {
+
+        console.error("Error obteniendo sesión", error);
+
+        isAuthenticated = false;
+        currentUser = null;
+        canViewPrivate = false;
+
+    }
+
+}
 
 async function loadScenes() {
   sceneInfo.innerHTML = '<p>⏳ Cargando datos de las escenas...</p>';
 
   try {
     const response = await fetch(`${API_BASE}/api/scenes`);
-    allScenes = await response.json();
-    allScenes = allScenes.filter(s => s.is_active);
 
-    allScenes.forEach(s => {
-      s.hotspots = (s.hotspots || []).filter(h => h.h_is_active);
-      s.interactions = (s.interactions || []).filter(i => i.r_is_active);
-    });
+    allScenes = await response.json();
 
     if (!allScenes.length) {
       sceneInfo.innerHTML = '<p>No hay escenas disponibles.</p>';
@@ -1522,4 +1556,11 @@ function highlightActiveHotspot(scene) {
 }
 
 // Init
-loadScenes();
+// Init
+document.addEventListener("DOMContentLoaded", async () => {
+
+    await loadSession();
+
+    await loadScenes();
+
+});

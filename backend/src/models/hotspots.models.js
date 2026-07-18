@@ -6,7 +6,7 @@ const Hotspots = {
 
     //Todas las navegaciones
 
-    getAllHotspots: async (isActive = null) => {
+    getAllHotspots: async ({isActive = null, isPublic = null}={}) => {
 
         let query = `
 
@@ -23,6 +23,7 @@ const Hotspots = {
                 h.rotation,
                 h.is_active,
                 h.updated_at,
+                h.is_public,
 
                 -- Escena origen
                 s.description AS scene_name,
@@ -54,17 +55,33 @@ const Hotspots = {
             
             LEFT JOIN imagenes img_link
                 ON img_link.id_imagen = ls.imagen_id
+
+            WHERE 1=1
         `;
 
         const values = [];
+        let index = 1;
 
         if (isActive !== null) {
 
             query += `
-                WHERE h.is_active = $1
+                AND h.is_active = $${index}
             `;
 
             values.push(isActive);
+            index++;
+
+        }
+
+        if(isPublic !== null){
+
+            query += `
+                AND s.is_public = $${index}
+                AND ls.is_public = $${index}
+            `;
+
+            values.push(isPublic);
+            index++;
 
         }
 
@@ -81,7 +98,7 @@ const Hotspots = {
 
     //Navegaciones de una escena
 
-    getByScene: async (sceneId, isActive = true) => {
+    getByScene: async (sceneId, {isActive = true, isPublic = null}={}) => {
 
         const query = `
 
@@ -98,6 +115,7 @@ const Hotspots = {
                 h.rotation,
                 h.is_active,
                 h.updated_at,
+                h.is_public
 
                 -- Escena origen
                 s.description AS scene_name,
