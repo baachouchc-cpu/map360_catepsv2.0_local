@@ -118,39 +118,40 @@ const getNameOrientations = async (req, res) => {
 };
 
 // GET BY ID
-const getSceneById = async (req, res) => {
-  try {
-    const { id } = req.params;
+const getSceneById = async (req,res)=>{
 
-    const { rows } = await db.query(
-      `SELECT s.*,
-        k.name_kind AS scene_type, 
-        f.name_floor AS floor_name, 
-        t.name_tower AS tower_name, 
-        o.name_orientation AS orientation_name,
-        i.nombre_img AS image_name,
-        i.url_minio AS image_url_minio,
-        i.tipo AS image_type
-        s.is_public,
-      FROM scenes s 
-      JOIN kind k ON s.kind_id = k.id_kind 
-      JOIN floor f ON s.floor_id = f.id_floor 
-      JOIN tower t ON s.tower_id = t.id_tower 
-      JOIN orientation o ON s.orientation_id = o.id_orientation 
-      JOIN imagenes i ON s.imagen_id = i.id_imagen
-      WHERE s.id_scene = $1`,
-      [id]
-    );
+    try {
 
-    if (rows.length === 0) {
-      return res.status(404).json({ error: "Escena no encontrada" });
+        const { id } = req.params;
+
+        const scene = await Scenes.getSceneById(
+            id,
+            req.user
+        );
+
+
+        if(!scene){
+
+            return res.status(404).json({
+                error:"Escena no encontrada"
+            });
+
+        }
+
+
+        res.json(scene);
+
+
+    } catch(error){
+
+        console.error("GET scene error:",error);
+
+        res.status(500).json({
+            error:"Error interno del servidor"
+        });
+
     }
 
-    res.json(rows[0]);
-  } catch (error) {
-    console.error("GET scene error:", error);
-    res.status(500).json({ error: "Error interno del servidor" });
-  }
 };
 
 async function getActiveScenes(req, res) {
@@ -223,7 +224,7 @@ async function updateScenePublicStatus(req, res) {
         const { id } = req.params;
         const { is_public } = req.body;
 
-        if (typeof is_active !== "boolean") {
+        if (typeof is_public !== "boolean") {
             return res.status(400).json({
                 message: "El campo is_public es obligatorio."
             });

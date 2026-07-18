@@ -9,8 +9,6 @@ async function loadScenesTable() {
         const response = await fetch("/api/scenes");
         const scenes = await response.json();
 
-        const isTecnic = window.location.pathname.includes("tecnic");
-
         const table = new DataTable({
 
             container: "#content",
@@ -26,19 +24,61 @@ async function loadScenesTable() {
                     { field: "id_scene", title: "ID" },
                     { field: "scene_description", title: "Nombre" },
                     {
-                        field: "is_active",
-                        title: "Estado",
-                        formatter: (value, row) => `
+                        field:"is_active",
+                        title:"Estado",
+                        formatter:(value,row)=>`
+
+                        ${
+                            isAdmin()
+                            ?
+                            `
                             <label class="switch">
                                 <input
-                                    type="checkbox"
-                                    ${value ? "checked" : ""}
-                                    onchange="toggleScene(${row.id_scene}, this.checked, this)"
+                                type="checkbox"
+                                ${value ? "checked":""}
+                                onchange="toggleScene(${row.id_scene},this.checked,this)"
                                 >
                                 <span class="slider"></span>
                             </label>
+                            `
+                            :
+                            `
+                            <span>
+                                ${value ? "Activo":"Inactivo"}
+                            </span>
+                            `
+                        }
+
                         `
-                    },
+                        },
+                    {
+                        field:"is_public",
+                        title:"Público",
+                        formatter:(value,row)=>`
+
+                        ${
+                            isAdmin()
+                            ?
+                            `
+                            <label class="switch">
+                                <input
+                                type="checkbox"
+                                ${value ? "checked":""}
+                                onchange="toggleScenePublic(${row.id_scene},this.checked,this)"
+                                >
+                                <span class="slider"></span>
+                            </label>
+                            `
+                            :
+                            `
+                            <span>
+                                ${value ? "Activo":"Inactivo"}
+                            </span>
+                            `
+                        }
+
+                        `
+                        },
                     {
                         field: "updated_at",
                         title: "Actualización",
@@ -55,26 +95,27 @@ async function loadScenesTable() {
 
             data: scenes,
 
-            actions: isTecnic
-            ? [
+            actions: [
+
+            {
+                text: "Editar",
+                class: "edit",
+                onclick: "editScene"
+            },
+
+            ...(isAdmin()
+            ?
+            [
                 {
-                    text: "Editar",
-                    class: "edit",
-                    onclick: "editScene"
+                    text: "Eliminar",
+                    class: "delete",
+                    onclick: "deleteScene"
                 }
             ]
-            : [
-                {
-                    text: "Editar",
-                    class: "edit",
-                    onclick: "editScene"
-                }
-                // ,{
-                //     text: "Eliminar",
-                //     class: "delete",
-                //     onclick: "disableScene",
-                // }
-            ]
+            :
+            [])
+
+        ]
 
         });
 
@@ -94,6 +135,12 @@ async function loadScenesTable() {
 function editScene(id) {
 
     openSceneModal(id);
+
+}
+
+function deleteScene(id) {
+
+    console.log("deleteScene");
 
 }
 
@@ -223,6 +270,62 @@ async function toggleScene(id, active, checkbox) {
             },
             body: JSON.stringify({
                 is_active: true
+            })
+        });
+
+        loadScenesTable();
+
+    }
+
+}
+
+async function toggleScenePublic(id, active, checkbox) {
+
+    if (!active) {
+
+        openConfirmModal({
+
+            title: "Despublicar escena",
+
+            message: "La escena dejará de ser pública, pero podrá ser publicada nuevamente.",
+            
+            confirmText: "Despublicar",
+
+            confirmClass: "btn-delete",
+
+            onConfirm: async () => {
+
+                await fetch(`/api/scenes/${id}/public`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        is_public: false
+                    })
+                });
+
+                loadScenesTable();
+
+            },
+
+            onCancel: () => {
+
+                checkbox.checked = true;
+
+            }
+
+        });
+
+    } else {
+
+        await fetch(`/api/scenes/${id}/public`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                is_public: true
             })
         });
 
