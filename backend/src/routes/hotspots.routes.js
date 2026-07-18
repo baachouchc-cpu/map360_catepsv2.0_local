@@ -1,5 +1,6 @@
 // src/routes/hotspots.routes.js
 const express = require('express');
+const authMiddleware = require("../middlewares/authMiddleware");
 const router = express.Router();
 const {
   upsertHotspot,
@@ -7,7 +8,8 @@ const {
   getActiveHotspots,
   getHotspotsByScene,
   getHotspotById,
-  updateHotspotStatus
+  updateHotspotStatus,
+  updateHotspotPublic
 } = require("../controllers/hotspots.controller");
 
 // POST → crear
@@ -29,9 +31,13 @@ router.get("/active", getActiveHotspots);
 router.get("/scene/:scene_id", getHotspotsByScene);
 
 // Obtener por ID
-router.get("/:id", getHotspotById);
+//router.get("/:id", getHotspotById);
+router.get("/:id", authMiddleware,getHotspotById);
 
 // Actualizar estado
 router.put("/:id/status",updateHotspotStatus);
+
+// Actualizar público
+router.put("/:id/public",updateHotspotPublic);
 
 module.exports = router;

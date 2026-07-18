@@ -98,7 +98,7 @@ const Hotspots = {
 
     //Navegaciones de una escena
 
-    getByScene: async (sceneId, {isActive = true, isPublic = null}={}) => {
+    getByScene: async (id, user) => {
 
         const query = `
 
@@ -156,14 +156,27 @@ const Hotspots = {
 
         `;
 
-        const values = [
-            sceneId,
-            isActive
-        ];
+        const values = [id];
+        
+        // CONTROL PANEL
+
+        if (user.role === 2) {
+
+            // Técnico
+            // solo activas
+
+            query += `
+                AND s.is_active = true
+            `;
+
+        }
+        
+        // Admin no añade filtro
+        // puede editar activas e inactivas
 
         const { rows } = await pool.query(query, values);
 
-        return rows;
+        return rows[0] || null;
 
     },
 
