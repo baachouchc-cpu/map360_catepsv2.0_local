@@ -9,8 +9,6 @@ async function loadNavegationTable() {
         const response = await fetch("/api/navegation");
         const routes = await response.json();
 
-        const isTecnic = window.location.pathname.includes("tecnic");
-
         const table = new DataTable({
 
             container: "#content",
@@ -28,19 +26,61 @@ async function loadNavegationTable() {
                     { field: "scene_name", title: "Desde" },
                     { field: "link_scene_name", title: "Hacia" },
                     {
-                        field: "is_active",
-                        title: "Estado",
-                        formatter: (value, row) => `
+                        field:"is_active",
+                        title:"Estado",
+                        formatter:(value,row)=>`
+
+                        ${
+                            isAdmin()
+                            ?
+                            `
                             <label class="switch">
                                 <input
-                                    type="checkbox"
-                                    ${value ? "checked" : ""}
-                                    onchange="toggleHotspot(${row.id_hotspots}, this.checked, this)"
+                                type="checkbox"
+                                ${value ? "checked":""}
+                                onchange="toggleHotspot(${row.id_hotspots},this.checked,this)"
                                 >
                                 <span class="slider"></span>
                             </label>
+                            `
+                            :
+                            `
+                            <span>
+                                ${value ? "Activo":"Inactivo"}
+                            </span>
+                            `
+                        }
+
                         `
-                    },
+                        },
+                    {
+                        field:"is_public",
+                        title:"Público",
+                        formatter:(value,row)=>`
+
+                        ${
+                            isAdmin()
+                            ?
+                            `
+                            <label class="switch">
+                                <input
+                                type="checkbox"
+                                ${value ? "checked":""}
+                                onchange="toggleHotspotPublic(${row.id_hotspots},this.checked,this)"
+                                >
+                                <span class="slider"></span>
+                            </label>
+                            `
+                            :
+                            `
+                            <span>
+                                ${value ? "Activo":"Inactivo"}
+                            </span>
+                            `
+                        }
+
+                        `
+                        },
                     {
                         field: "updated_at",
                         title: "Actualización",
@@ -57,25 +97,26 @@ async function loadNavegationTable() {
 
             data: routes,
 
-            actions: isTecnic
-            ? [
+            actions: [
+
                 {
                     text: "Editar",
                     class: "edit",
                     onclick: "editRoute"
-                }
-            ]
-            : [
-                {
-                    text: "Editar",
-                    class: "edit",
-                    onclick: "editRoute"
-                }
-                // ,{
-                //     text: "Eliminar",
-                //     class: "delete",
-                //     onclick: "disableRoute"
-                // }
+                },
+
+                ...(isAdmin()
+                ?
+                [
+                    {
+                        text: "Eliminar",
+                        class: "delete",
+                        onclick: "deleteRoute"
+                    }
+                ]
+                :
+                [])
+
             ]
 
         });
@@ -101,6 +142,12 @@ function createRoute() {
 function editRoute(id) {
 
     openhotspotModal(id);
+
+}
+
+function deleteRoute(id) {
+
+    console.log("deleteRoute");
 
 }
 
@@ -159,6 +206,63 @@ async function toggleHotspot(id, active, checkbox) {
     }
 
 }
+
+async function toggleHotspotPublic(id, active, checkbox) {
+
+    if (!active) {
+
+        openConfirmModal({
+
+            title: "Desactivar navegación",
+
+            message: "La naveagación dejará de estar disponible, pero podrá habilitarse nuevamente.",
+
+            confirmText: "Desactivar",
+
+            confirmClass: "btn-delete",
+
+            onConfirm: async () => {
+
+                await fetch(`/api/navegation/${id}/status`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            is_active: false
+                        })
+                    });
+
+                loadNavegationTable();
+
+            },
+
+            onCancel: () => {
+
+                checkbox.checked = true;
+
+            }
+
+        });
+
+    } else {
+
+        await fetch(`/api/navegation/${id}/status`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                is_active: true
+            })
+        });
+
+        loadNavegationTable();
+
+    }
+
+}
+
 
 async function openhotspotModal(id = null) {
 

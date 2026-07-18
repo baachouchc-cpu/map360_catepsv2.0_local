@@ -402,7 +402,67 @@ const Scenes = {
 
         return rows[0];
 
-    }
+    },
+
+    getSceneById: async (id, user) => {
+
+        let query = `
+            SELECT 
+                s.*,
+
+                k.name_kind AS scene_type,
+                f.name_floor AS floor_name,
+                t.name_tower AS tower_name,
+                o.name_orientation AS orientation_name,
+
+                i.nombre_img AS image_name,
+                i.url_minio AS image_url_minio,
+                i.tipo AS image_type
+
+            FROM scenes s
+
+            JOIN kind k 
+                ON s.kind_id = k.id_kind
+
+            JOIN floor f 
+                ON s.floor_id = f.id_floor
+
+            JOIN tower t 
+                ON s.tower_id = t.id_tower
+
+            JOIN orientation o 
+                ON s.orientation_id = o.id_orientation
+
+            LEFT JOIN imagenes i 
+                ON s.imagen_id = i.id_imagen
+
+            WHERE s.id_scene = $1
+        `;
+
+
+        const values = [id];
+
+        // CONTROL PANEL
+
+        if (user.role === 2) {
+
+            // Técnico
+            // solo activas
+
+            query += `
+                AND s.is_active = true
+            `;
+
+        }
+        
+        // Admin no añade filtro
+        // puede editar activas e inactivas
+
+        const { rows } = await pool.query(query, values);
+
+        return rows[0] || null;
+
+    },
 };
 
 

@@ -9,8 +9,6 @@ async function loadInteractionsTable() {
         const response = await fetch("/api/interactions");
         const interactions = await response.json();
 
-        const isTecnic = window.location.pathname.includes("tecnic");
-
         const table = new DataTable({
 
             container: "#content",
@@ -27,19 +25,61 @@ async function loadInteractionsTable() {
                     { field: "title", title: "Nombre" },
                     { field: "scene_name", title: "Escena" },
                     {
-                        field: "is_active",
-                        title: "Estado",
-                        formatter: (value, row) => `
+                        field:"is_active",
+                        title:"Estado",
+                        formatter:(value,row)=>`
+
+                        ${
+                            isAdmin()
+                            ?
+                            `
                             <label class="switch">
                                 <input
-                                    type="checkbox"
-                                    ${value ? "checked" : ""}
-                                    onchange="toggleInteraction(${row.id_interactions}, this.checked, this)"
+                                type="checkbox"
+                                ${value ? "checked":""}
+                                onchange="toggleInteraction(${row.id_interactions},this.checked,this)"
                                 >
                                 <span class="slider"></span>
                             </label>
+                            `
+                            :
+                            `
+                            <span>
+                                ${value ? "Activo":"Inactivo"}
+                            </span>
+                            `
+                        }
+
                         `
-                    },
+                        },
+                    {
+                        field:"is_public",
+                        title:"Público",
+                        formatter:(value,row)=>`
+
+                        ${
+                            isAdmin()
+                            ?
+                            `
+                            <label class="switch">
+                                <input
+                                type="checkbox"
+                                ${value ? "checked":""}
+                                onchange="toggleInteractionPublic(${row.id_scene},this.checked,this)"
+                                >
+                                <span class="slider"></span>
+                            </label>
+                            `
+                            :
+                            `
+                            <span>
+                                ${value ? "Activo":"Inactivo"}
+                            </span>
+                            `
+                        }
+
+                        `
+                        },
                     {
                         field: "updated_at",
                         title: "Actualización",
@@ -56,25 +96,26 @@ async function loadInteractionsTable() {
 
             data: interactions,
 
-            actions: isTecnic
-            ? [
+            actions: [
+
                 {
                     text: "Editar",
                     class: "edit",
                     onclick: "editInteraction"
-                }
-            ]
-            : [
-                {
-                    text: "Editar",
-                    class: "edit",
-                    onclick: "editInteraction"
-                }
-                // ,{
-                //     text: "Eliminar",
-                //     class: "delete",
-                //     onclick: "deleteInteraction"
-                // }
+                },
+
+                ...(isAdmin()
+                ?
+                [
+                    {
+                        text: "Eliminar",
+                        class: "delete",
+                        onclick: "deleteInteraction"
+                    }
+                ]
+                :
+                [])
+
             ]
         });
 
@@ -102,6 +143,12 @@ function editInteraction(id) {
     
 }
 
+function deleteInteraction(id) {
+
+    console.log("deleteInteraction");
+
+}
+
 /*=============================================
 =            ELIMINAR INTERACCIÓN            =
 =============================================*/
@@ -111,6 +158,62 @@ function editInteraction(id) {
 =============================================*/
 
 async function toggleInteraction(id, active, checkbox) {
+
+    if (!active) {
+
+        openConfirmModal({
+
+            title: "Desactivar interacción",
+
+            message: "La interacción dejará de estar disponible.",
+
+            confirmText: "Desactivar",
+
+            confirmClass: "btn-delete",
+
+            onConfirm: async () => {
+
+                await fetch(`/api/interactions/${id}/status`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        is_active: false
+                    })
+                });
+
+                loadInteractionsTable();
+
+            },
+
+            onCancel: () => {
+
+                checkbox.checked = true;
+
+            }
+
+        });
+
+    } else {
+
+        await fetch(`/api/interactions/${id}/status`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                is_active: true
+            })
+        });
+
+        loadInteractionsTable();
+
+    }
+
+}
+
+async function toggleInteractionPublic(id, active, checkbox) {
 
     if (!active) {
 

@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+//const {} = require("../middlewares/role.middleware"); 
+const authMiddleware = require("../middlewares/authMiddleware");
 const { upsertScene,
     getScenes,
     getNameScenes,
@@ -40,13 +42,14 @@ router.get('/towers', getNameTowers);
 router.get('/orientations', getNameOrientations);
 
 // GET → obtener 1 escena por id
-router.get('/:id(\\d+)', getSceneById);
+//router.get('/:id(\\d+)', getSceneById);
+router.get("/:id", authMiddleware,getSceneById);
 
 // GET → obtener solo escenas activas
 router.get("/active", getActiveScenes);
 
-router.put("/:id/status",updateSceneStatus);
-
 router.put("/:id/public",updateScenePublicStatus);
+
+router.put("/:id/status",updateSceneStatus);
 
 module.exports = router;
