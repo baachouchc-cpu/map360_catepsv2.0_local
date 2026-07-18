@@ -35,7 +35,7 @@ async function loadNavegationTable() {
                                 <input
                                     type="checkbox"
                                     ${value ? "checked" : ""}
-                                    onchange="toggleHotspot(${row.id_hotspots}, this.checked)"
+                                    onchange="toggleHotspot(${row.id_hotspots}, this.checked, this)"
                                 >
                                 <span class="slider"></span>
                             </label>
@@ -104,7 +104,7 @@ function editRoute(id) {
 
 }
 
-async function toggleHotspot(id, active) {
+async function toggleHotspot(id, active, checkbox) {
 
     if (!active) {
 
@@ -131,6 +131,12 @@ async function toggleHotspot(id, active) {
                     });
 
                 loadNavegationTable();
+
+            },
+
+            onCancel: () => {
+
+                checkbox.checked = true;
 
             }
 

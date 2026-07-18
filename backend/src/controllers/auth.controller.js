@@ -22,7 +22,8 @@ const login = async (req, res) => {
       { 
         id: user.id_user, 
         role: user.rol_id,
-        isConfig: user.is_config // Guardamos el booleano de acceso aquí
+        isConfig: user.is_config, // Guardamos el booleano de acceso aquí
+        permisos_id: user.permisos_id
       },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
@@ -30,8 +31,9 @@ const login = async (req, res) => {
 
     // 4. Guardamos el token en las cookies
     res.cookie("token", token, {
-      httpOnly: true,
-      sameSite: "lax"
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax"
     });
 
     // 5. Devolvemos respuesta con la información básica
@@ -61,7 +63,68 @@ const logout = (req, res) => {
   res.json({ message: "Logout OK" });
 };
 
-module.exports = { login, logout };
+const me = async (req, res) => {
+
+    if (!req.user) {
+
+        return res.json({
+            authenticated: false
+        });
+
+    }
+
+    try {
+
+        const user =
+            await Users.getUserById(req.user.id);
+
+        if (!user) {
+
+            return res.json({
+                authenticated: false
+            });
+
+        }
+
+        const escenas =
+            await Users.getEscenasPorPermiso(
+                user.permisos_id
+            );
+
+        res.json({
+
+            authenticated: true,
+
+            user: {
+
+                id: user.id_user,
+                username: user.name_user,
+                nombreCompleto: user.nombre_completo,
+                role: user.rol_id,
+                isConfig: user.is_config,
+                idPermiso: user.permisos_id
+
+            },
+
+            escenas: escenas.map(e => e.id_scene)
+
+        });
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json({
+
+            error: "Error obteniendo usuario"
+
+        });
+
+    }
+
+};
+
+module.exports = { login, logout, me };
 
 // const bcrypt = require("bcrypt");
 // const jwt = require("jsonwebtoken");

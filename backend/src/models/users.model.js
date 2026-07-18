@@ -38,10 +38,37 @@ const getEscenasPorPermiso = async (permisosId) => {
   return rows; // Esto te devolverá un array limpio de objetos escena: [{id_scene: 1}, {id_scene: 2}]
 };
 
+const getUserById = async (id) =>{
+
+    const query = `
+
+        SELECT
+
+            u.*,
+
+            CONCAT(
+                u.nombre,
+                ' ',
+                u.apellido
+            ) AS nombre_completo
+
+        FROM users u
+
+        WHERE u.id_user = $1
+
+    `;
+
+    const { rows } =
+        await db.query(query,[id]);
+
+    return rows[0];
+
+}
 
 module.exports = {
   getUserByName,
-  getEscenasPorPermiso
+  getEscenasPorPermiso,
+  getUserById
 };
 // const db = require("../services/db");
 
