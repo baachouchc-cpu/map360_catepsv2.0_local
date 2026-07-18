@@ -78,6 +78,14 @@ function loadSidebar() {
                 </button>
 
             </li>
+
+            <li class="menu">
+                <button class="menu-item btn btn-secondary" data-page="interactions" onclick="loadInteractionsPage()">
+                    👤 Usuarios
+                </button>
+
+            </li>
+
         </nav>
 
         <div class="sidebar-footer">

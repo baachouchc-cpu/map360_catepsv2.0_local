@@ -6,7 +6,7 @@ async function loadNavegationTable() {
 
     try {
 
-        const response = await fetch("/api/routes");
+        const response = await fetch("/api/navegation");
         const routes = await response.json();
 
         const isTecnic = window.location.pathname.includes("tecnic");
@@ -15,16 +15,18 @@ async function loadNavegationTable() {
 
             container: "#content",
 
+            idField: "id_hotspots",
+
             columns: {
 
-                title: "Rutas",
+                title: "Navegaciones",
 
                 fields: [
 
-                    { field: "id_routes", title: "ID" },
-                    { field: "hotspot_title", title: "Nombre" },
-                    { field: "from_scene_desc", title: "Desde" },
-                    { field: "to_scene_desc", title: "Hacia" },
+                    { field: "id_hotspots", title: "ID" },
+                    { field: "title", title: "Nombre" },
+                    { field: "scene_name", title: "Desde" },
+                    { field: "link_scene_name", title: "Hacia" },
                     {
                         field: "is_active",
                         title: "Estado",
@@ -33,7 +35,7 @@ async function loadNavegationTable() {
                                 <input
                                     type="checkbox"
                                     ${value ? "checked" : ""}
-                                    onchange="toggleInteraction(${row.id_interactions}, this.checked)"
+                                    onchange="toggleHotspot(${row.id_hotspots}, this.checked)"
                                 >
                                 <span class="slider"></span>
                             </label>
@@ -93,77 +95,118 @@ async function loadNavegationTable() {
 
 function createRoute() {
 
-    openTourModal();
+    openhotspotModal();
 }
 
 function editRoute(id) {
 
-    console.log("Editar ruta", id);
+    openhotspotModal(id);
 
 }
 
-async function disableRoute(id) {
+async function toggleHotspot(id, active) {
 
-     openConfirmModal({
+    if (!active) {
 
-        title: "Desactivar ruta",
+        openConfirmModal({
 
-        message: "La ruta dejará de estar disponible, pero podrá habilitarse nuevamente.",
+            title: "Desactivar navegación",
 
-        confirmText: "Desactivar",
+            message: "La naveagación dejará de estar disponible, pero podrá habilitarse nuevamente.",
 
-        confirmClass: "btn-delete",
+            confirmText: "Desactivar",
 
-        onConfirm: async () => {
+            confirmClass: "btn-delete",
 
-            try {
+            onConfirm: async () => {
 
-                const res = await fetch(`/api/routes/${id}/disable`, {
-                    method: "PUT"
-                });
-
-                if (!res.ok)
-                    throw new Error("Error desactivando ruta");
+                await fetch(`/api/navegation/${id}/status`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            is_active: false
+                        })
+                    });
 
                 loadNavegationTable();
 
-            } catch (err) {
-
-                console.error(err);
-
             }
 
-        }
+        });
 
-    });
+    } else {
+
+        await fetch(`/api/navegation/${id}/status`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                is_active: true
+            })
+        });
+
+        loadNavegationTable();
+
+    }
 
 }
 
-async function openTourModal(id = null) {
+async function openhotspotModal(id = null) {
 
-    if (document.getElementById("tourModal"))
+    if (document.getElementById("hotspotModal"))
         return;
 
-    const html = await fetch("/admin/components/tourModal.html")
+    const html = await fetch("/admin/components/hotspotModal.html")
         .then(r => r.text());
 
     document.body.insertAdjacentHTML("beforeend", html);
 
     document
-        .getElementById("tourModal")
+        .getElementById("hotspotModal")
         .classList.add("show");
 
-    await initTourForm(id);
+    await initHotspotForm(id);
 }
 
-function closeTourModal() {
+function closehotspotModal() {
 
-    const modal = document.getElementById("tourModal");
+    const modal = document.getElementById("hotspotModal");
 
     if (!modal)
         return;
 
     modal.classList.remove("show");
-
     modal.remove();
 }
+
+function chooseSceneFrom() {
+
+    openImagePicker(image => {
+
+        document.getElementById("imagen_from_id").value = image.id_scene;
+
+        document.getElementById("imagen_from_url").value = image.url_minio;
+
+        document.getElementById("scenePreviewFrom").src = image.url_minio;
+
+    },"imagenes_360", true);
+
+}
+
+function chooseSceneTo() {
+
+    openImagePicker(image => {
+
+        document.getElementById("imagen_to_id").value = image.id_scene;
+
+        document.getElementById("imagen_to_url").value = image.url_minio;
+
+        document.getElementById("scenePreviewTo").src = image.url_minio;
+
+    },"imagenes_360", true);
+
+}
+

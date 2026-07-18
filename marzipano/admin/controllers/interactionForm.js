@@ -105,7 +105,6 @@ async function loadTypesSelect(){
 
 function fillInteractionForm(data){
 
-    console.log(data);
     document.getElementById("id_interactions").value = data.id_interactions;
     document.getElementById("scene_id").value = data.scene_id;
     document.getElementById("title").value = data.title;
@@ -341,8 +340,6 @@ async function saveInteraction(e){
             body.update_api = false;
             break;
     }
-
-    console.log("filling interaction form with data:", body);
 
     const method = body.id_interactions ? "PUT" : "POST";
 
