@@ -18,6 +18,7 @@ const authRoutes = require("./routes/auth.routes");
 const adminRoutes = require("./routes/admin.routes");
 const imageRoutes = require("./routes/images.routes");
 const hotspotsRoutes = require("./routes/hotspots.routes");
+const usersRoutes = require("./routes/users.routes");
 
 // Middleware auth
 const auth = require("./middlewares/auth.middleware");
@@ -47,6 +48,7 @@ app.use("/api/users", auth, role, authRoutes); // Corregido: cambiamos el "requi
 app.use("/api/admin", adminRoutes);
 app.use("/api/images", imageRoutes);
 app.use("/api/navegation", hotspotsRoutes);
+app.use("/api/adminusers", usersRoutes);
 
 
 // FRONTEND STATIC

@@ -155,6 +155,25 @@ function loadInteractionsPage() {
 }
 
 /*=============================================
+=            INTERACCIONES                    =
+=============================================*/
+
+function loadUsersPage() {
+
+    setActiveMenu("users");
+
+    document.getElementById("pageTitle").textContent = "Usuarios"; 
+
+    setCreateButton(
+        "+ Crear usuario",
+        () => openUserModal()
+    );
+    
+    loadUsersTable();
+
+}
+
+/*=============================================
 =            MENUS                            =
 =============================================*/
 

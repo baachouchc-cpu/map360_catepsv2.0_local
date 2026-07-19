@@ -80,7 +80,7 @@ function loadSidebar() {
             </li>
 
             <li class="menu">
-                <button class="menu-item btn btn-secondary" data-page="interactions" onclick="loadInteractionsPage()">
+                <button class="menu-item btn btn-secondary" data-page="users" onclick="loadUsersPage()">
                     👤 Usuarios
                 </button>
 

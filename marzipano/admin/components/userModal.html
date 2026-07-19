@@ -1,0 +1,115 @@
+<div id="userModal" class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2 id="interactionModalTitle">
+                Crear / Editar usuario
+            </h2>
+
+            <button
+                type="button"
+                class="modal-close"
+                onclick="closeUserModal()">
+                ×
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <form id="userForm" class="form">
+
+                <input
+                type="hidden"
+                id="id_user"
+                >
+
+                <label> Nombre </label>
+
+                <input
+                id="nombre"
+                required
+                >
+
+                <label> Apellido </label>
+
+                <input
+                id="apellido"
+                required
+                >
+
+                <label> Rol </label>
+
+                <select id="rol_id"><option value="">Cargando tipos...</option></select>
+
+                <label> Contraseña </label>
+
+                <input
+                type="password"
+                id="password"
+                placeholder="Dejar vacío para mantener"
+                >
+
+                <div class="switch-group">
+
+                    <label class="switch">
+
+                        <input
+                            type="checkbox"
+                            id="is_config">
+
+                        <span class="slider"></span>
+
+                    </label>
+
+                    <span>
+                        Acceso al panel de administración
+                    </span>
+
+                </div>
+
+                <div id="scenePermissions">
+
+                    <h3> Escenas permitidas </h3>
+
+                    <div
+                    id="sceneList"
+                    class="scene-list"
+                    >
+
+                    <div
+                    id="imageSceneGrid"
+                    class="image-picker-grid" >
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button
+            type="button"
+            class="btn-cancel"
+            onclick="closeUserModal()"
+            >
+            Cancelar
+            </button>
+
+            <button
+            type="submit"
+            form="userForm"
+            class="btn-save">
+            Guardar
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
