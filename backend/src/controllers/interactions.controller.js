@@ -72,37 +72,19 @@ const getNameIcon = async (req, res) => {
 // GET BY ID
 const getInteractionById = async (req, res) => {
   try {
-    const { id } = req.params;
+      const { id } = req.params;
 
-    const { rows } = await db.query(
-      `SELECT   
-      i.*,  
-      s.description AS scene_name,
+      const interaction = await Interactions.getInteractionById(id, req.user);
 
-      img.nombre_img AS nombre_interaccion,
-      img.url_minio AS url_minio_interaccion,
-      img.tipo AS img_tipo_interaccion,
+      if(!interaction){
 
-      icon.nombre_img AS icon_name,
-      icon.url_minio AS icon_url_minio,
-      icon.tipo AS icon_tipo
+          return res.status(404).json({
+              error:"Interacción no encontrada"
+          });
 
-      FROM interactions i 
-      LEFT JOIN scenes s  ON s.id_scene = i.scene_id
-      LEFT JOIN imagenes img ON img.id_imagen = i.imagen_id
-      LEFT JOIN imagenes icon ON icon.id_imagen = i.imagen_icon_id
-         
-      WHERE i.id_interactions = $1`,
-//      "SELECT * FROM interactions WHERE id_interactions = $1",
-////Cambiar por LEFT JOIN imagenes icon ON icon.id_imagen = i.imagen_icon_id, el que esta es antiguo
-      [id]
-    );
+      }
 
-    if (rows.length === 0) {
-      return res.status(404).json({ error: "Interacción no encontrada" });
-    }
-
-    res.json(rows[0]);
+      res.json(interaction);
 
   } catch (error) {
     console.error("GET interaction error:", error);
@@ -161,27 +143,10 @@ const validateInteractionPassword = async (req, res) => {
   }
 };
 
-// GET ALL
-// const getAllInteractions = async (req, res) => {
-//   try {
-
-//     const result = await db.query(
-//       "SELECT   i.*,  s.description AS scene_name FROM interactions i JOIN scenes s  ON s.id_scene = i.scene_id order by i.id_interactions",
-// //      "SELECT * FROM interactions WHERE id_interactions = $1",
-//     );
-
-//     res.json(result.rows);
-
-//   } catch (error) {
-//     console.error("GET interaction error:", error);
-//     res.status(500).json({ error: "Error interno del servidor" });
-//   }
-// };
-
 async function getAllInteractions(req, res) {
     try {
 
-        const interaction = await Interactions.getAllInteractions();
+        const interaction = await Interactions.getAllInteractions(req.user);
 
         res.json(interaction);
 
@@ -259,6 +224,51 @@ async function updateInteractionStatus(req, res) {
 
 }
 
+async function updateInteractionPublic(req, res) {
+
+    try {
+
+        const { id } = req.params;
+        const { is_public } = req.body;
+
+        if (typeof is_public !== "boolean") {
+            return res.status(400).json({
+                message: "El campo is_public es obligatorio."
+            });
+        }
+
+        const { rows } = await db.query(
+            `
+            UPDATE interactions
+            SET
+                is_public = $1,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id_interactions = $2
+            RETURNING *;
+            `,
+            [is_public, id]
+        );
+
+        if (!rows.length) {
+            return res.status(404).json({
+                message: "Escena no encontrada."
+            });
+        }
+
+        res.json(rows[0]);
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json({
+            message: "Error actualizando el estado de la escena."
+        });
+
+    }
+
+}
+
 module.exports = {
   upsertInteraction,
   getInteractionById,
@@ -268,5 +278,6 @@ module.exports = {
   getNameIcon,
   getAllInteractions,
   getActiveInteractions,
-  updateInteractionStatus
+  updateInteractionStatus,
+  updateInteractionPublic
 };

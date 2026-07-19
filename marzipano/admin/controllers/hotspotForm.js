@@ -60,13 +60,13 @@ function fillHotspotForm(data){
     
     document.getElementById("id_hotspots").value = data.id_hotspots;
     document.getElementById("imagen_from_id").value = data.scene_id;
-    document.getElementById("scenePreviewFrom").src = data.scene_image_url;
+    document.getElementById("scenePreviewFrom").src = data.from_scene_url;
     document.getElementById("title").value =  data.title;
     document.getElementById("yaw").value = data.yaw;
     document.getElementById("pitch").value = data.pitch;
     document.getElementById("description").value = data.description || "";
     document.getElementById("imagen_to_id").value =  data.link_scene_id;
-    document.getElementById("scenePreviewTo").src = data.link_scene_image_url;
+    document.getElementById("scenePreviewTo").src = data.to_scene_url;
     //document.getElementById("icon_id").value =  data.icon_id;
     document.getElementById("rotation").value =  data.rotation || 0;
 
@@ -127,8 +127,6 @@ async function saveHotspot(e){
         rotation: document.getElementById("rotation").value || 0
 
     };
-
-    console.log(body);
 
     const method =
         body.id_hotspots

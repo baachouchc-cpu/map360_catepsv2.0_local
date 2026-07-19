@@ -22,13 +22,13 @@ router.put("/:id(\\d+)", (req, res) => {
 });
 
 // Obtener todos
-router.get("/", getHotspots);
+router.get("/",authMiddleware, getHotspots);
 
 // Obtener activos
 router.get("/active", getActiveHotspots);
 
 // Obtener por escena
-router.get("/scene/:scene_id", getHotspotsByScene);
+router.get("/scene/:scene_id",authMiddleware, getHotspotsByScene);
 
 // Obtener por ID
 //router.get("/:id", getHotspotById);
