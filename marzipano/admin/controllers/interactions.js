@@ -24,6 +24,7 @@ async function loadInteractionsTable() {
                     { field: "id_interactions", title: "ID" },
                     { field: "title", title: "Nombre" },
                     { field: "scene_name", title: "Escena" },
+                    { field: "type_name", title: "Tipo" },
                     {
                         field:"is_active",
                         title:"Estado",
@@ -65,7 +66,7 @@ async function loadInteractionsTable() {
                                 <input
                                 type="checkbox"
                                 ${value ? "checked":""}
-                                onchange="toggleInteractionPublic(${row.id_scene},this.checked,this)"
+                                onchange="toggleInteractionPublic(${row.id_interactions},this.checked,this)"
                                 >
                                 <span class="slider"></span>
                             </label>
@@ -229,13 +230,13 @@ async function toggleInteractionPublic(id, active, checkbox) {
 
             onConfirm: async () => {
 
-                await fetch(`/api/interactions/${id}/status`, {
+                await fetch(`/api/interactions/${id}/public`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        is_active: false
+                        is_public: false
                     })
                 });
 
@@ -253,13 +254,13 @@ async function toggleInteractionPublic(id, active, checkbox) {
 
     } else {
 
-        await fetch(`/api/interactions/${id}/status`, {
+        await fetch(`/api/interactions/${id}/public`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                is_active: true
+                is_public: true
             })
         });
 
@@ -361,5 +362,19 @@ function chooseInteractionFoto() {
         document.getElementById("scenePreviewFoto").src = image.url_minio;
 
     },"interaccion");
+
+}
+
+function chooseInteractionScene() {
+
+    openImagePicker(image => {
+
+        document.getElementById("scene_id").value = image.id_scene;
+
+        document.getElementById("scene_url").value = image.url_minio;
+
+        document.getElementById("scenePreviewScene").src = image.url_minio;
+
+    },"imagenes_360", true);
 
 }

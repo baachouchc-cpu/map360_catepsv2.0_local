@@ -104,9 +104,10 @@ async function loadTypesSelect(){
 =============================================*/
 
 function fillInteractionForm(data){
-
+    console.log("get",data);
     document.getElementById("id_interactions").value = data.id_interactions;
     document.getElementById("scene_id").value = data.scene_id;
+    document.getElementById("scenePreviewScene").src = data.from_scene_url;
     document.getElementById("title").value = data.title;
     document.getElementById("yaw").value = data.yaw;
     document.getElementById("pitch").value = data.pitch;
@@ -340,6 +341,7 @@ async function saveInteraction(e){
             body.update_api = false;
             break;
     }
+    console.log("post",body);
 
     const method = body.id_interactions ? "PUT" : "POST";
 
@@ -436,8 +438,8 @@ function toggleFieldsByType() {
     document.getElementById("group_screen").style.display =
         type === "2" ? "block" : "none";
     
-    radius.required =
-        type === "2";
+    // radius.required =
+    //     type === "2";
     
     width_px.required =
         type === "2";

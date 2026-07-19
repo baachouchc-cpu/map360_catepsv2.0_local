@@ -1,5 +1,6 @@
 // src/routes/interactions.routes.js
-const express = require("express"); 
+const express = require("express");
+const authMiddleware = require("../middlewares/authMiddleware");
 const router = express.Router();
 const {
   upsertInteraction,
@@ -10,14 +11,15 @@ const {
   getNameIcon,
   getAllInteractions,
   getActiveInteractions,
-  updateInteractionStatus
+  updateInteractionStatus,
+  updateInteractionPublic
 } = require("../controllers/interactions.controller");
 
 // POST → crear
 router.post("/", upsertInteraction);
 
 // GET → obtener todas las interacciones
-router.get("/", getAllInteractions);
+router.get("/",authMiddleware, getAllInteractions);
 
 // GET → obtener solo id y name de los tipos de interacción
 router.get("/types", getNameTypes);
@@ -26,7 +28,7 @@ router.get("/types", getNameTypes);
 router.get("/icons", getNameIcon);
 
 // GET → obtener 1 interacción
-router.get("/:id(\\d+)", getInteractionById);
+router.get("/:id(\\d+)", authMiddleware,getInteractionById);
 
 // PUT → actualizar descripción
 //router.put("/:id/description", updateInteractionDescription);
@@ -48,5 +50,7 @@ router.put("/:id(\\d+)", (req, res) => {
 router.get("/active", getActiveInteractions);
 
 router.put("/:id/status",updateInteractionStatus);
+
+router.put("/:id/public",updateInteractionPublic);
 
 module.exports = router;

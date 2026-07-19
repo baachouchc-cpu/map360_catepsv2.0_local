@@ -6,7 +6,7 @@ const Hotspots = {
 
     //Todas las navegaciones
 
-    getAllHotspots: async ({isActive = null, isPublic = null}={}) => {
+    getAllHotspots: async (user) => {
 
         let query = `
 
@@ -22,9 +22,9 @@ const Hotspots = {
                 h.icon_id,
                 h.rotation,
                 h.is_active,
-                h.updated_at,
                 h.is_public,
-
+                h.updated_at,
+                
                 -- Escena origen
                 s.description AS scene_name,
                 s.imagen_id AS scene_image_id,
@@ -57,39 +57,31 @@ const Hotspots = {
                 ON img_link.id_imagen = ls.imagen_id
 
             WHERE 1=1
+
         `;
 
-        const values = [];
-        let index = 1;
+        // CONTROL PANEL
 
-        if (isActive !== null) {
+        if (user.role === 2) {
 
-            query += `
-                AND h.is_active = $${index}
-            `;
-
-            values.push(isActive);
-            index++;
-
-        }
-
-        if(isPublic !== null){
+            // Técnico
+            // solo activas
 
             query += `
-                AND s.is_public = $${index}
-                AND ls.is_public = $${index}
+                AND h.is_active = true
+                AND s.is_active = true
+                AND ls.is_active = true
             `;
 
-            values.push(isPublic);
-            index++;
-
         }
-
+        
         query += `
-            ORDER BY h.id_hotspots ASC;
-        `;
+                 ORDER BY h.id_hotspots ASC
+            `;
+        // Admin no añade filtro
+        // puede editar activas e inactivas
 
-        const { rows } = await pool.query(query, values);
+        const { rows } = await pool.query(query);
 
         return rows;
 
@@ -98,9 +90,9 @@ const Hotspots = {
 
     //Navegaciones de una escena
 
-    getByScene: async (id, user) => {
+    getByScene: async (scene_id, user) => {
 
-        const query = `
+        let query = `
 
             SELECT
 
@@ -115,7 +107,7 @@ const Hotspots = {
                 h.rotation,
                 h.is_active,
                 h.updated_at,
-                h.is_public
+                h.is_public,
 
                 -- Escena origen
                 s.description AS scene_name,
@@ -150,9 +142,88 @@ const Hotspots = {
                 ON img_link.id_imagen = ls.imagen_id
 
             WHERE h.scene_id = $1
-            AND h.is_active = $2
 
-            ORDER BY h.id_hotspots ASC;
+        `;
+
+        const values = [scene_id];
+        
+        // CONTROL PANEL
+
+        if (user.role === 2) {
+
+            // Técnico
+            // solo activas
+
+            query += `
+                AND h.is_active = true
+                AND s.is_active = true
+                AND ls.is_active = true
+            `;
+
+        }
+        
+        query += `
+                 ORDER BY h.id_hotspots ASC
+            `;
+        // Admin no añade filtro
+        // puede editar activas e inactivas
+
+        const { rows } = await pool.query(query, values);
+
+        return rows;
+
+    },
+
+    getHotspotById: async (id, user) => {
+
+        let query = `
+            SELECT
+                h.id_hotspots,
+                h.scene_id,
+                h.title,
+                h.yaw,
+                h.pitch,
+                h.description,
+                h.link_scene_id,
+                h.icon_id,
+                h.rotation,
+                h.is_active,
+                h.updated_at,
+                h.is_public,
+
+                -- Escena origen
+                s.description AS from_scene_name,
+                s.imagen_id AS from_scene_image_id,
+                img_scene.nombre_img AS from_scene_name,
+                img_scene.url_minio AS from_scene_url,
+
+                -- Escena destino
+                ls.description AS to_link_scene_name,
+                ls.imagen_id AS to_link_scene_image_id,
+                img_link.nombre_img AS to_scene_name,
+                img_link.url_minio AS to_scene_url
+
+                -- Icono
+                -- i.nombre_img AS icon_name,
+                -- i.url_minio AS icon_url,
+                -- i.tipo AS icon_type
+
+            FROM hotspots h
+
+            LEFT JOIN scenes s
+                ON s.id_scene = h.scene_id
+            
+            LEFT JOIN imagenes img_scene
+                ON img_scene.id_imagen = s.imagen_id
+
+
+            LEFT JOIN scenes ls
+                ON ls.id_scene = h.link_scene_id
+            
+            LEFT JOIN imagenes img_link
+                ON img_link.id_imagen = ls.imagen_id
+
+            WHERE h.id_hotspots = $1
 
         `;
 
@@ -166,7 +237,9 @@ const Hotspots = {
             // solo activas
 
             query += `
+                AND h.is_active = true
                 AND s.is_active = true
+                AND ls.is_active = true
             `;
 
         }
@@ -179,8 +252,6 @@ const Hotspots = {
         return rows[0] || null;
 
     },
-
-
     //Insertar / actualizar
 
     upsert: async (data) => {

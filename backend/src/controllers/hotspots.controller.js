@@ -89,13 +89,10 @@ const upsertHotspot = async (req, res) => {
 const getHotspots = async (req, res) => {
 
     try {
-
-        const hotspots =
-            await Hotspots.getAllHotspots();
-
+        
+        const hotspots = await Hotspots.getAllHotspots(req.user);
 
         res.json(hotspots);
-
 
     } catch (error) {
 
@@ -103,7 +100,6 @@ const getHotspots = async (req, res) => {
             "GET hotspots error:",
             error
         );
-
 
         res.status(500).json({
 
@@ -165,10 +161,10 @@ const getHotspotsByScene = async (req, res) => {
         } = req.params;
 
 
-        const hotspots =
-            await Hotspots.getByScene(
-                scene_id
-            );
+        const hotspots = await Hotspots.getByScene(
+            scene_id,
+            req.user
+        );
 
 
         res.json(hotspots);
@@ -204,27 +200,24 @@ const getHotspotById = async (req,res)=>{
 
         const { id } = req.params;
 
-        const hotspots = await Hotspots.getByScene(
+        const hotspots = await Hotspots.getHotspotById(
             id,
             req.user
         );
 
-
-        if(!scene){
+        if(!hotspots){
 
             return res.status(404).json({
-                error:"Hotspot no encontrada"
+                error:"Hotspot no encontrado"
             });
 
         }
 
-
-        res.json(scene);
-
+        res.json(hotspots);
 
     } catch(error){
 
-        console.error("GET scene error:",error);
+        console.error("GET hotspots error:",error);
 
         res.status(500).json({
             error:"Error interno del servidor"

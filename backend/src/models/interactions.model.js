@@ -161,7 +161,8 @@ const Interactions = {
     return rows[0];
   },
 
-  getAllInteractions: async (isActive = null) => {
+  getInteractionById: async (id, user) => {
+    
     let query = `
       SELECT   
       i.*,  
@@ -173,27 +174,99 @@ const Interactions = {
 
       icon.nombre_img AS icon_name,
       icon.url_minio AS icon_url_minio,
-      icon.tipo AS icon_tipo
+      icon.tipo AS icon_tipo,
+
+      img_scene.nombre_img AS from_scene_name,
+      img_scene.url_minio AS from_scene_url,
+
+      it.name AS type_name
 
       FROM interactions i 
       LEFT JOIN scenes s  ON s.id_scene = i.scene_id
       LEFT JOIN imagenes img ON img.id_imagen = i.imagen_id
       LEFT JOIN imagenes icon ON icon.id_imagen = i.imagen_icon_id
+      LEFT JOIN imagenes img_scene ON img_scene.id_imagen = s.imagen_id
+      LEFT JOIN itypes it ON it.id_type = i.type_id
+
+      WHERE i.id_interactions = $1
+    `;
+
+    const values = [id];
     
-    `;
-    //Cambiar por LEFT JOIN imagenes icon ON icon.id_imagen = i.imagen_icon_id, el que esta es antiguo
-    const values = [];
+    if (user.role === 2) {
 
-    if (isActive !== null) {
-      query += ` WHERE i.is_active = $1`;
-      values.push(isActive);
+        // Técnico
+        // solo activas
+
+        query += `
+            AND i.is_active = true
+            AND s.is_active = true
+        `;
+
     }
-
+    
     query += `
-        ORDER BY i.id_interactions;
-    `;
+              ORDER BY i.id_interactions ASC
+        `;
+    // Admin no añade filtro
+    // puede editar activas e inactivas
 
-    const { rows } = await pool.query(query, values);
+    const { rows } = await pool.query(query,values);
+
+    return rows[0] || null;
+
+  },
+
+  getAllInteractions: async (user) => {
+    
+    let query = `
+      SELECT   
+      i.*,  
+      s.description AS scene_name,
+
+      img.nombre_img AS nombre_interaccion,
+      img.url_minio AS url_minio_interaccion,
+      img.tipo AS img_tipo_interaccion,
+
+      icon.nombre_img AS icon_name,
+      icon.url_minio AS icon_url_minio,
+      icon.tipo AS icon_tipo,
+
+      img_scene.nombre_img AS from_scene_name,
+      img_scene.url_minio AS from_scene_url,
+
+      it.name AS type_name
+
+      FROM interactions i 
+      LEFT JOIN scenes s  ON s.id_scene = i.scene_id
+      LEFT JOIN imagenes img ON img.id_imagen = i.imagen_id
+      LEFT JOIN imagenes icon ON icon.id_imagen = i.imagen_icon_id
+      LEFT JOIN imagenes img_scene ON img_scene.id_imagen = s.imagen_id
+      LEFT JOIN itypes it ON it.id_type = i.type_id
+
+      WHERE 1=1
+    `;
+    
+    if (user.role === 2) {
+
+        // Técnico
+        // solo activas
+
+        query += `
+            AND i.is_active = true
+            AND s.is_active = true
+        `;
+
+    }
+    
+    query += `
+              ORDER BY i.id_interactions ASC
+        `;
+    // Admin no añade filtro
+    // puede editar activas e inactivas
+
+    const { rows } = await pool.query(query);
+
     return rows;
   }
 
