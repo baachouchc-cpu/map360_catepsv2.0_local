@@ -1,4 +1,4 @@
-// src/middlewares/auth.middleware.js
+// src/middlewares/authMiddleware.js
 const jwt = require("jsonwebtoken");
 
 module.exports = (req, res, next) => {
@@ -10,6 +10,7 @@ module.exports = (req, res, next) => {
 
   try {
     req.user = jwt.verify(token, process.env.JWT_SECRET);
+    req.user.configMode = req.headers["x-config-mode"] === "true";
     next();
   } catch (err) {
     return res.redirect("/admin/login");

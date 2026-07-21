@@ -100,6 +100,28 @@ const getRoles = async(req,res)=>{
 };
 
 // ======================================
+// PERMISOS
+// ======================================
+
+const getPermisos = async(req,res)=>{
+
+    try{
+
+        res.json(
+            await Users.getPermisos()
+        );
+
+    }catch(error){
+
+        res.status(500).json({
+            message:"Error obteniendo roles"
+        });
+
+    }
+
+};
+
+// ======================================
 // ESCENAS
 // ======================================
 
@@ -313,66 +335,6 @@ const updateUserStatus = async(req,res)=>{
 
 };
 
-const updateUserConfig = async(req,res)=>{
-
-    try{
-        const {
-            id
-        } = req.params;
-
-        const {
-            is_config
-        } = req.body;
-
-        if(typeof is_config !== "boolean"){
-
-            return res.status(400).json({
-
-                message:
-                "El campo is_config es obligatorio."
-
-            });
-
-        }
-
-        const user = 
-            await Users.updateUserConfig(
-                id,
-                is_config
-            );
-
-        if(!user){
-
-            return res.status(404).json({
-
-                message:
-                "Usuario no encontrado."
-
-            });
-
-        }
-
-        res.json(user);
-
-    }
-    catch(error){
-
-        console.error(
-            "UPDATE user config error:",
-            error
-        );
-
-        res.status(500).json({
-
-            message:
-            "Error actualizando config del usuario."
-
-        });
-
-    }
-
-};
-
 // ======================================
 // EXPORT
 // ======================================
@@ -381,9 +343,9 @@ module.exports={
     getUsers,
     getUserById,
     getRoles,
+    getPermisos,
     getScenes,
     createUser,
     updateUser,
-    updateUserStatus,
-    updateUserConfig
+    updateUserStatus
 };

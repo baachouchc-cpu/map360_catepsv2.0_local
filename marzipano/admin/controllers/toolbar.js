@@ -32,3 +32,38 @@ function hideCreateButton() {
     btnCreate.onclick = null;
 
 }
+
+/*=============================================
+=          BOTÓN VOLVER AL MAPA              =
+=============================================*/
+
+
+const btnMap =
+document.getElementById("btnMap");
+
+
+function initMapButton(){
+
+    if(!btnMap)
+        return;
+
+    btnMap.onclick = ()=>{
+
+        localStorage.setItem(
+            "modo_configuracion",
+            "true"
+        );
+
+        localStorage.setItem(
+            "return_from_admin",
+            "true"
+        );
+
+        window.location.href="/";
+
+    };
+
+}
+
+
+initMapButton();

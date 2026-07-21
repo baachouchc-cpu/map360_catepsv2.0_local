@@ -46,15 +46,26 @@ const upsertScene = async (req, res) => {
 
 // Controlador para obtener todas las escenas con sus hotspots
 async function getScenes(req, res) {
-  try {
-    const user = req.user;
-    const scenes = await Scenes.getAllScenesWithHotspots({isActive:true,
-    user:req.user});
-    res.json(scenes);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Error retrieving scenes' });
-  }
+
+    try {
+
+        const scenes =
+            await Scenes.getAllScenesWithHotspots({
+                isActive:true,
+                user:req.user || null
+            });
+
+        res.json(scenes);
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json({
+            message:'Error retrieving scenes'
+        });
+
+    }
 }
 
 // Controlador para obtener solo id y name de las escenas
@@ -157,7 +168,10 @@ const getSceneById = async (req,res)=>{
 async function getActiveScenes(req, res) {
     try {
 
-        const scenes = await Scenes.getAllScenesWithHotspots(true);
+        const scenes = await Scenes.getAllScenesWithHotspots({
+            isActive:true,
+            user:req.user || null
+        });
 
         res.json(scenes);
 

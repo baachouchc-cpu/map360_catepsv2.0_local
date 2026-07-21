@@ -86,6 +86,13 @@ function loadSidebar() {
 
             </li>
 
+            <li class="menu">
+                <button class="menu-item btn btn-secondary" data-page="permisos" onclick="loadPermisosPage()">
+                    📑 Permisos Escenas
+                </button>
+
+            </li>
+
         </nav>
 
         <div class="sidebar-footer">

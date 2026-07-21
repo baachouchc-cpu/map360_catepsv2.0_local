@@ -20,31 +20,17 @@ const Scenes = {
             AND r.is_public = true
         `;
 
-
-    } else if (user.role === 1) {
+    }else if (user.role === 1) {
 
         interactionCondition = `
             WHERE 1=1
         `;
 
-
-    // } else if (user.role === 2) {
-
-    //     interactionCondition = `
-    //         WHERE r.is_active = true
-    //     `;
-
-
-    } else {
+    }else {
 
         interactionCondition = `
             WHERE r.is_active = true
         `;
-
-        // interactionCondition = `
-        //     WHERE r.is_active = true
-        //     AND r.is_public = true
-        // `;
 
     }
 
@@ -52,7 +38,6 @@ const Scenes = {
     
     if (!user) {
 
-        // sin login
         hotspotCondition = `
             WHERE h.is_active = true
             AND h.is_public = true
@@ -60,41 +45,43 @@ const Scenes = {
             AND destination_scene.is_public = true
         `;
 
+    }else if (user.role === 1) {
 
-    } else if (user.role === 1) {
-
-        // admin
         hotspotCondition = `
             WHERE 1=1
         `;
 
-
-    } else if (user.role === 2) {
-
-        // tecnico
+    }else if (user.role === 2) {
+        // Solo activas
         hotspotCondition = `
             WHERE h.is_active = true
             AND destination_scene.is_active = true
         `;
 
-
-    } else {
+    }else {
 
         hotspotCondition = `
-            WHERE 
+            WHERE
                 h.is_active = true
 
                 AND destination_scene.is_active = true
 
                 AND (
+
                     destination_scene.is_public = true
 
                     OR EXISTS (
+
                         SELECT 1
+
                         FROM permiso_x_escena px
+
                         WHERE px.scene_id = destination_scene.id_scene
+
                         AND px.permisox_id = $${index}
+
                     )
+
                 )
         `;
 
@@ -216,59 +203,44 @@ const Scenes = {
   WHERE 1=1
     `;
 
-        // if (isActive !== null) {
-    //     query += ` AND s.is_active = $${index} `;
-    //     values.push(isActive);
-    //     index++;
-    // }
-
    // CONTROL DE ACCESO
 
     if (!user) {
 
-        // SIN LOGIN
-        // Solo escenas activas y públicas
         query += `
             AND s.is_active = true
             AND s.is_public = true
         `;
 
+    }else if (user.role === 1) {
 
-    } else if (user.role === 1) {
-
-        // ADMIN
-        // Todo: activas, inactivas, públicas y privadas
-        // query += `
-        //     AND 1=1
-        // `;
-
-
-    } else if (user.role === 2) {
-
-        // TÉCNICO
-        // Todo excepto desactivadas
+        // Sin filtros
+    }else if (user.role === 2) {
+        // Solo activas
         query += `
             AND s.is_active = true
         `;
-
-
     } else {
-
-        // USUARIO NORMAL
-        // Solo activas
-        // Públicas + privadas asignadas a su permiso
 
         query += `
             AND s.is_active = true
+
             AND (
+
                 s.is_public = true
 
                 OR EXISTS (
+
                     SELECT 1
+
                     FROM permiso_x_escena px
+
                     WHERE px.scene_id = s.id_scene
+
                     AND px.permisox_id = $${index}
+
                 )
+
             )
         `;
 
@@ -444,10 +416,7 @@ const Scenes = {
 
         // CONTROL PANEL
 
-        if (user.role === 2) {
-
-            // Técnico
-            // solo activas
+        if (!user || user.role !== 1) {
 
             query += `
                 AND s.is_active = true

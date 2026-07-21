@@ -230,6 +230,7 @@ let randomModeActive = false; // estado del modo aleatorio
 let currentUser = null;
 let isAuthenticated = false;
 let canViewPrivate  = false;
+//let configMode = false;
 
 async function loadSession() {
 
@@ -271,10 +272,15 @@ async function loadScenes() {
   sceneInfo.innerHTML = '<p>⏳ Cargando datos de las escenas...</p>';
 
   try {
-    const response = await fetch(`${API_BASE}/api/scenes`);
+    const response = await fetch(
+        `${API_BASE}/api/scenes`,
+        {
+            credentials:"include"
+        }
+    );
 
     allScenes = await response.json();
-
+    console.log(allScenes);
     if (!allScenes.length) {
       sceneInfo.innerHTML = '<p>No hay escenas disponibles.</p>';
       return;

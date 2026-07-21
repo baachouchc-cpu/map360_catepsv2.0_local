@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require("../middlewares/authMiddleware");
+const optionalAuth = require("../middlewares/optionalAuth.middleware");
 const { upsertScene,
     getScenes,
     getNameScenes,
@@ -23,7 +24,7 @@ router.put("/:id(\\d+)", (req, res) => {
 });
 
 // GET → obtener todas las escenas con hotspots
-router.get('/', getScenes);
+router.get('/', optionalAuth, getScenes);
 
 // GET → obtener solo id y name de las escenas
 router.get('/names', getNameScenes);
@@ -42,7 +43,7 @@ router.get('/orientations', getNameOrientations);
 
 // GET → obtener 1 escena por id
 //router.get('/:id(\\d+)', getSceneById);
-router.get("/:id", authMiddleware,getSceneById);
+router.get("/:id(\\d+)", optionalAuth,getSceneById);
 
 // GET → obtener solo escenas activas
 router.get("/active", getActiveScenes);

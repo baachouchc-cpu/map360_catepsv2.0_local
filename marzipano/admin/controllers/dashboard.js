@@ -155,7 +155,7 @@ function loadInteractionsPage() {
 }
 
 /*=============================================
-=            INTERACCIONES                    =
+=            USUARIOS                    =
 =============================================*/
 
 function loadUsersPage() {
@@ -170,6 +170,25 @@ function loadUsersPage() {
     );
     
     loadUsersTable();
+
+}
+
+/*=============================================
+=            PERMISOS                    =
+=============================================*/
+
+function loadPermisosPage() {
+
+    setActiveMenu("permisos");
+
+    document.getElementById("pageTitle").textContent = "Permisos Usuarios"; 
+
+    setCreateButton(
+        "+ Crear permiso",
+        () => openPermisoModal()
+    );
+    
+    loadPermisosTable();
 
 }
 

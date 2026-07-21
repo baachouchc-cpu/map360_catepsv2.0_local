@@ -25,6 +25,13 @@ router.get(
     UsersController.getRoles
 );
 
+// Roles
+router.get(
+    "/data/permiso",
+    authMiddleware,
+    UsersController.getPermisos
+);
+
 // Escenas disponibles
 router.get(
     "/data/scenes",
@@ -66,15 +73,6 @@ router.put(
     "/:id/status",
     authMiddleware,
     UsersController.updateUserStatus
-);
-
- // ======================================
- // CAMBIAR ESTADO
- // ======================================
-router.put(
-    "/:id/config",
-    authMiddleware,
-    UsersController.updateUserConfig
 );
 
 module.exports = router;
