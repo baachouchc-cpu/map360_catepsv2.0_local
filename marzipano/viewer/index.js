@@ -230,7 +230,7 @@ let randomModeActive = false; // estado del modo aleatorio
 let currentUser = null;
 let isAuthenticated = false;
 let canViewPrivate  = false;
-//let configMode = false;
+let configMode = false;
 
 async function loadSession() {
 
@@ -256,6 +256,16 @@ async function loadSession() {
 
         }
 
+         configMode =
+            localStorage.getItem(
+                "modo_configuracion"
+            ) === "true";
+
+        console.log({
+            user:currentUser,
+            configMode
+        });
+
     } catch (error) {
 
         console.error("Error obteniendo sesión", error);
@@ -273,12 +283,17 @@ async function loadScenes() {
 
   try {
     const response = await fetch(
-        `${API_BASE}/api/scenes`,
-        {
-            credentials:"include"
-        }
-    );
 
+    `${API_BASE}/api/scenes?configMode=${configMode}`,
+
+    {
+
+        credentials:"include"
+
+    }
+
+);
+  
     allScenes = await response.json();
     console.log(allScenes);
     if (!allScenes.length) {

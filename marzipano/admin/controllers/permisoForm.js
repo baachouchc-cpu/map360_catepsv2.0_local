@@ -49,9 +49,9 @@ function renderPermisoScenes(scenes){
 
     }
 
-    /*=========================================
-    =              AGRUPAR DATOS             =
-    =========================================*/
+    /*==========================
+    =       AGRUPAR DATOS      =
+    ==========================*/
 
     const towers={};
 
@@ -94,114 +94,114 @@ function renderPermisoScenes(scenes){
 
     });
 
-    /*=========================================
-    =            RENDER TORRES               =
-    =========================================*/
+    /*==========================
+    =      RENDER TORRES       =
+    ==========================*/
 
     Object.values(towers).forEach((tower,index)=>{
 
         const totalTower =
             Object.values(tower.floors)
             .reduce(
-                (acc,floor)=>
-                    acc+floor.scenes.length,
+                (sum,f)=>sum+f.scenes.length,
                 0
             );
 
-        let html=`
+        const towerHTML=`
 
-        <details
-
-            class="permission-tower"
-
-            ${index===0?"open":""}
-
+        <section
+            class="permission-tower ${index===0?"open":""}"
+            data-tower="${tower.id}"
         >
 
-            <summary
+            <div
 
-                class="permission-tower-title"
+                class="permission-tower-header"
 
-                style="--tower-color:${tower.color};"
+                style="--tower-color:${tower.color}"
 
             >
 
-                <div class="permission-tower-name">
+                <div class="permission-tower-left">
 
-                    ${tower.name}
+                    <span class="permission-dot"></span>
 
-                </div>
+                    <span class="permission-title">
 
-                <div
-                    class="permission-tower-count"
-                    data-tower="${tower.id}"
-                >
+                        ${tower.name}
 
-                    0 / ${totalTower}
+                    </span>
 
                 </div>
 
-            </summary>
+                <div class="permission-tower-right">
 
-            <div class="permission-tower-content">
+                    <span
+                        class="permission-tower-counter"
+                        data-counter="${tower.id}"
+                    >
 
-        `;
+                        0 / ${totalTower}
 
-        /*=========================================
-        =               PISOS                   =
-        =========================================*/
+                    </span>
 
-        Object.values(tower.floors).forEach(floor=>{
+                    <span class="permission-arrow">
 
-            html+=`
+                        ▼
 
-                <div class="permission-floor">
+                    </span>
 
-                    <div class="permission-floor-title">
+                </div>
 
-                        <span>
+            </div>
 
-                            📁 ${floor.name}
+            <div class="permission-tower-body">
 
-                        </span>
+                ${Object.values(tower.floors).map(floor=>`
 
-                        <span>
+                    <div class="permission-floor">
 
-                            ${floor.scenes.length} escena${floor.scenes.length!==1?"s":""}
+                        <div class="permission-floor-title">
 
-                        </span>
+                            <div>
 
-                    </div>
+                                📂 ${floor.name}
 
-                    <div class="permission-grid">
+                            </div>
 
-                        ${floor.scenes.map(scene=>`
+                            <div>
 
-                            <label class="permission-card">
+                                ${floor.scenes.length}
 
-                                <input
+                            </div>
 
-                                    type="checkbox"
+                        </div>
 
-                                    class="permiso-scene"
+                        <div class="permission-grid">
 
-                                    value="${scene.id_scene}"
+                            ${floor.scenes.map(scene=>`
 
-                                    data-tower="${tower.id}"
+                                <label class="permission-card">
 
-                                    onchange="togglePermissionCard(this)"
+                                    <input
 
-                                >
+                                        type="checkbox"
 
-                                <img
+                                        class="permiso-scene"
 
-                                    src="${scene.url_minio}"
+                                        data-tower="${tower.id}"
 
-                                    alt="${scene.description}"
+                                        value="${scene.id_scene}"
 
-                                >
+                                        onchange="togglePermissionCard(this)"
 
-                                <div class="permission-card-info">
+                                    >
+
+                                    <img
+
+                                        src="${scene.url_minio}"
+
+                                    >
 
                                     <div class="permission-card-title">
 
@@ -209,25 +209,19 @@ function renderPermisoScenes(scenes){
 
                                     </div>
 
-                                </div>
+                                </label>
 
-                            </label>
+                            `).join("")}
 
-                        `).join("")}
+                        </div>
 
                     </div>
 
-                </div>
-
-            `;
-
-        });
-
-        html+=`
+                `).join("")}
 
             </div>
 
-        </details>
+        </section>
 
         `;
 
@@ -235,37 +229,44 @@ function renderPermisoScenes(scenes){
 
             "beforeend",
 
-            html
+            towerHTML
 
         );
 
     });
 
-    /*=========================================
-    =      SOLO UNA TORRE ABIERTA            =
-    =========================================*/
+    /*==========================
+    =      ACORDEÓN           =
+    ==========================*/
 
     document
-    .querySelectorAll(".permission-tower")
-    .forEach(detail=>{
+    .querySelectorAll(".permission-tower-header")
+    .forEach(header=>{
 
-        detail.addEventListener("toggle",()=>{
+        header.onclick=()=>{
 
-            if(!detail.open)
-                return;
+            const tower=
+                header.parentElement;
 
             document
             .querySelectorAll(".permission-tower")
-            .forEach(other=>{
+            .forEach(item=>{
 
-                if(other!==detail)
-                    other.open=false;
+                if(item!==tower)
+
+                    item.classList.remove("open");
 
             });
 
-        });
+            tower.classList.toggle("open");
+
+        };
 
     });
+
+    updatePermissionCounter();
+
+    updateTowerCounters();
 
 }
 
@@ -291,10 +292,18 @@ permiso.escenas.forEach(scene=>{
 
     if(check)
     check.checked=true;
-    check.parentElement.classList.add("selected");
+    const card =
+        check.closest(".permission-card");
+
+    if(card){
+
+        card.classList.add("selected");
+
+    }
     });
 
     updatePermissionCounter();
+    updateTowerCounters();
 
 }
 
@@ -362,12 +371,19 @@ loadPermisosTable();
 function updatePermissionCounter(){
 
     const total =
-        document.querySelectorAll(".permiso-scene").length;
+        document.querySelectorAll(
+            ".permiso-scene"
+        ).length;
 
     const checked =
-        document.querySelectorAll(".permiso-scene:checked").length;
+        document.querySelectorAll(
+            ".permiso-scene:checked"
+        ).length;
 
-    document.getElementById("permisoCounter").textContent =
+    document.getElementById(
+        "permisoCounter"
+    ).textContent=
+
         `${checked} / ${total} seleccionadas`;
 
 }
@@ -392,11 +408,64 @@ function towerColor(name){
 
 function togglePermissionCard(input){
 
-    input.parentElement.classList.toggle(
+    const card =
+        input.closest(".permission-card");
+
+    card.classList.toggle(
         "selected",
         input.checked
     );
 
     updatePermissionCounter();
+
+    updateTowerCounters();
+
+}
+
+function updateTowerCounters(){
+
+    document
+    .querySelectorAll(".permission-tower")
+    .forEach(tower=>{
+
+        const checks =
+            tower.querySelectorAll(
+                ".permiso-scene"
+            );
+
+        const selected =
+            tower.querySelectorAll(
+                ".permiso-scene:checked"
+            );
+
+        const counter =
+            tower.querySelector(
+                ".permission-tower-counter"
+            );
+
+        const total =
+            checks.length;
+
+        const checked =
+            selected.length;
+
+        if(checked===total && total>0){
+
+            counter.innerHTML=`
+                <span class="permission-ok">
+                    ✔
+                </span>
+                ${checked} / ${total}
+            `;
+
+        }
+        else{
+
+            counter.textContent=
+                `${checked} / ${total}`;
+
+        }
+
+    });
 
 }

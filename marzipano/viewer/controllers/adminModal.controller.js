@@ -119,10 +119,10 @@ const initAdminModalController = (botonLlave) => {
               );
 
           }
-
+          
           window.location.reload();
 
-      });
+        });
 
       // Evento para ir al panel de administración
       document.getElementById("btn-panel-admin")?.addEventListener(

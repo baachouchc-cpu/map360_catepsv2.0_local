@@ -45,29 +45,59 @@ const upsertScene = async (req, res) => {
 };
 
 // Controlador para obtener todas las escenas con sus hotspots
-async function getScenes(req, res) {
+// async function getScenes(req, res) {
 
-    try {
+//     try {
+
+//         const scenes =
+//             await Scenes.getAllScenesWithHotspots({
+//                 isActive:true,
+//                 user:req.user || null
+//             });
+
+//         res.json(scenes);
+
+//     } catch (err) {
+
+//         console.error(err);
+
+//         res.status(500).json({
+//             message:'Error retrieving scenes'
+//         });
+
+//     }
+// }
+
+async function getScenes(req,res){
+
+    try{
 
         const scenes =
             await Scenes.getAllScenesWithHotspots({
-                isActive:true,
-                user:req.user || null
+
+                user:req.user || null,
+
+                configMode:
+                    req.query.configMode === "true"
+
             });
 
         res.json(scenes);
 
-    } catch (err) {
+    }
+    catch(err){
 
         console.error(err);
 
         res.status(500).json({
-            message:'Error retrieving scenes'
+
+            message:"Error retrieving scenes"
+
         });
 
     }
-}
 
+}
 // Controlador para obtener solo id y name de las escenas
 const getNameScenes = async (req, res) => {
   try {
