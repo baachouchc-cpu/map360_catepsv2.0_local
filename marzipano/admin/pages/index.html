@@ -18,6 +18,7 @@
 <link rel="stylesheet" href="/admin/styles/modal.css">
 <link rel="stylesheet" href="/admin/styles/sidebar.css">
 <link rel="stylesheet" href="/admin/styles/table.css">
+<link rel="stylesheet" href="/admin/styles/permissions.css">
 
 
 </head>
@@ -34,9 +35,21 @@
 
             <h2 id="pageTitle">Dashboard</h2>
 
-            <button id="btnCreate" class="btn btn-primary">
-                + Crear
-            </button>
+            <div class="topbar-actions">
+
+                <span id="adminUserInfo" style="color: white; font-weight: bold;"></span>
+
+                <button 
+                    id="btnMap"
+                    class="btn btn-primary">
+                    🗺️ Mapa
+                </button>
+
+                <button id="btnCreate" class="btn btn-primary">
+                    + Crear
+                </button>
+            
+            </div>
 
         </header>
 
@@ -67,9 +80,24 @@ loadAdminSession();
 <script src="/admin/controllers/interactionForm.js"></script>
 <script src="/admin/controllers/users.js"></script>
 <script src="/admin/controllers/userForm.js"></script>
+<script src="/admin/controllers/permisos.js"></script>
+<script src="/admin/controllers/permisoForm.js"></script>
 <script src="/admin/controllers/sidebar.js"></script>
 <script src="/admin/controllers/dashboard.js"></script>
 
+<!-- <script>
+
+const oldFetch = window.fetch;
+
+window.fetch = (...args) => {
+
+    console.log("FETCH ->", args[0]);
+
+    return oldFetch(...args);
+
+};
+
+</script> -->
 
 </body>
 

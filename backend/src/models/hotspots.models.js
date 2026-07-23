@@ -8,6 +8,8 @@ const Hotspots = {
 
     getAllHotspots: async (user) => {
 
+        let values = [];
+
         let query = `
 
             SELECT
@@ -60,20 +62,80 @@ const Hotspots = {
 
         `;
 
-        // CONTROL PANEL
+        // ======================================
+// CONTROL DE ACCESO HOTSPOTS
+// ======================================
+    // Usuario público
+    if (!user) {
 
-        if (user.role === 2) {
+        query += `
+            AND h.is_active = true
+            AND h.is_public = true
 
-            // Técnico
-            // solo activas
+            AND s.is_active = true
+            AND s.is_public = true
 
-            query += `
-                AND h.is_active = true
-                AND s.is_active = true
-                AND ls.is_active = true
-            `;
+            AND ls.is_active = true
+            AND ls.is_public = true
+        `;
 
-        }
+    }
+
+    // Admin
+    else if (user.role === 1) {
+
+        // Todo permitido
+        query += `
+            AND 1=1
+        `;
+
+    }
+
+    // Técnico
+    else if (user.role === 2) {
+
+        query += `
+            AND h.is_active = true
+            AND s.is_active = true
+            AND ls.is_active = true
+        `;
+
+    }
+
+    // Usuario normal
+    else {
+
+        query += `
+            AND h.is_active = true
+
+            AND s.is_active = true
+
+            AND (
+                s.is_public = true
+
+                OR EXISTS (
+                    SELECT 1
+                    FROM permiso_x_escena px
+                    WHERE px.scene_id = s.id_scene
+                    AND px.permisox_id = $2
+                )
+            )
+
+            AND (
+                ls.is_public = true
+
+                OR EXISTS (
+                    SELECT 1
+                    FROM permiso_x_escena px2
+                    WHERE px2.scene_id = ls.id_scene
+                    AND px2.permisox_id = $2
+                )
+            )
+        `;
+
+        values.push(user.permisos_id);
+
+    }
         
         query += `
                  ORDER BY h.id_hotspots ASC
@@ -81,7 +143,7 @@ const Hotspots = {
         // Admin no añade filtro
         // puede editar activas e inactivas
 
-        const { rows } = await pool.query(query);
+        const { rows } = await pool.query(query,values);
 
         return rows;
 
@@ -145,15 +207,26 @@ const Hotspots = {
 
         `;
 
-        const values = [scene_id];
+        let values = [scene_id];
         
         // CONTROL PANEL
 
-        if (user.role === 2) {
+        // CONTROL DE ACCESO
+
+        if (!user) {
+
+            // Usuario público
+            query += `
+                AND h.is_active = true
+                AND h.is_public = true
+                AND s.is_active = true
+                AND s.is_public = true
+            `;
+
+        }
+        else if (user.role === 2) {
 
             // Técnico
-            // solo activas
-
             query += `
                 AND h.is_active = true
                 AND s.is_active = true
@@ -161,6 +234,8 @@ const Hotspots = {
             `;
 
         }
+
+// Admin role 1 ve todo
         
         query += `
                  ORDER BY h.id_hotspots ASC
@@ -192,7 +267,7 @@ const Hotspots = {
                 h.is_public,
 
                 -- Escena origen
-                s.description AS from_scene_name,
+                s.description AS from_scene_description,
                 s.imagen_id AS from_scene_image_id,
                 img_scene.nombre_img AS from_scene_name,
                 img_scene.url_minio AS from_scene_url,
@@ -227,7 +302,7 @@ const Hotspots = {
 
         `;
 
-        const values = [id];
+        let values = [id];
         
         // CONTROL PANEL
 

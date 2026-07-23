@@ -22,7 +22,6 @@ const login = async (req, res) => {
       { 
         id: user.id_user, 
         role: user.rol_id,
-        isConfig: user.is_config, // Guardamos el booleano de acceso aquí
         permisos_id: user.permisos_id
       },
       process.env.JWT_SECRET,
@@ -43,7 +42,6 @@ const login = async (req, res) => {
           username: user.name_user, // Corregido a name_user (el campo real de tu tabla)
           nombreCompleto: user.nombre_completo,
           role: user.rol_id,
-          isConfig: user.is_config,
           idPermiso: user.permisos_id
         },
         // Pasamos un array limpio con los IDs de las escenas permitidas: [1, 4, 8]
@@ -101,7 +99,6 @@ const me = async (req, res) => {
                 username: user.name_user,
                 nombreCompleto: user.nombre_completo,
                 role: user.rol_id,
-                isConfig: user.is_config,
                 idPermiso: user.permisos_id
 
             },
@@ -125,40 +122,3 @@ const me = async (req, res) => {
 };
 
 module.exports = { login, logout, me };
-
-// const bcrypt = require("bcrypt");
-// const jwt = require("jsonwebtoken");
-// const Users = require("../models/users.model");
-
-// const login = async (req, res) => {
-//   const { name, password } = req.body;
-
-//   const user = await Users.getUserByName(name);
-//   if (!user) return res.status(401).json({ error: "Credenciales inválidas" });
-
-//   const ok = await bcrypt.compare(password, user.pass_user);
-//   if (!ok) return res.status(401).json({ error: "Credenciales inválidas" });
-
-//   const token = jwt.sign(
-//     { id: user.id_user, role: user.rol_id },
-//     process.env.JWT_SECRET,
-//     { expiresIn: "1h" }
-//   );
-
-//   res.cookie("token", token, {
-//     httpOnly: true,
-//     sameSite: "lax"
-//   });
-
-//   res.json({ message: "Login correcto", user: {
-//       username: user.name_user,
-//       role: user.rol_id
-//     } });
-// };
-
-// const logout = (req, res) => {
-//   res.clearCookie("token");
-//   res.json({ message: "Logout OK" });
-// };
-
-// module.exports = { login, logout };

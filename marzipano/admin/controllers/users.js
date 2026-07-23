@@ -23,7 +23,8 @@ async function loadUsersTable(){
                 fields:[
                     { field:"id_user", title:"ID" },
                     { field:"name_user", title:"Usuario" },
-                    { field:"nombre", title:"Nombre" },
+                    { field:"nombre", title: "Nombre" },
+                    { field:"apellido", title: "Apellido" },
                     { field:"name_rol", title:"Rol" },
                     { field:"nombre_permiso", title:"Permiso" },
                     { 
@@ -41,39 +42,6 @@ async function loadUsersTable(){
                                     ${value ? "checked":""}
                                     onchange="
                                     toggleUserStatus(
-                                        ${row.id_user},
-                                        this.checked,
-                                        this
-                                    )
-                                    "
-                                    >
-                                    <span class="slider"></span>
-                                </label>
-                                `
-                                :
-                                `
-                                <span>
-                                    ${value?"Activo":"Inactivo"}
-                                </span>
-                                `
-                            }
-                        `
-                    },
-                    { 
-                        field:"is_config",
-                        title:"Configuración",
-                        formatter:(value,row)=>`
-
-                        ${
-                                isAdmin()
-                                ?
-                                `
-                                <label class="switch">
-                                    <input
-                                    type="checkbox"
-                                    ${value ? "checked":""}
-                                    onchange="
-                                    toggleUserConfig(
                                         ${row.id_user},
                                         this.checked,
                                         this
@@ -138,13 +106,9 @@ async function loadUsersTable(){
 
 }
 
-
-
 /*=============================================
 =               ACCIONES                      =
 =============================================*/
-
-
 function editUser(id){
 
     openUserModal(id);
@@ -260,87 +224,6 @@ async function toggleUserStatus(
                 body:JSON.stringify({
 
                     is_active:true
-
-                })
-
-            }
-        );
-
-        loadUsersTable();
-
-    }
-
-}
-
-async function toggleUserConfig(
-    id,
-    active,
-    checkbox
-){
-
-    if(!active){
-
-        openConfirmModal({
-
-            title:"Desactivar panel de configuración",
-
-            message:
-            "El usuario no podrá acceder al panel de configuración.",
-
-            confirmText:"Desactivar",
-
-            confirmClass:"btn-delete",
-
-            onConfirm:async()=>{
-
-                await fetch(
-                    `/api/adminusers/${id}/config`,
-                    {
-                        method:"PUT",
-
-                        headers:{
-                            "Content-Type":
-                            "application/json"
-                        },
-
-                        body:JSON.stringify({
-
-                            is_config:false
-
-                        })
-
-                    }
-                );
-
-                loadUsersTable();
-
-            },
-
-            onCancel:()=>{
-
-                checkbox.checked=true;
-
-            }
-
-        });
-
-    }
-    else{
-
-        await fetch(
-            `/api/adminusers/${id}/config`,
-            {
-
-                method:"PUT",
-
-                headers:{
-                    "Content-Type":
-                    "application/json"
-                },
-
-                body:JSON.stringify({
-
-                    is_config:true
 
                 })
 

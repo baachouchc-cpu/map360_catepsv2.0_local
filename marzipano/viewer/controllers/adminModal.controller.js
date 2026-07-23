@@ -33,6 +33,9 @@ const initAdminModalController = (botonLlave) => {
     if (userLogueado) {
       // 1. Forzamos la desaparición completa de la llave original
       botonAccesoReal.style.setProperty('display', 'none', 'important');
+      
+      // 2. Activamos el modo de configuración
+      const modoConfiguracion = localStorage.getItem("modo_configuracion") === "true";
 
       // // Ocultamos la llave original
       // botonLlave.style.display = 'none';
@@ -55,6 +58,23 @@ const initAdminModalController = (botonLlave) => {
 
       bloqueUsuario.innerHTML = `
         <span style="font-weight: bold; color: #f1c40f;">👤 ${userLogueado.nombreCompleto || userLogueado.username}</span>
+        ${(userLogueado.role === 1 || userLogueado.role === 2)?`
+          <button 
+          id="btn-config-mode"
+          title="Cambiar modo">
+          ${ localStorage.getItem("modo_configuracion")
+          ? "👁️" : "⚙️" }
+          </button>
+          `
+          :
+          ""}
+        ${localStorage.getItem("modo_configuracion") ? `
+          <button
+          id="btn-panel-admin"
+          title="Panel administración">
+          🛠️
+          </button>
+          `:''}
         <button id="btn-logout-express" title="Cerrar Sesión" style="
           background: #e74c3c !important;
           color: white !important;
@@ -69,6 +89,47 @@ const initAdminModalController = (botonLlave) => {
       `;
 
       contenedorPadre.appendChild(bloqueUsuario);
+      
+      // Evento para cambiar a modo de configuración
+      document.getElementById("btn-config-mode")?.addEventListener("click",()=>{
+          const modo =
+          localStorage.getItem(
+              "modo_configuracion"
+          );
+
+          if(modo){
+
+              localStorage.removeItem(
+                  "modo_configuracion"
+              );
+
+              alert(
+                  "Modo usuario activado"
+              );
+
+          }else{
+
+              localStorage.setItem(
+                  "modo_configuracion",
+                  "true"
+              );
+
+              alert(
+                  "Modo configuración activado"
+              );
+
+          }
+          
+          window.location.reload();
+
+        });
+
+      // Evento para ir al panel de administración
+      document.getElementById("btn-panel-admin")?.addEventListener(
+      "click",
+      ()=>{
+      window.location.href="/admin";
+      });
 
       // Evento para cerrar sesión
       document.getElementById('btn-logout-express').addEventListener('click', async () => {
@@ -79,6 +140,7 @@ const initAdminModalController = (botonLlave) => {
         }
         localStorage.removeItem('escenas_permitidas');
         localStorage.removeItem('user_info');
+        localStorage.removeItem('modo_configuracion');
         alert("Sesión cerrada correctamente");
         window.location.reload();
       });
@@ -129,7 +191,7 @@ const initAdminModalController = (botonLlave) => {
         // 1. Guardamos los datos y permisos en LocalStorage
         localStorage.setItem('escenas_permitidas', JSON.stringify(res.escenas));
         localStorage.setItem('user_info', JSON.stringify(res.user));
-
+        localStorage.removeItem("modo_configuracion");
         // 2. Ventana emergente indicando éxito
         alert("¡Sesión iniciada con éxito!");
 

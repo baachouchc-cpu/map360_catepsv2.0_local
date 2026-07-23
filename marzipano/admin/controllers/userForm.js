@@ -3,7 +3,7 @@ let allScenes=[];
 async function initUserForm(id=null){
 
     await loadRoles();
-
+    await loadPermisos();
     await loadScenes();
 
     if(id){
@@ -47,36 +47,27 @@ async function loadRoles(){
 
 }
 
-async function loadScenes(){
+async function loadPermisos(){
 
     const res =
         await fetch(
-            "/api/adminusers/data/scenes"
+            "/api/adminusers/data/permiso"
         );
 
-    allScenes =
+    const roles =
         await res.json();
 
-    const container =
+    const select =
         document.getElementById(
-            "sceneList"
+            "permisos_id"
         );
 
-    container.innerHTML =
+    select.innerHTML =
+        roles.map(r=>`
 
-        allScenes.map(s=>`
-
-        <label>
-
-            <input
-            type="checkbox"
-            value="${s.id_scene}"
-            class="scene-check"
-            >
-
-            ${s.description}
-
-        </label>
+        <option value="${r.id_permiso}">
+            ${r.nombre_permiso}
+        </option>
 
         `).join("");
 
@@ -92,29 +83,11 @@ async function loadUserData(id){
     const user =
         await res.json();
 
-    id_user.value=user.id_user;
-
-    nombre.value=user.nombre;
-
-    apellido.value=user.apellido;
-
-    rol_id.value=user.rol_id;
-
-    is_config.checked=user.is_config;
-
-
-    // user.escenas.forEach(scene=>{
-
-    //     const checkbox =
-    //         document.querySelector(
-    //         `.scene-check[value="${scene.id_scene}"]`
-    //         );
-
-
-    //     if(checkbox)
-    //         checkbox.checked=true;
-
-    // });
+    document.getElementById("id_user").value=user.id_user;
+    document.getElementById("nombre").value=user.nombre;
+    document.getElementById("apellido").value=user.apellido;
+    document.getElementById("rol_id").value=user.rol_id;
+    document.getElementById("permisos_id").value = user.permisos_id;
 
     user.escenas.forEach(scene=>{
 
@@ -143,11 +116,10 @@ async function saveUser(e){
 
     const data={
 
-        nombre: nombre.value,
-        apellido: apellido.value,
-        rol_id: Number(rol_id.value),
-        password: password.value,
-        is_config: is_config.checked,
+        nombre: document.getElementById("nombre").value,
+        apellido: document.getElementById("apellido").value,
+        rol_id: document.getElementById("rol_id").value,
+        password: document.getElementById("password").value,    
         scenes
 
     };
@@ -187,52 +159,6 @@ async function saveUser(e){
     closeUserModal();
 
     loadUsersTable();
-
-}
-
-async function loadScenes(){
-
-    const res =
-        await fetch(
-            "/api/adminusers/data/scenes"
-        );
-
-    allScenes =
-        await res.json();
-
-    const container =
-        document.getElementById(
-            "imageSceneGrid"
-        );
-
-
-    container.innerHTML = allScenes.map(scene=>`
-
-        <label class="scene-card">
-
-
-            <input
-                type="checkbox"
-                value="${scene.id_scene}"
-                class="scene-check"
-            >
-
-
-            <img
-                src="${scene.url_minio}"
-                alt="${scene.description}"
-            >
-
-
-            <span>
-                ${scene.description}
-            </span>
-
-
-        </label>
-
-
-    `).join("");
 
 }
 

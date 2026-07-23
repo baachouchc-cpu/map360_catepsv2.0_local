@@ -9,7 +9,6 @@ const getUserByName = async (name) => {
       pass_user, 
       rol_id, 
       permisos_id,
-      is_config,
       -- Concatenamos nombre y apellido con un espacio intermedio. 
       -- COALESCE evita que devuelva NULL si alguno de los campos está vacío en la BD.
       TRIM(CONCAT(COALESCE(nombre, ''), ' ', COALESCE(apellido, ''))) AS nombre_completo
@@ -33,7 +32,6 @@ const getUserAdminById = async (id)=>{
             u.apellido,
             u.rol_id,
             u.permisos_id,
-            u.is_config,
             u.is_active,
             u.updated_at,
 
@@ -72,7 +70,6 @@ const getAllUsers = async () => {
             u.apellido,
             u.rol_id,
             u.permisos_id,
-            u.is_config,
             u.is_active,
             u.updated_at,
 
@@ -285,7 +282,6 @@ const createUser=async(data)=>{
             apellido,
             rol_id,
             permisos_id
-
         )
 
        VALUES
@@ -330,10 +326,8 @@ const updateUser=async(id,data)=>{
         nombre,
         apellido,
         rol_id,
-        permisos_id,
+        permisos_id
         //is_active,
-        is_config
-
     }=data;
 
     const {rows}=await db.query(`
@@ -345,13 +339,10 @@ const updateUser=async(id,data)=>{
             nombre=$1,
             apellido=$2,
             rol_id=$3,
-            permisos_id=$4,
+            permisos_id=$4
             -- is_active=$5,
-            is_config=$5
 
-
-        WHERE id_user=$6
-
+        WHERE id_user=$5
 
         RETURNING *
 
@@ -362,7 +353,6 @@ const updateUser=async(id,data)=>{
         rol_id,
         permisos_id,
         //is_active,
-        is_config,
         id
     ]);
 
@@ -480,34 +470,6 @@ const updateUserStatus = async(id,status)=>{
 
 };
 
-const updateUserConfig = async(id,config)=>{
-
-    const {rows}=await db.query(
-
-        `
-        UPDATE users
-
-        SET
-
-            is_config=$1
-
-        WHERE id_user=$2
-
-        RETURNING *
-
-        `,
-
-        [
-            config,
-            id
-        ]
-
-    );
-
-    return rows[0];
-
-};
-
 module.exports={
     getUserByName,
     getUserAdminById,
@@ -521,8 +483,7 @@ module.exports={
     getUserById,
     updateUser,
     findPermissionByScenes,
-    updateUserStatus,
-    updateUserConfig
+    updateUserStatus
 };
 // const db = require("../services/db");
 

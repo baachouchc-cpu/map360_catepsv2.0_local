@@ -1,0 +1,419 @@
+/*=========================================================
+=                     CONTENEDOR                          =
+=========================================================*/
+
+.permission-tree{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:18px;
+
+    max-height:auto;
+
+    overflow-y:auto;
+
+    padding:8px 6px 18px;
+
+}
+
+
+/*=========================================================
+=                      TORRE                              =
+=========================================================*/
+
+.permission-tower{
+
+    border:1px solid #d8d8d8;
+
+    border-radius:14px;
+
+    background:#fff;
+
+    box-shadow:0 4px 15px rgba(0,0,0,.08);
+
+    overflow:hidden;
+
+}
+
+
+/*=========================================================
+=                  CABECERA TORRE                         =
+=========================================================*/
+
+.permission-tower-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:5px 5px;
+
+    cursor:pointer;
+
+    user-select:none;
+
+    transition:.25s;
+
+}
+
+
+.permission-tower-header:hover{
+
+    background:#fafafa;
+
+}
+
+
+.permission-tower-left{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+}
+
+
+.permission-dot{
+
+    width:16px;
+
+    height:16px;
+
+    border-radius:4px;
+
+    background:var(--tower-color);
+
+}
+
+
+.permission-title{
+
+    font-size:16px;
+
+    font-weight:700;
+
+    color:#333;
+
+}
+
+
+.permission-tower-right{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+}
+
+
+.permission-tower-counter{
+
+    font-size:16px;
+
+    color:#666;
+
+    font-weight:700;
+
+}
+
+
+.permission-arrow{
+
+    font-size:18px;
+
+    transition:.25s;
+
+}
+
+
+/*=========================================================
+=                  CONTENIDO TORRE                        =
+=========================================================*/
+
+.permission-tower-body{
+
+    display:none;
+
+    padding:22px;
+
+    border-top:4px solid var(--tower-color);
+
+    animation:fadeTower .25s;
+
+}
+
+
+.permission-tower.open .permission-tower-body{
+
+    display:block;
+
+}
+
+
+.permission-tower.open .permission-arrow{
+
+    transform:rotate(180deg);
+
+}
+
+
+/*=========================================================
+=                      PISO                               =
+=========================================================*/
+
+.permission-floor{
+
+    display:block;
+
+    width:100%;
+
+    margin-bottom:26px;
+
+}
+
+
+.permission-floor:last-child{
+
+    margin-bottom:0;
+
+}
+
+
+.permission-floor-title{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:16px;
+
+    padding-left:14px;
+
+    border-left:4px solid #d8d8d8;
+
+    font-size:16px;
+
+    font-weight:700;
+
+    color:#444;
+
+}
+
+
+.permission-floor-title div:last-child{
+
+    color:#777;
+
+    font-size:14px;
+
+}
+
+
+/*=========================================================
+=                      GRID                               =
+=========================================================*/
+
+.permission-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,minmax(0,1fr));
+
+    gap:18px;
+
+    width:100%;
+
+}
+
+
+/*=========================================================
+=                    TARJETA                              =
+=========================================================*/
+
+.permission-card{
+
+    display:flex;
+
+    flex-direction:column;
+
+    overflow:hidden;
+
+    border:2px solid #e3e3e3;
+
+    border-radius:14px;
+
+    background:#fff;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+
+.permission-card:hover{
+
+    transform:translateY(-3px);
+
+    border-color:#2563eb;
+
+    box-shadow:0 6px 18px rgba(0,0,0,.12);
+
+}
+
+
+.permission-card input{
+
+    display:none;
+
+}
+
+
+.permission-card img{
+
+    width:100%;
+
+    height:145px;
+
+    object-fit:cover;
+
+    display:block;
+
+}
+
+
+.permission-card-title{
+
+    padding:12px;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    line-height:1.4;
+
+    color:#333;
+
+}
+
+
+/*=========================================================
+=                    SELECCIONADA                         =
+=========================================================*/
+
+.permission-card.selected{
+
+    border-color:#2563eb;
+
+    background:#eef5ff;
+
+    box-shadow:0 0 12px rgba(37,99,235,.22);
+
+}
+
+
+/*=========================================================
+=                     CONTADOR                            =
+=========================================================*/
+
+.permission-counter{
+
+    float:right;
+
+    color:#666;
+
+    font-size:15px;
+
+    font-weight:700;
+
+}
+
+
+/*=========================================================
+=                    SCROLLBAR                            =
+=========================================================*/
+
+.permission-tree::-webkit-scrollbar{
+
+    width:8px;
+
+}
+
+
+.permission-tree::-webkit-scrollbar-thumb{
+
+    background:#c9c9c9;
+
+    border-radius:20px;
+
+}
+
+
+/*=========================================================
+=                    ANIMACIÓN                            =
+=========================================================*/
+
+@keyframes fadeTower{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(-8px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:none;
+
+    }
+
+}
+
+
+/*=========================================================
+=                    RESPONSIVE                           =
+=========================================================*/
+
+@media(max-width:1200px){
+
+    .permission-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+
+@media(max-width:700px){
+
+    .permission-title{
+
+        font-size:18px;
+
+    }
+
+}
+
+.permission-ok{
+
+    color:#16a34a;
+
+    font-weight:700;
+
+    margin-right:6px;
+
+}

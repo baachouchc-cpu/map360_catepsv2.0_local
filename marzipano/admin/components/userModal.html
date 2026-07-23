@@ -26,23 +26,46 @@
                 id="id_user"
                 >
 
-                <label> Nombre </label>
+                <div class="form-grid">
 
-                <input
-                id="nombre"
-                required
-                >
+                    <div class="form-group">
 
-                <label> Apellido </label>
+                        <label> Nombre </label>
 
-                <input
-                id="apellido"
-                required
-                >
+                        <input
+                        id="nombre"
+                        required
+                        >
 
-                <label> Rol </label>
+                    </div>
 
-                <select id="rol_id"><option value="">Cargando tipos...</option></select>
+                     <div class="form-group">
+
+                        <label> Apellido </label>
+
+                        <input
+                        id="apellido"
+                        required
+                        >
+                    
+                    </div>
+
+                     <div class="form-group">
+
+                        <label> Rol </label>
+
+                        <select id="rol_id"><option value="">Cargando tipos...</option></select>
+                    
+                    </div>
+
+                    <div class="form-group">
+
+                        <label> Permisos </label>
+
+                        <select id="permisos_id"><option value="">Cargando permisos...</option></select>
+                    </div>
+
+                </div>
 
                 <label> Contraseña </label>
 
@@ -50,28 +73,10 @@
                 type="password"
                 id="password"
                 placeholder="Dejar vacío para mantener"
-                >
-
-                <div class="switch-group">
-
-                    <label class="switch">
-
-                        <input
-                            type="checkbox"
-                            id="is_config">
-
-                        <span class="slider"></span>
-
-                    </label>
-
-                    <span>
-                        Acceso al panel de administración
-                    </span>
-
-                </div>
+                >                      
 
                 <div id="scenePermissions">
-
+                    <br>
                     <h3> Escenas permitidas </h3>
 
                     <div
@@ -79,9 +84,10 @@
                     class="scene-list"
                     >
 
-                    <div
-                    id="imageSceneGrid"
-                    class="image-picker-grid" >
+                        <div
+                        id="imageSceneGrid"
+                        class="image-picker-grid" >
+                        </div>
 
                     </div>
 

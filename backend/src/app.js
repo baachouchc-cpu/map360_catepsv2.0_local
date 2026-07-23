@@ -19,6 +19,7 @@ const adminRoutes = require("./routes/admin.routes");
 const imageRoutes = require("./routes/images.routes");
 const hotspotsRoutes = require("./routes/hotspots.routes");
 const usersRoutes = require("./routes/users.routes");
+const permisosRoutes =require("./routes/permisos.routes");
 
 // Middleware auth
 const auth = require("./middlewares/auth.middleware");
@@ -49,6 +50,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/images", imageRoutes);
 app.use("/api/navegation", hotspotsRoutes);
 app.use("/api/adminusers", usersRoutes);
+app.use("/api/permisos",permisosRoutes);
 
 
 // FRONTEND STATIC
