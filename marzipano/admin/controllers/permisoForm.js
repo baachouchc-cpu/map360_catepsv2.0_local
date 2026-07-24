@@ -100,12 +100,29 @@ function renderPermisoScenes(scenes){
 
     Object.values(towers).forEach((tower,index)=>{
 
-        const totalTower =
-            Object.values(tower.floors)
-            .reduce(
-                (sum,f)=>sum+f.scenes.length,
-                0
-            );
+        const counters = {
+
+            inherit: 0,
+            none: 0
+
+        };
+
+        Object
+            .values(tower.floors)
+            .flatMap(f => f.scenes)
+            .forEach(scene => {
+
+                if(scene.selected){
+
+                    counters.inherit++;
+
+                }else{
+
+                    counters.none++;
+
+                }
+
+            });
 
         const towerHTML=`
 
@@ -136,14 +153,13 @@ function renderPermisoScenes(scenes){
 
                 <div class="permission-tower-right">
 
-                    <span
-                        class="permission-tower-counter"
-                        data-counter="${tower.id}"
-                    >
+                    <div class="permission-tower-counter">
 
-                        0 / ${totalTower}
+                        🟢 ${counters.inherit}
 
-                    </span>
+                        ⚪ ${counters.none}
+
+                    </div>
 
                     <span class="permission-arrow">
 
@@ -206,6 +222,16 @@ function renderPermisoScenes(scenes){
                                     <div class="permission-card-title">
 
                                         ${scene.description}
+
+                                    </div>
+
+                                    <div class="scene-state">
+
+                                        <span class="scene-state-label">
+
+                                            ⚪ Sin acceso
+
+                                        </span>
 
                                     </div>
 
@@ -281,7 +307,6 @@ const permiso =await res.json();
 
 document.getElementById("id_permiso").value = permiso.id_permiso;
 document.getElementById("nombre_permiso").value = permiso.nombre_permiso;
-document.getElementById("custom").checked = permiso.custom;
 
 permiso.escenas.forEach(scene=>{
 
@@ -298,6 +323,9 @@ permiso.escenas.forEach(scene=>{
     if(card){
 
         card.classList.add("selected");
+
+        card.querySelector(".scene-state-label").textContent =
+        "🟢 Permitida";
 
     }
     });
@@ -322,12 +350,10 @@ const escenas =
 const data={
 
 nombre_permiso:document.getElementById("nombre_permiso").value,
-custom:document.getElementById("custom").checked,
 
 escenas
 
 };
-console.log(data);
 
 const id =
 id_permiso.value;
@@ -416,6 +442,12 @@ function togglePermissionCard(input){
         input.checked
     );
 
+    const label = card.querySelector(".scene-state-label");
+
+    label.textContent = input.checked
+        ? "🟢 Permitida"
+        : "⚪ Sin acceso";
+
     updatePermissionCounter();
 
     updateTowerCounters();
@@ -428,43 +460,38 @@ function updateTowerCounters(){
     .querySelectorAll(".permission-tower")
     .forEach(tower=>{
 
-        const checks =
-            tower.querySelectorAll(
-                ".permiso-scene"
-            );
+        const counters={
 
-        const selected =
-            tower.querySelectorAll(
-                ".permiso-scene:checked"
-            );
+            inherit:0,
+            none:0
 
-        const counter =
-            tower.querySelector(
-                ".permission-tower-counter"
-            );
+        };
 
-        const total =
-            checks.length;
+        tower
+        .querySelectorAll(".permiso-scene")
+        .forEach(check=>{
 
-        const checked =
-            selected.length;
+            if(check.checked){
 
-        if(checked===total && total>0){
+                counters.inherit++;
 
-            counter.innerHTML=`
-                <span class="permission-ok">
-                    ✔
-                </span>
-                ${checked} / ${total}
-            `;
+            }else{
 
-        }
-        else{
+                counters.none++;
 
-            counter.textContent=
-                `${checked} / ${total}`;
+            }
 
-        }
+        });
+
+        tower
+        .querySelector(".permission-tower-counter")
+        .innerHTML = `
+
+            🟢 ${counters.inherit}
+
+            ⚪ ${counters.none}
+
+        `;
 
     });
 

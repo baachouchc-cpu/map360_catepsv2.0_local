@@ -22,21 +22,7 @@ async function loadPermisosTable(){
 
             { field:"id_permiso", title:"ID"},
             { field:"nombre_permiso", title:"Permiso"},
-            { field:"total_escenas", title:"Total Escenas"},
-            {
-                field:"custom",
-                title:"Tipo",
-                formatter:(v)=>{
-
-                return v
-                ?
-                "Personalizado"
-                :
-                "Base";
-
-                }
-            },
-            { field:"parent",title:"Basado en" }
+            { field:"total_escenas", title:"Total Escenas"}
 
         ]
 

@@ -13,8 +13,6 @@ const Permisos = {
             SELECT
                 p.id_permiso,
                 p.nombre_permiso,
-                p.custom,
-                p.parent,
 
                 COUNT(px.scene_id) AS total_escenas
 
@@ -96,8 +94,6 @@ const Permisos = {
 
         const {
             nombre_permiso,
-            custom=false,
-            parent=null,
             escenas=[]
         }=data;
 
@@ -111,20 +107,16 @@ const Permisos = {
 
                 INSERT INTO permisos_escenas
                 (
-                    nombre_permiso,
-                    custom,
-                    parent
+                    nombre_permiso
                 )
 
-                VALUES($1,$2,$3)
+                VALUES($1)
 
                 RETURNING *
 
             `,[
 
-                nombre_permiso,
-                custom,
-                parent
+                nombre_permiso
 
             ]);
 

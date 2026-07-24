@@ -177,7 +177,7 @@ const initAdminModalController = (botonLlave) => {
     //   password: formData.get('password')
     // };
     const data = Object.fromEntries(formData.entries());
-
+    
     try {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
@@ -186,8 +186,8 @@ const initAdminModalController = (botonLlave) => {
       });
 
       const res = await response.json();
-
-      if (response.ok && res.escenas) {
+      console.log(res);
+      if (response.ok) {
         // 1. Guardamos los datos y permisos en LocalStorage
         localStorage.setItem('escenas_permitidas', JSON.stringify(res.escenas));
         localStorage.setItem('user_info', JSON.stringify(res.user));

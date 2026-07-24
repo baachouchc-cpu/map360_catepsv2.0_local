@@ -27,7 +27,7 @@ router.get(
 
 // Roles
 router.get(
-    "/data/permiso",
+    "/data/permisos",
     authMiddleware,
     UsersController.getPermisos
 );
@@ -43,7 +43,7 @@ router.get(
 // OBTENER USUARIO POR ID
 // ======================================
 router.get(
-    "/:id",
+    "/:id(\\d+)",
     authMiddleware,
     UsersController.getUserById
 );
@@ -54,16 +54,16 @@ router.get(
 router.post(
     "/",
     authMiddleware,
-    UsersController.createUser
+    UsersController.upsertUser
 );
 
  // ======================================
  // ACTUALIZAR USUARIO
  // ======================================
 router.put(
-    "/:id",
+    "/:id(\\d+)",
     authMiddleware,
-    UsersController.updateUser
+    UsersController.upsertUser
 );
 
  // ======================================

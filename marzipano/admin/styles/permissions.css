@@ -306,6 +306,65 @@
 
 }
 
+.user-scene-card.inherit{
+
+    border-color:#16a34a;
+    background:#f0fdf4;
+
+}
+
+.user-scene-card.allow{
+
+    border-color:#2563eb;
+    background:#eef5ff;
+
+}
+
+.user-scene-card.deny{
+
+    border-color:#dc2626;
+    background:#fef2f2;
+
+}
+
+.user-scene-card.none{
+
+    border-color:#d1d5db;
+    opacity:.55;
+
+}
+
+.scene-state{
+
+    padding:10px;
+
+    text-align:center;
+
+}
+
+.scene-state-label{
+
+    font-size:14px;
+
+    font-weight:700;
+
+}
+
+.scene-buttons{
+
+    display:flex;
+
+    gap:8px;
+
+    padding:12px;
+
+}
+
+.scene-buttons button{
+
+    flex:1;
+
+}
 
 /*=========================================================
 =                    SELECCIONADA                         =
