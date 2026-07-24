@@ -569,19 +569,6 @@ async function loadScene(scene, retryCount = 0) {
           });
 
           let expanded = false;
-
-          // wrapper.addEventListener("click", () => {
-          //   expanded = !expanded;
-          //   if (expanded) {
-          //     message.style.display = "none"; // Oculta el mensaje
-          //     iframe.style.display = "block";  // Muestra el iframe
-          //     titleBox.style.display = "none";
-          //   } else {
-          //     message.style.display = "block"; // Vuelve a mostrar el mensaje
-          //     iframe.style.display = "none";    // Oculta el iframe
-          //     titleBox.style.display = "block";
-          //   }
-          // });
         }
 
         // Interacción 3 APIs
