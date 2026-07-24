@@ -277,7 +277,7 @@ const Scenes = {
         /*=========================================
         =         MODO CONFIGURACIÓN             =
         =========================================*/
-
+        //console.log(user);
         if(configMode){
 
             // ADMIN
@@ -355,11 +355,13 @@ const Scenes = {
                 hotspotCondition = `
                     WHERE
 
-                        h.is_active = true
+                    h.is_active = true
 
-                        AND destination_scene.is_active = true
+                    AND destination_scene.is_active = true
 
-                        AND (
+                    AND (
+
+                        (
 
                             destination_scene.is_public = true
 
@@ -369,13 +371,46 @@ const Scenes = {
 
                                 FROM permiso_x_escena px
 
-                                WHERE px.scene_id = destination_scene.id_scene
+                                WHERE
+                                    px.scene_id = destination_scene.id_scene
 
                                 AND px.permisox_id = $${index}
 
                             )
 
                         )
+
+                        AND NOT EXISTS(
+
+                            SELECT 1
+
+                            FROM user_x_scene ux
+
+                            WHERE
+                                ux.scene_id = destination_scene.id_scene
+
+                            AND ux.user_id = $${index + 1}
+
+                            AND ux.is_allow = false
+
+                        )
+
+                        OR EXISTS(
+
+                            SELECT 1
+
+                            FROM user_x_scene ux
+
+                            WHERE
+                                ux.scene_id = destination_scene.id_scene
+
+                            AND ux.user_id = $${index + 1}
+
+                            AND ux.is_allow = true
+
+                        )
+
+                    )
                 `;
 
                 interactionCondition = `
@@ -386,19 +421,45 @@ const Scenes = {
                 sceneCondition = `
                     s.is_active = true
 
-                    AND (
+                    AND
 
-                        s.is_public = true
+                    (
+
+                        (
+
+                            s.is_public = true
+
+                            OR EXISTS(
+
+                                SELECT 1
+                                FROM permiso_x_escena px
+                                WHERE
+                                    px.scene_id = s.id_scene
+                                AND px.permisox_id = $${index}
+
+                            )
+
+                        )
+
+                        AND NOT EXISTS(
+
+                            SELECT 1
+                            FROM user_x_scene ux
+                            WHERE
+                                ux.scene_id = s.id_scene
+                            AND ux.user_id = $${index + 1}
+                            AND ux.is_allow = false
+
+                        )
 
                         OR EXISTS(
 
                             SELECT 1
-
-                            FROM permiso_x_escena px
-
-                            WHERE px.scene_id = s.id_scene
-
-                            AND px.permisox_id = $${index}
+                            FROM user_x_scene ux
+                            WHERE
+                                ux.scene_id = s.id_scene
+                            AND ux.user_id = $${index + 1}
+                            AND ux.is_allow = true
 
                         )
 
@@ -406,7 +467,9 @@ const Scenes = {
                 `;
 
                 values.push(user.permisos_id);
-                index++;
+                values.push(user.id);
+
+                index += 2;
 
             }
 
@@ -526,6 +589,9 @@ const Scenes = {
                         'icon_id',r.icon_id,
                         'icon_url',rc.icon_url,
                         'name_icon',rc.name_icon,
+                        'minio_icon_id',r.imagen_icon_id,
+                        'minio_icon_url',img_icon.url_minio,
+                        'minio_icon_name',img_icon.tipo,
                         'rotation',r.rotation,
                         'radius',r.radius,
                         'type',r.type_id,
@@ -548,6 +614,9 @@ const Scenes = {
 
             LEFT JOIN icons rc
                 ON rc.id_icon=r.icon_id
+
+            LEFT JOIN imagenes img_icon
+                ON img_icon.id_imagen=r.imagen_icon_id
 
             ${interactionCondition}
 

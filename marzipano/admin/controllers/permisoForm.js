@@ -406,11 +406,10 @@ function updatePermissionCounter(){
             ".permiso-scene:checked"
         ).length;
 
-    document.getElementById(
-        "permisoCounter"
-    ).textContent=
+    const none = total - checked;
 
-        `${checked} / ${total} seleccionadas`;
+    document.getElementById("permisoCounter").textContent =
+        `🟢 ${checked}   ⚪ ${none}`;
 
 }
 
