@@ -37,40 +37,32 @@ const getUserById = async(req,res)=>{
 
     try{
 
-        const {
-            id
-        }=req.params;
+        const {id}=req.params;
 
-        const user =
+        const user=
             await Users.getUserAdminById(id);
 
         if(!user){
 
             return res.status(404).json({
+
                 message:"Usuario no encontrado"
+
             });
 
         }
 
-        const escenas =
-            await Users.getEscenasPorPermiso(
-                user.permisos_id
-            );
+        res.json(user);
 
-        res.json({
-
-            ...user,
-
-            escenas
-
-        });
-
-    }catch(error){
+    }
+    catch(error){
 
         console.error(error);
 
         res.status(500).json({
+
             message:"Error obteniendo usuario"
+
         });
 
     }
@@ -146,125 +138,88 @@ const getScenes = async(req,res)=>{
 };
 
 // ======================================
-// CREAR USUARIO
+// CREATE + UPDATE (UPSERT)
 // ======================================
 
-const createUser = async(req,res)=>{
-
-    try{
-
-        let data = req.body;
-
-        let permisos_id = null;
-
-        /*
-            Solo usuarios normales
-            necesitan permisos
-        */
-
-        if(
-            data.rol_id == 3 &&
-            data.scenes &&
-            data.scenes.length
-        ){
-
-            permisos_id =
-                await Users.findPermissionByScenes(
-                    data.scenes
-                );
-
-
-
-            if(!permisos_id){
-
-
-                permisos_id =
-                    await Users.createPermission(
-                        "Permiso automático",
-                        data.scenes
-                    );
-            }
-
-        }
-
-        const user =
-            await Users.createUser({
-
-                ...data,
-
-                permisos_id
-
-            });
-
-        res.json(user);
-
-    }catch(error){
-
-        console.error(error);
-
-        res.status(500).json({
-            message:"Error creando usuario"
-        });
-
-    }
-
-};
-
-// ======================================
-// ACTUALIZAR USUARIO
-// ======================================
-
-const updateUser = async(req,res)=>{
+const upsertUser = async (req, res) => {
 
     try{
 
         const {
-            id
-        }=req.params;
 
-        let data=req.body;
+            id_user,
+            nombre,
+            apellido,
+            rol_id,
+            password,
+            overrides = []
 
-        let permisos_id=null;
+        } = req.body;
 
         if(
-            data.rol_id == 3 &&
-            data.scenes &&
-            data.scenes.length
+            !nombre ||
+            !apellido ||
+            !rol_id
         ){
 
-            permisos_id =
-                await Users.findPermissionByScenes(
-                    data.scenes
-                );
+            return res.status(400).json({
 
-            if(!permisos_id){
+                message:
+                "Nombre, apellido y rol son obligatorios."
 
-                permisos_id =
-                    await Users.createPermission(
-                        "Permiso automático",
-                        data.scenes
-                    );
-            }
+            });
 
         }
 
+        // contraseña obligatoria solo al crear
+        if(!id_user && !password){
+
+            return res.status(400).json({
+
+                message:
+                "La contraseña es obligatoria."
+
+            });
+
+        }
+
+        const {
+
+            overrides: _,
+
+            ...userData
+
+        } = req.body;
+
         const user =
-            await Users.updateUser(
-                id,
-                {
-                    ...data,
-                    permisos_id
-                }
-            );
+            await Users.upsertUser(userData);
 
-        res.json(user);
+        await Users.saveUserOverrides(
 
-    }catch(error){
+            user.id_user,
+            overrides
+
+        );
+
+        res.json({
+
+            message:
+            "Usuario guardado correctamente",
+
+            user
+
+        });
+
+    }
+    catch(error){
 
         console.error(error);
 
         res.status(500).json({
-            message:"Error actualizando usuario"
+
+            message:
+            "Error guardando usuario"
+
         });
 
     }
@@ -345,7 +300,6 @@ module.exports={
     getRoles,
     getPermisos,
     getScenes,
-    createUser,
-    updateUser,
+    upsertUser,
     updateUserStatus
 };

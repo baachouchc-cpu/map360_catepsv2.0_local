@@ -76,19 +76,30 @@
                 >                      
 
                 <div id="scenePermissions">
+
+                    <hr>
+
+                    <h3>Acceso a escenas</h3>
+
+                    <p class="text-muted">
+                        El usuario hereda las escenas del permiso seleccionado.
+                        Solo se muestran las excepciones que modifican ese permiso.
+                    </p>
+
+                    <div class="permission-summary">
+
+                        <strong>Permiso base:</strong>
+
+                        <span id="permissionName">
+                            —
+                        </span>
+
+                    </div>
+
                     <br>
-                    <h3> Escenas permitidas </h3>
 
-                    <div
-                    id="sceneList"
-                    class="scene-list"
-                    >
-
-                        <div
-                        id="imageSceneGrid"
-                        class="image-picker-grid" >
-                        </div>
-
+                    <div id="imageUserSceneGrid"
+                        class="permission-tree">
                     </div>
 
                 </div>

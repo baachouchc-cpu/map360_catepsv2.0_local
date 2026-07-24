@@ -15,7 +15,7 @@ const login = async (req, res) => {
     if (!ok) return res.status(401).json({ error: "Credenciales inválidas" });
     
     // 3. Buscamos las escenas permitidas usando el permisos_id que viene en el usuario
-    const escenasPermitidas = await Users.getEscenasPorPermiso(user.permisos_id); 
+    //const escenasPermitidas = await Users.getEscenasPorPermiso(user.permisos_id); 
 
     // 3. Agregamos 'is_config' en el payload del JWT para usarlo en los middlewares
     const token = jwt.sign(
@@ -43,9 +43,9 @@ const login = async (req, res) => {
           nombreCompleto: user.nombre_completo,
           role: user.rol_id,
           idPermiso: user.permisos_id
-        },
+        }
         // Pasamos un array limpio con los IDs de las escenas permitidas: [1, 4, 8]
-        escenas: escenasPermitidas.map(e => e.id_scene)
+        //escenas: escenasPermitidas.map(e => e.id_scene)
       });
 } catch (error) {
     console.error("Error en el login:", error);
@@ -84,10 +84,7 @@ const me = async (req, res) => {
 
         }
 
-        const escenas =
-            await Users.getEscenasPorPermiso(
-                user.permisos_id
-            );
+        //const escenas = await Users.getEscenasPorPermiso( user.permisos_id);
 
         res.json({
 
@@ -101,9 +98,9 @@ const me = async (req, res) => {
                 role: user.rol_id,
                 idPermiso: user.permisos_id
 
-            },
+            }
 
-            escenas: escenas.map(e => e.id_scene)
+            //scenas: escenas.map(e => e.id_scene)
 
         });
 
