@@ -94,8 +94,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       closePasswordModal();
 
-      if (currentInteraction.link) {
-        window.open(currentInteraction.link, "_blank");
+      if (currentInteraction.link || currentInteraction.minio_url_interaccion) {
+        window.open(currentInteraction.link || currentInteraction.minio_url_interaccion, "_blank");
       }
     } catch (err) {
       errorText.textContent = "❌ Error del servidor";
@@ -261,10 +261,7 @@ async function loadSession() {
                 "modo_configuracion"
             ) === "true";
 
-        console.log({
-            user:currentUser,
-            configMode
-        });
+        //console.log({user:currentUser, configMode});
 
     } catch (error) {
 
@@ -371,7 +368,7 @@ async function loadScene(scene, retryCount = 0) {
 
     // Si la escena no está cacheada, la creamos
     if (!cachedScenes.has(scene.id_scene)) {
-      const source = Marzipano.ImageUrlSource.fromString(scene.imagen_url);
+      const source = Marzipano.ImageUrlSource.fromString(scene.url_minio);
       const geometry = new Marzipano.EquirectGeometry([{ width: 4000 }]);
       const limiter = Marzipano.RectilinearView.limit.traditional(1024, 120 * Math.PI / 180);
       const view = new Marzipano.RectilinearView(null, limiter);
@@ -402,33 +399,33 @@ async function loadScene(scene, retryCount = 0) {
         titleBox.style.display = "none";
         wrapper.appendChild(titleBox);
 
-        if (h.icon_id === 1) {
-          // Hotspot de información
-          const descBox = document.createElement("div");
-          descBox.className = "hotspot-info-desc";
-          descBox.innerHTML = `<div class="hotspot-info-header"><span>ℹ️ ${h.title}</span><button class="hotspot-info-close">✖</button></div><p>${h.description}</p>`;
-          descBox.style.display = "none";
-          wrapper.appendChild(descBox);
+        // if (h.icon_id === 1) {
+        //   // Hotspot de información
+        //   const descBox = document.createElement("div");
+        //   descBox.className = "hotspot-info-desc";
+        //   descBox.innerHTML = `<div class="hotspot-info-header"><span>ℹ️ ${h.title}</span><button class="hotspot-info-close">✖</button></div><p>${h.description}</p>`;
+        //   descBox.style.display = "none";
+        //   wrapper.appendChild(descBox);
 
-          let expanded = false;
-          wrapper.addEventListener("mouseenter", () => { titleBox.style.display = "block"; });
-          wrapper.addEventListener("mouseleave", () => { if (!expanded) titleBox.style.display = "none"; });
+        //   let expanded = false;
+        //   wrapper.addEventListener("mouseenter", () => { titleBox.style.display = "block"; });
+        //   wrapper.addEventListener("mouseleave", () => { if (!expanded) titleBox.style.display = "none"; });
 
-          wrapper.addEventListener("click", () => {
-            expanded = !expanded;
-            descBox.style.display = expanded ? "block" : "none";
-            titleBox.style.display = expanded ? "none" : "block";
-          });
+        //   wrapper.addEventListener("click", () => {
+        //     expanded = !expanded;
+        //     descBox.style.display = expanded ? "block" : "none";
+        //     titleBox.style.display = expanded ? "none" : "block";
+        //   });
 
-          descBox.querySelector(".hotspot-info-close").addEventListener("click", (e) => {
-            e.stopPropagation();
-            descBox.style.display = "none";
-            expanded = false;
-          });
-        }
+        //   descBox.querySelector(".hotspot-info-close").addEventListener("click", (e) => {
+        //     e.stopPropagation();
+        //     descBox.style.display = "none";
+        //     expanded = false;
+        //   });
+        // }
 
         // Hotspot de navegación
-        if (h.icon_id === 2) {
+        //if (h.icon_id === 2) {
           wrapper.addEventListener("mouseenter", () => { titleBox.style.display = "block"; });
           wrapper.addEventListener("mouseleave", () => { titleBox.style.display = "none"; });
           wrapper.addEventListener("click", () => {
@@ -448,7 +445,7 @@ async function loadScene(scene, retryCount = 0) {
           // Aplicar rotación si existe
           const transformProps = ['-ms-transform','-webkit-transform','transform'];
           transformProps.forEach(prop => { icon.style[prop] = `rotate(${h.rotation}rad)`; });
-        }
+        //}
 
         hotspotMap[h.id_hotspots] = wrapper;
         createdScene.hotspotContainer().createHotspot(wrapper, { yaw: h.yaw, pitch: h.pitch });
@@ -472,23 +469,32 @@ async function loadScene(scene, retryCount = 0) {
           
           const descBox = document.createElement("div");
           descBox.classList.add("textInfo");
+          const hotspot = document.createElement("div");
+          const icon = document.createElement('img');
+          icon.src = r.minio_icon_url && r.minio_icon_url.trim() !== "" 
+            ? r.minio_icon_url 
+            : "https://cdn-icons-png.flaticon.com/512/684/684908.png";
+          icon.classList.add('hotspot-icon3');
+          hotspot.appendChild(icon);
+          descBox.appendChild(hotspot);
           //console.log(r.icon_id);
         // hotspotconst icon = document.createElement('img');
-          if (r.icon_id == 1) {
-            const hotspot = document.createElement("div");
-            hotspot.classList.add("hotspot");
-            hotspot.innerHTML = `<div class="out"></div><div class="in"></div>`;
-            descBox.appendChild(hotspot);
-          } else {
-            const hotspot = document.createElement("div");
-            const icon = document.createElement('img');
-            icon.src = r.icon_url && r.icon_url.trim() !== "" 
-              ? r.icon_url 
-              : "https://cdn-icons-png.flaticon.com/512/684/684908.png";
-            icon.classList.add('hotspot-icon2');
-            hotspot.appendChild(icon);
-            descBox.appendChild(hotspot);
-          }
+        //Anterior ICONO BD
+          // if (r.icon_id == 1) {
+          //   const hotspot = document.createElement("div");
+          //   hotspot.classList.add("hotspot");
+          //   hotspot.innerHTML = `<div class="out"></div><div class="in"></div>`;
+          //   descBox.appendChild(hotspot);
+          // } else {
+          //   const hotspot = document.createElement("div");
+          //   const icon = document.createElement('img');
+          //   icon.src = r.minio_icon_url && r.minio_icon_url.trim() !== "" 
+          //     ? r.minio_icon_url 
+          //     : "https://cdn-icons-png.flaticon.com/512/684/684908.png";
+          //   icon.classList.add('hotspot-icon2');
+          //   hotspot.appendChild(icon);
+          //   descBox.appendChild(hotspot);
+          // }
           // tooltip
           const tooltip = document.createElement("div");
           tooltip.classList.add("tooltip-content");
@@ -659,8 +665,8 @@ async function loadScene(scene, retryCount = 0) {
             
             const hotspot = document.createElement("div");
             const icon = document.createElement('img');
-            icon.src = r.icon_url && r.icon_url.trim() !== "" 
-              ? r.icon_url 
+            icon.src = r.minio_icon_url && r.minio_icon_url.trim() !== "" 
+              ? r.minio_icon_url 
               : "https://cdn-icons-png.flaticon.com/512/684/684908.png";
             icon.classList.add('hotspot-icon2');
             hotspot.appendChild(icon);
@@ -683,8 +689,8 @@ async function loadScene(scene, retryCount = 0) {
           descBox.classList.add("reveal");
 
           const icon = document.createElement('img');
-          icon.src = r.icon_url && r.icon_url.trim() !== "" 
-            ? r.icon_url 
+          icon.src = r.minio_icon_url && r.minio_icon_url.trim() !== "" 
+            ? r.minio_icon_url 
             : "https://cdn-icons-png.flaticon.com/512/684/684908.png";
           //icon.classList.add('hotspot-icon');
           descBox.appendChild(icon);
@@ -692,7 +698,7 @@ async function loadScene(scene, retryCount = 0) {
           // tooltip
           const tooltip = document.createElement("div");
           tooltip.classList.add("reveal-content");
-          tooltip.innerHTML = `<p>${r.title || ""}</p><img src="${r.link || ""}" alt="Imagen" style="width:100%;">`;
+          tooltip.innerHTML = `<p>${r.title || ""}</p><img src="${r.minio_url_interaccion || ""}" alt="Imagen" style="width:100%;">`;
           descBox.appendChild(tooltip);
 
           wrapper.appendChild(descBox);
@@ -703,8 +709,8 @@ async function loadScene(scene, retryCount = 0) {
           // CLICK SIMPLE → abrir imagen/link
           wrapper.addEventListener("click", () => {
             clickTimer = setTimeout(() => {
-              if (r.link) {
-                window.open(r.link, "_blank");
+              if (r.minio_url_interaccion) {
+                window.open(r.minio_url_interaccion, "_blank");
               }
             }, CLICK_DELAY);
           });
@@ -718,8 +724,8 @@ async function loadScene(scene, retryCount = 0) {
 
           const hotspot = document.createElement("div");
           const icon = document.createElement('img');
-          icon.src = r.icon_url && r.icon_url.trim() !== ""
-            ? r.icon_url
+          icon.src = r.minio_icon_url && r.minio_icon_url.trim() !== ""
+            ? r.minio_icon_url
             : "https://cdn-icons-png.flaticon.com/512/854/854878.png";
           icon.classList.add('hotspot-icon2');
           hotspot.appendChild(icon);
@@ -762,22 +768,29 @@ async function loadScene(scene, retryCount = 0) {
           
           const descBox = document.createElement("div");
           descBox.classList.add("textInfo");
-          
-          if (r.icon_id == 1) {
-            const hotspot = document.createElement("div");
-            hotspot.classList.add("hotspot");
-            hotspot.innerHTML = `<div class="out"></div><div class="in"></div>`;
-            descBox.appendChild(hotspot);
-          } else {
-            const hotspot = document.createElement("div");
-            const icon = document.createElement('img');
-            icon.src = r.icon_url && r.icon_url.trim() !== "" 
-              ? r.icon_url 
-              : "https://cdn-icons-png.flaticon.com/512/684/684908.png";
-            icon.classList.add('hotspot-icon2');
-            hotspot.appendChild(icon);
-            descBox.appendChild(hotspot);
-          }
+          const hotspot = document.createElement("div");
+          const icon = document.createElement('img');
+          icon.src = r.minio_icon_url && r.minio_icon_url.trim() !== "" 
+            ? r.minio_icon_url 
+            : "https://cdn-icons-png.flaticon.com/512/684/684908.png";
+          icon.classList.add('hotspot-icon2');
+          hotspot.appendChild(icon);
+          descBox.appendChild(hotspot);
+          // if (r.icon_id == 1) {
+          //   const hotspot = document.createElement("div");
+          //   hotspot.classList.add("hotspot");
+          //   hotspot.innerHTML = `<div class="out"></div><div class="in"></div>`;
+          //   descBox.appendChild(hotspot);
+          // } else {
+          //   const hotspot = document.createElement("div");
+          //   const icon = document.createElement('img');
+          //   icon.src = r.minio_icon_url && r.minio_icon_url.trim() !== "" 
+          //     ? r.minio_icon_url 
+          //     : "https://cdn-icons-png.flaticon.com/512/684/684908.png";
+          //   icon.classList.add('hotspot-icon2');
+          //   hotspot.appendChild(icon);
+          //   descBox.appendChild(hotspot);
+          // }
           // tooltip
           const tooltip = document.createElement("div");
           tooltip.classList.add("tooltip-content");
@@ -821,13 +834,32 @@ async function loadScene(scene, retryCount = 0) {
 
         // DOBLE CLICK → ir a admin/login
         wrapper.addEventListener("dblclick", () => {
-          // cancelar el click simple
-          clearTimeout(clickTimer);
-          clickTimer = null;
 
-          const url = `/admin/login?id_interaction=${r.id_interactions}`;
-          window.open(url, "_blank");
+            clearTimeout(clickTimer);
+            clickTimer = null;
+
+            if (!configMode)
+                return;
+
+            window.open(
+                `/admin?id_interaction=${r.id_interactions}`,
+                "_blank"
+            );
+
         });
+        
+        // DOBLE CLICK → ir a admin/login
+        // wrapper.addEventListener("dblclick", () => {
+        //   // cancelar el click simple
+        //   clearTimeout(clickTimer);
+        //   clickTimer = null;
+
+        //    const url = configMode
+        //       ? `/admin?id_interaction=${r.id_interactions}`
+        //       : `/admin/login?id_interaction=${r.id_interactions}`;
+
+        //   window.open(url, "_blank");
+        // });
 
       });
 
