@@ -42,6 +42,15 @@ async function loadAdminSession() {
             JSON.stringify(data.escenas)
         );
 
+        const params = new URLSearchParams(window.location.search);
+        const interactionId = params.get("id_interaction");
+
+        if (interactionId) {
+
+            window.pendingInteractionId = Number(interactionId);
+
+        }
+
         renderAdminUser();
         initAdminButtons();
 

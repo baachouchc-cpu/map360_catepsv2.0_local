@@ -287,8 +287,8 @@ const Scenes = {
                         'description',h.description,
                         'link_scene_id',h.link_scene_id,
                         'icon_id',h.icon_id,
-                        'icon_url',i.icon_url,
-                        'name_icon',i.name_icon,
+                        'icon_url',i.url_minio,
+                        'name_icon',i.nombre_img,
                         'rotation',h.rotation,
                         'h_is_active',h.is_active,
                         'h_is_public',h.is_public,
@@ -301,8 +301,8 @@ const Scenes = {
 
             FROM hotspots h
 
-            LEFT JOIN icons i
-                ON i.id_icon=h.icon_id
+            LEFT JOIN imagenes i
+                ON i.id_imagen=h.icon_id
 
             INNER JOIN scenes destination_scene
                 ON destination_scene.id_scene=h.link_scene_id
@@ -337,6 +337,9 @@ const Scenes = {
                         'minio_icon_id',r.imagen_icon_id,
                         'minio_icon_url',img_icon.url_minio,
                         'minio_icon_name',img_icon.tipo,
+                        'minio_id_interaccion',r.imagen_id,
+                        'minio_nombre_interaccion',img_int.nombre_img,
+                        'minio_url_interaccion',img_int.url_minio,
                         'rotation',r.rotation,
                         'radius',r.radius,
                         'type',r.type_id,
@@ -362,6 +365,9 @@ const Scenes = {
 
             LEFT JOIN imagenes img_icon
                 ON img_icon.id_imagen=r.imagen_icon_id
+
+            LEFT JOIN imagenes img_int
+                ON img_int.id_imagen=r.imagen_id
 
             ${interactionCondition}
 

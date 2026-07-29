@@ -29,7 +29,9 @@ const optionalAuth = require("./middlewares/optionalAuth.middleware");
 const corsOptions = {
     origin: [
         "http://localhost:5000",
-        "http://127.0.0.1:5000"
+        "http://127.0.0.1:5000",
+        "http://192.168.137.162",
+        "http://192.168.137.162:5000"//IP del servidor
     ],
     credentials: true
 };

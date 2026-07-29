@@ -6,11 +6,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
         document.getElementById("pageTitle").textContent = "";
         document.getElementById("content").innerHTML = "";
-
         return;
+
     }
 
-    loadDashboardPage();
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.has("id_interaction")) {
+
+        loadInteractionsPage();
+
+    } else {
+
+        loadDashboardPage();
+
+    }
 
 });
 
@@ -139,7 +149,7 @@ function loadNavegationPage() {
 =            INTERACCIONES                    =
 =============================================*/
 
-function loadInteractionsPage() {
+async function loadInteractionsPage() {
 
     setActiveMenu("interactions");
 
@@ -150,7 +160,9 @@ function loadInteractionsPage() {
         () => openInteractionModal()
     );
 
-    loadInteractionsTable();
+    await loadInteractionsTable();
+
+    await openInteractionFromUrl();
 
 }
 
@@ -207,5 +219,25 @@ function setActiveMenu(page) {
     if (active) {
         active.classList.add("active");
     }
+
+}
+
+async function openInteractionFromUrl(){
+
+    const params = new URLSearchParams(window.location.search);
+
+    const id = params.get("id_interaction");
+
+    if(!id)
+        return;
+
+    await openInteractionModal(id);
+
+    // limpiar la URL para que no vuelva a abrirse
+    history.replaceState(
+        {},
+        "",
+        window.location.pathname
+    );
 
 }
