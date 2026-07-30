@@ -84,7 +84,12 @@ async function loadCounters() {
     try {
 
         const [sceneRes, interactionRes, routeRes] = await Promise.all([
-            fetch("/api/scenes"),
+            fetch(
+                "/api/scenes?configMode=true",
+                {
+                    credentials: "include"
+                }
+            ),
             fetch("/api/interactions"),
             fetch("/api/navegation")
         ]);
