@@ -75,103 +75,148 @@ function fillHotspotForm(data){
 /*=============================================
 =            GUARDAR                          =
 =============================================*/
-
+let savingHotspot = false;
 async function saveHotspot(e){
 
     e.preventDefault();
 
-    const imagenFromId =  document.getElementById("imagen_from_id");
-    const imagenFromError = document.getElementById("imagenfromError");
-    const imagenToId =  document.getElementById("imagen_to_id");
-    const imagenToError = document.getElementById("imagentoError");
+    if (savingHotspot)
+        return;
 
-    //Validar escena origen
+    savingHotspot = true;
 
-    if (!imagenFromId.value) {
+    const btnSave = document.querySelector(
+        'button[form="hotspotForm"]'
+    );
+
+    btnSave.disabled = true;
+    btnSave.textContent = "Guardando...";
+
+    try{
+
+        const imagenFromId =  document.getElementById("imagen_from_id");
+        const imagenFromError = document.getElementById("imagenfromError");
+        const imagenToId =  document.getElementById("imagen_to_id");
+        const imagenToError = document.getElementById("imagentoError");
+
+        //Validar escena origen
+
+        if (!imagenFromId.value) {
+
+            imagenFromError.style.display =
+                "block";
+
+            return;
+
+        }
 
         imagenFromError.style.display =
-            "block";
+            "none";
+        
+        //Validar escena destino
+        //Validar icono
 
-        return;
+        if (!imagenToId.value) {
 
-    }
+            imagenToError.style.display =
+                "block";
 
-    imagenFromError.style.display =
-        "none";
-    
-    //Validar escena destino
-    //Validar icono
+            return;
 
-    if (!imagenToId.value) {
+        }
 
         imagenToError.style.display =
-            "block";
+            "none";
 
-        return;
+        const body = {
 
+            id_hotspots: document.getElementById("id_hotspots").value || null,
+            scene_id: document.getElementById("imagen_from_id").value,
+            title: document.getElementById("title").value,
+            yaw: document.getElementById("yaw").value,
+            pitch: document.getElementById("pitch").value,
+            description: document.getElementById("description").value,
+            link_scene_id: document.getElementById("imagen_to_id").value,
+            icon_id: 2,
+            rotation: document.getElementById("rotation").value || 0
+
+        };
+
+        const method =
+            body.id_hotspots
+                ? "PUT"
+                : "POST";
+
+        const url =
+            body.id_hotspots
+                ? `/api/navegation/${body.id_hotspots}`
+                : "/api/navegation";
+
+        const res =
+            await fetch(url,{
+
+                method,
+
+                headers:{
+
+
+                    "Content-Type":
+                        "application/json"
+
+                },
+
+                body:
+                    JSON.stringify(body)
+
+            });
+
+        if (res.ok) {
+
+            try {
+
+                const rebuild = await fetch("/api/rebuild-edges", {
+                    method: "POST"
+                });
+
+                if (rebuild.ok) {
+
+                    //console.log("✅ Rutas reconstruidas");
+
+                } else {
+
+                    console.warn("⚠ No se pudieron reconstruir las rutas");
+
+                }
+
+            } catch (err) {
+
+                console.error("Error reconstruyendo rutas:", err);
+
+            }
+
+            alert(
+                "Hotspot guardado correctamente.\n\nLas rutas de navegación se han actualizado."
+            );
+
+            closehotspotModal();
+
+            loadNavegationTable();
+
+        } else {
+
+            console.error(await res.text());
+
+            alert("Error guardando hotspot");
+
+        }
+
+    }finally{
+
+            savingHotspot = false;
+
+            btnSave.disabled = false;
+            btnSave.textContent = "Guardar";
     }
-
-    imagenToError.style.display =
-        "none";
-
-    const body = {
-
-        id_hotspots: document.getElementById("id_hotspots").value || null,
-        scene_id: document.getElementById("imagen_from_id").value,
-        title: document.getElementById("title").value,
-        yaw: document.getElementById("yaw").value,
-        pitch: document.getElementById("pitch").value,
-        description: document.getElementById("description").value,
-        link_scene_id: document.getElementById("imagen_to_id").value,
-        icon_id: 2,
-        rotation: document.getElementById("rotation").value || 0
-
-    };
-
-    const method =
-        body.id_hotspots
-            ? "PUT"
-            : "POST";
-
-    const url =
-        body.id_hotspots
-            ? `/api/navegation/${body.id_hotspots}`
-            : "/api/navegation";
-
-    const res =
-        await fetch(url,{
-
-            method,
-
-            headers:{
-
-
-                "Content-Type":
-                    "application/json"
-
-            },
-
-            body:
-                JSON.stringify(body)
-
-        });
-
-    if(res.ok){
-
-        alert("Guardado correctamente");
-
-        closehotspotModal();
-
-        loadNavegationTable();
-
-    }else{
-
-        console.error(await res.text());
-
-        alert("Error guardando hotspot");
-
-    }
-
 }
 
 /*=============================================
