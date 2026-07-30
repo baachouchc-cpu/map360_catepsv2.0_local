@@ -33,12 +33,19 @@ router.get(
 =============================================*/
 
 // Subir una imagen
+// Cloudinary (actual)
 router.post(
     "/upload",
     upload.single("image"),
     controller.uploadImage
 );
 
+// MinIO (nuevo)
+router.post(
+    "/upload-minio",
+    upload.single("image"),
+    controller.uploadImageMinio
+);
 
 /*=============================================
 =               DELETE

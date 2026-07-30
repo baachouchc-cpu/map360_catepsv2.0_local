@@ -1,5 +1,9 @@
 const Images = require("../models/images.model");
 const cloudinary = require("../services/cloudinary");
+const minio = require("../services/minio");
+const fs = require("fs");
+const path = require("path");
+const crypto = require("crypto");
 
 /*=============================================
 =             LISTAR IMÁGENES
@@ -88,6 +92,85 @@ exports.uploadImage = async (req, res) => {
 
 };
 
+/*=============================================
+=             SUBIR IMAGEN MINIO
+=============================================*/
+
+exports.uploadImageMinio = async (req, res) => {
+
+    try {
+
+        if (!req.file) {
+
+            return res.status(400).json({
+                message: "No se recibió ninguna imagen."
+            });
+
+        }
+
+        const path = require("path");
+        const fs = require("fs");
+        const crypto = require("crypto");
+
+        const type = req.body.type || "imagenes_360";
+
+        const folders = {
+
+            imagenes_360: "imagenes_360",
+
+            iconos: "iconos",
+
+            logos: "logos",
+
+            documentos: "documentos"
+
+        };
+
+        const folder =
+            folders[type] || "uploads";
+
+        const extension =
+            path.extname(req.file.originalname);
+
+        const objectName =
+            `${folder}/${crypto.randomUUID()}${extension}`;
+
+        await minio.fPutObject(
+
+            process.env.MINIO_BUCKET,
+
+            objectName,
+
+            req.file.path
+
+        );
+
+        const image = await Images.create({
+
+            nombre_img: req.file.originalname,
+
+            url_minio:
+                `${process.env.MINIO_PUBLIC_URL}/${objectName}`,
+
+            tipo: type
+
+        });
+
+        fs.unlink(req.file.path, () => {});
+
+        res.status(201).json(image);
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json({
+            error: err.message
+        });
+
+    }
+
+};
 
 /*=============================================
 =             OBTENER IMAGEN

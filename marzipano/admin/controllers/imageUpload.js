@@ -43,13 +43,21 @@ async function uploadImage(file, type){
 
     formData.append("type", type);
 
-    const response = await fetch("/api/images/upload",{
+    const IMAGE_UPLOAD_URL = "/api/images/upload-minio";
 
-        method:"POST",
-
-        body:formData
-
+    const response = await fetch(IMAGE_UPLOAD_URL,{
+        method: "POST",
+        body: formData
     });
+// const IMAGE_UPLOAD_URL = "/api/images/upload";
+
+    // const response = await fetch("/api/images/upload",{
+
+    //     method:"POST",
+
+    //     body:formData
+
+    // });
 
     if(!response.ok)
         throw new Error("Error subiendo imagen");
