@@ -14,8 +14,7 @@ async function loadScenesTable() {
         );
 
         const scenes = await response.json();
-        console.log(response);
-        console.log(scenes);
+
         const table = new DataTable({
 
             container: "#content",
