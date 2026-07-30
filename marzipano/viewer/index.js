@@ -292,7 +292,7 @@ async function loadScenes() {
 );
   
     allScenes = await response.json();
-    //console.log(allScenes);
+    console.log(allScenes);
     if (!allScenes.length) {
       sceneInfo.innerHTML = '<p>No hay escenas disponibles.</p>';
       return;

@@ -6,9 +6,16 @@ async function loadScenesTable() {
 
     try {
 
-        const response = await fetch("/api/scenes");
-        const scenes = await response.json();
+        const response = await fetch(
+            "/api/scenes?configMode=true",
+            {
+                credentials: "include"
+            }
+        );
 
+        const scenes = await response.json();
+        console.log(response);
+        console.log(scenes);
         const table = new DataTable({
 
             container: "#content",
