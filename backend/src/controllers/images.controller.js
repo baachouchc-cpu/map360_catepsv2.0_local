@@ -109,7 +109,7 @@ exports.uploadImageMinio = async (req, res) => {
         }
 
         const path = require("path");
-        const fs = require("fs");
+        const fs = require("fs/promises");
         const crypto = require("crypto");
 
         const type = req.body.type || "imagenes_360";
@@ -117,23 +117,24 @@ exports.uploadImageMinio = async (req, res) => {
         const folders = {
 
             imagenes_360: "imagenes_360",
-
             iconos: "iconos",
-
             logos: "logos",
-
             documentos: "documentos"
 
         };
 
-        const folder =
-            folders[type] || "uploads";
+        const folder = folders[type] || "uploads";
 
-        const extension =
-            path.extname(req.file.originalname);
+        const extension = path.extname(req.file.originalname);
+
+        const originalName = path.basename(
+            req.file.originalname,
+            extension
+        );
 
         const objectName =
             `${folder}/${crypto.randomUUID()}${extension}`;
+
 
         await minio.fPutObject(
 
@@ -145,9 +146,10 @@ exports.uploadImageMinio = async (req, res) => {
 
         );
 
+
         const image = await Images.create({
 
-            nombre_img: req.file.originalname,
+            nombre_img: originalName,
 
             url_minio:
                 `${process.env.MINIO_PUBLIC_URL}/${objectName}`,
@@ -156,9 +158,13 @@ exports.uploadImageMinio = async (req, res) => {
 
         });
 
-        fs.unlink(req.file.path, () => {});
+
+        // borrar archivo temporal de uploads
+        await fs.unlink(req.file.path);
+
 
         res.status(201).json(image);
+
 
     } catch (err) {
 
