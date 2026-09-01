@@ -8,9 +8,11 @@ async function login(e) {
 
   const params = new URLSearchParams(window.location.search);
   const interactionId = params.get("id_interaction");
+  const hotspotsId = params.get("id_hotspots");
 
   const body = { login_name: user, password: pass };
   if (interactionId) body.interactionId = interactionId;
+  if (hotspotsId) body.hotspotsId = hotspotsId;
 
   const res = await fetch("/api/auth/login", {
     method: "POST",
@@ -31,16 +33,32 @@ async function login(e) {
   // 🔁 REDIRECCIÓN POR ROL
   if (role === 1) {
     if (interactionId) {
+
       window.location.href = `/admin?id_interaction=${interactionId}`;
+
+    } else if (hotspotsId) {
+
+      window.location.href = `/admin?id_hotspots=${hotspotsId}`;
+
     } else {
+
       window.location.href = "/admin";
+
     }
   } 
   else if (role === 2) {
     if (interactionId) {
+
       window.location.href = `/tecnic?id_interaction=${interactionId}`;
+
+    } else if (hotspotsId) {
+
+      window.location.href = `/tecnic?id_hotspots=${hotspotsId}`;
+
     } else {
+
       window.location.href = "/tecnic";
+      
     }
   } 
   else {
