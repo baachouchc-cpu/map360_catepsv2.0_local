@@ -428,23 +428,44 @@ async function loadScene(scene, retryCount = 0) {
         //if (h.icon_id === 2) {
           wrapper.addEventListener("mouseenter", () => { titleBox.style.display = "block"; });
           wrapper.addEventListener("mouseleave", () => { titleBox.style.display = "none"; });
+          let clickTimer = null; 
+          const CLICK_DELAY = 250;
+          // CLICK SIMPLE → navegación
           wrapper.addEventListener("click", () => {
-            if (navigationMode && nextHotspotId && h.id_hotspots === nextHotspotId) {
-              goToStep(currentStepIndex + 1);
-            } else if (!navigationMode && h.link_scene_id) {
-              const nextScene = allScenes.find(s => s.id_scene === h.link_scene_id);
-              if (nextScene) {
-                currentIndex = allScenes.indexOf(nextScene);
-                switchScene(nextScene);
-                renderSidebar(nextScene);
-                updateActiveSceneMarker();
+            clickTimer = setTimeout(() => {
+              if (navigationMode && nextHotspotId && h.id_hotspots === nextHotspotId) {
+                goToStep(currentStepIndex + 1);
+              } else if (!navigationMode && h.link_scene_id) {
+                const nextScene = allScenes.find(s => s.id_scene === h.link_scene_id);
+                if (nextScene) {
+                  currentIndex = allScenes.indexOf(nextScene);
+                  switchScene(nextScene);
+                  renderSidebar(nextScene);
+                  updateActiveSceneMarker();
+                }
               }
-            }
+            }, CLICK_DELAY);
           });
 
-          // Aplicar rotación si existe
-          const transformProps = ['-ms-transform','-webkit-transform','transform'];
-          transformProps.forEach(prop => { icon.style[prop] = `rotate(${h.rotation}rad)`; });
+          // DOBLE CLICK → ir a admin/login
+        wrapper.addEventListener("dblclick", () => {
+
+            clearTimeout(clickTimer);
+            clickTimer = null;
+
+            if (!configMode)
+                return;
+
+            window.open(
+                `/admin?id_hotspots=${h.id_hotspots}`,
+                "_blank"
+            );
+
+        });
+
+        // Aplicar rotación si existe
+        const transformProps = ['-ms-transform','-webkit-transform','transform'];
+        transformProps.forEach(prop => { icon.style[prop] = `rotate(${h.rotation}rad)`; });
         //}
 
         hotspotMap[h.id_hotspots] = wrapper;

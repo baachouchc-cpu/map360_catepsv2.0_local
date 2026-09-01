@@ -44,10 +44,17 @@ async function loadAdminSession() {
 
         const params = new URLSearchParams(window.location.search);
         const interactionId = params.get("id_interaction");
+        const hostpotId = params.get("id_hostpot");
 
         if (interactionId) {
 
             window.pendingInteractionId = Number(interactionId);
+
+        }
+
+        if (hostpotId) {
+
+            window.pendingHostpotId = Number(hostpotId);
 
         }
 

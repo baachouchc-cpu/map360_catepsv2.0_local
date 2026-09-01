@@ -16,6 +16,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         loadInteractionsPage();
 
+    } else if (params.has("id_hotspots")) { 
+        
+        loadNavegationPage(); 
+
     } else {
 
         loadDashboardPage();
@@ -135,7 +139,7 @@ function loadScenesPage() {
 =            Navegación                   =
 =============================================*/
 
-function loadNavegationPage() {
+async function loadNavegationPage() {
 
     setActiveMenu("navegation");
 
@@ -146,7 +150,9 @@ function loadNavegationPage() {
         () => openhotspotModal()
     );
 
-    loadNavegationTable();
+    await loadNavegationTable();
+
+    await openHotspotFromUrl();
 
 }
 
@@ -237,6 +243,26 @@ async function openInteractionFromUrl(){
         return;
 
     await openInteractionModal(id);
+
+    // limpiar la URL para que no vuelva a abrirse
+    history.replaceState(
+        {},
+        "",
+        window.location.pathname
+    );
+
+}
+
+async function openHotspotFromUrl(){
+
+    const params = new URLSearchParams(window.location.search);
+
+    const id = params.get("id_hotspots");
+
+    if(!id)
+        return;
+
+    await openhotspotModal(id);
 
     // limpiar la URL para que no vuelva a abrirse
     history.replaceState(

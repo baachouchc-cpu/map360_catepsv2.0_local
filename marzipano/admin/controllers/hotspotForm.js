@@ -137,7 +137,7 @@ async function saveHotspot(e){
             pitch: document.getElementById("pitch").value,
             description: document.getElementById("description").value,
             link_scene_id: document.getElementById("imagen_to_id").value,
-            icon_id: 2,
+            icon_id: 105,
             rotation: document.getElementById("rotation").value || 0
 
         };
